@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cheer-mapper">
+
+	<!-- 
+		기능구분	: 조회
+		기능설명	: 전체 등록된 글조회
+		파라미터	: -
+		리턴타입	: CheerVO List
+	 -->	
+	<select id="selectCheerListAll" resultType="cheer">
+		select *
+		from cheer
+	</select>
+	<!-- 
+		기능구분	: 조회
+		기능설명	: 조회할 날짜를 기준으로 해당 내역을 가져온다. 
+		파라미터	: String(날짜)
+		리턴타입	: CheerVO
+	 -->	
+	<select id="selelctCheerListByDate" parameterType="str" resultType="cheer">
+		select *
+		from cheer
+		where to_char(cheer_regdate, 'YYYY-MM-DD') = #{str}
+		order by cheer_regdate desc
+	</select>
+	<!-- 
+		기능구분	: 등록
+		기능설명	: 응원글 등록기능 
+		파라미터	: CheerVO(글번호,작성자,작성내용)
+		리턴타입	: -
+	 -->
+	<update id="insertCheerByCheer" parameterType="cheer">
+		insert into
+		cheer(cheer_no, cheer_writer, cheer_content)
+		values(#{cheer_no}, #{cheer_writer}, #{cheer_content})
+	</update>
+	<!-- 
+		기능구분	: 조회
+		기능설명	: 글등록시 해당 글번호 생성하여 리턴한다
+		파라미터	: -
+		리턴타입	: int
+	 -->
+	<select id="selectCheerSeqNextNum" resultType="int">
+		select cheer_seq.nextval as cheer_no from dual
+	</select>
+	
+	<select id="selectCheerListAllCnt" resultType="int">
+		select count(*)
+		from cheer
+	</select>
+</mapper>

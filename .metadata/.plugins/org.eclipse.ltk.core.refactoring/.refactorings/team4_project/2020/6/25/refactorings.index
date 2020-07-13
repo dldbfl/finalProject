@@ -1,0 +1,88 @@
+1592202122521	Rename resource '편지.png'
+1592220298995	Move folder
+1592356692990	Encapsulate field 'lecture_no'
+1592356859805	Encapsulate field 'member_picture'
+1592356934114	Encapsulate field 'member_gender'
+1592357029280	Encapsulate field 'student_hope_business'
+1592357033394	Encapsulate field 'member_email'
+1592357080644	Encapsulate field 'member_birth'
+1592357153196	Delete element
+1592357268487	Move compilation unit
+1592357288509	Rename type 'ProfessorAllVO'
+1592359370829	Move compilation unit
+1592359373454	Move compilation unit
+1592359375537	Move compilation unit
+1592359380119	Move compilation unit
+1592359382561	Move compilation unit
+1592359384425	Move compilation unit
+1592359388296	Move compilation unit
+1592359390447	Move compilation unit
+1592359396011	Delete elements
+1592359439012	Move compilation unit
+1592359441353	Move compilation unit
+1592359443246	Move compilation unit
+1592359446877	Move compilation unit
+1592359448971	Move compilation unit
+1592359450887	Move compilation unit
+1592359453163	Move compilation unit
+1592359455332	Move compilation unit
+1592359461594	Delete elements
+1592359536913	Move compilation unit
+1592359538953	Move compilation unit
+1592359540882	Move compilation unit
+1592359544054	Move compilation unit
+1592359548768	Delete elements
+1592359911810	Move compilation unit
+1592359944716	Rename type 'ManagerController'
+1592359954990	Copy compilation unit
+1592359968602	Rename type 'Student_Professor_Controller'
+1592359972636	Rename type 'managerController'
+1592360158597	Copy file
+1592360163189	Rename resource 'student_list.jsp'
+1592362165668	Copy file
+1592362175530	Rename resource 'registheader.css'
+1592372363210	Move folder
+1592372753439	Move compilation unit
+1592372758545	Move compilation unit
+1592372772736	Rename type 'ManagerController'
+1592372783477	Rename type 'Student_Professor_Controller'
+1592379736322	Copy compilation unit
+1592379743907	Delete element
+1592379764705	Copy package
+1592379784545	Delete elements
+1592379786079	Delete element
+1592379837945	Copy compilation unit
+1592382316213	Rename type 'MyLectureController'
+1592382325394	Rename type 'Lecture_DataController'
+1592392331751	Rename resource 'studen'
+1592392360218	Copy file
+1592392370141	Rename resource 'lectureList.jsp'
+1592395232440	Encapsulate field 'lecture_data_video'
+1592395942476	Copy file
+1592397570554	Rename package 'com.dlms.controller.manager.list_all'
+1592446289876	Rename resource 'video.jsp'
+1592446293739	Rename resource 'lecture.jsp'
+1592446299149	Move files
+1592446302061	Delete element
+1592446491925	Rename resource '보람언니맘에드는고양이.png'
+1592447170606	Rename resource '알록달록 스타일.jpeg'
+1592447296099	Encapsulate field 'lecture_data_image'
+1592447374536	Encapsulate field 'lecture_data_image'
+1592447834623	Copy file
+1592457459458	Rename resource 'Water - 40352.mp4'
+1592457465120	Rename resource '참 쉽죠7.mp4.mp4'
+1592463756521	Rename resource '참 쉽죠7.mp4'
+1592463764724	Rename resource 'Countdown - 31098.mp4'
+1592468392886	Copy file
+1592471126120	Copy file
+1592471141767	Delete element
+1592477822312	Encapsulate field 'lecture_lastview_time'
+1592528429146	Copy file
+1592528434270	Rename resource 'enterprise_coming_modify.jsp'
+1592528443885	Rename resource 'timecheck.jsp'
+1592528610592	Rename resource 'timeset.jsp'
+1592567553211	Copy compilation unit
+1592567753336	Rename compilation unit 'EvernoteService.java'
+1592567890631	Copy compilation unit
+1592567899576	Rename type 'EvernoteSubscribeService'
+1592567907371	Rename type 'LectureAttendServiceImpls'

@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pay-mapper">
+	
+	<!--
+	기능구분	: 검색기능
+	기능설명	: searchType이 p일 시  결제번호로  검색  n일시 강의명 내용으로 검색 m일시 결제 방법으로 검색한다.
+	-->
+	<sql id="search">
+		<if test="searchType == 'p'.toString()">
+			and (pay_no like '%'||upper(#{keyword})||'%'
+			or pay_no like '%'||lower(#{keyword})||'%')		
+		</if>
+		<if test="searchType == 'n'.toString()">
+			and (class_name like '%'||upper(#{keyword})||'%'
+			or class_name like '%'||lower(#{keyword})||'%')			
+		</if>
+		<if test="searchType == 'm'.toString()">
+			and (
+			pay_method like '%'||upper(#{keyword})||'%'
+			or
+			pay_method like '%'||lower(#{keyword})||'%')
+		</if>	
+
+	</sql>
+	
+	<!--
+	기능구분	: 결제 리스트
+	기능설명	: 결제 전체 리스트를 출력한다.
+	파라미터	: 
+	리턴타입	: pay
+	-->
+
+	<select id="selectDraftList" resultType="pay">
+		select  *
+		from pay
+	
+	</select>
+	
+	<!--
+	기능구분	: 결제리스트 카운트
+	기능설명	: 결제 수를 불러온다
+	파라미터	: X
+	리턴타입	: int
+	-->
+	<select id="selectPayListCount" resultType="int">
+		select
+		count(*)
+		from pay
+		where pay_no is not null		  	
+		<include refid="search" />
+		order by qna_regdate desc
+	</select>
+	
+	<!--
+	기능구분	: 결제 상세내역(강의번호)
+	기능설명	: 결제 상세내역 리스트를 뽑는다.
+	파라미터	: pay
+	리턴타입	: pay
+	-->
+	<select id="detailPayList" parameterType="int" resultType="pay">
+		select  *
+		from
+		pay
+		where pay_no is not null		  	
+		and lecture_no = #{lecture_no}
+		order by pay_complete_date desc
+	</select>
+	
+	<!-- 
+	기능구분	: 수강 후기를 위한 결제내역(수강생아이디)
+	기능설명	: 결제 상세내역 리스트를 뽑는다.
+	파라미터	: str
+	리턴타입	: pay
+	 -->
+	 <select id="detailPayListById" parameterType="str" resultType="review">
+		select *
+		from pay,lecture
+		where pay.lecture_no = lecture.lecture_no		  	
+		and student_id = #{student_id} and review_check != 1
+		order by pay_complete_date desc
+	</select>
+	
+	<!--
+	기능구분	: 결제 상세내역(강의번호)
+	기능설명	: 결제 상세내역 리스트를 뽑는다.
+	파라미터	: pay
+	리턴타입	: pay
+	-->
+	<select id="detailPayByPno" parameterType="int" resultType="pay">
+		select  *
+		from
+		pay
+		where pay_no is not null		  	
+		and pay_no = #{pay_no}
+		order by pay_complete_date desc
+	</select>
+	
+	<!--
+	기능구분	: 결제 
+	기능설명	: 결제 진행
+	파라미터	: payReq
+	작성자	: 연은주
+	-->
+	<update id="insertPay" parameterType="payReq" >
+	insert into pay (pay_no,lecture_no, professor_id, student_id, class_name, pay_price, pay_complete_date)
+	values (#{pay_no},#{lecture_no} ,#{professor_id} ,#{student_id} ,#{lecture_title} ,#{pay_price} ,sysdate)
+	
+	</update>
+	
+	<!--
+	기능구분	: 결제 번호
+	기능설명	: 결제 번호를 1씩 증가 시킨다.
+	파라미터	: X
+	리턴타입	: int
+-->
+	<select id="selectPaySeqNext" resultType="int">
+		select pay_seq.nextval as pay_no from dual
+	</select>
+		
+	<!--
+	기능구분	: 결제 화면 출력
+	기능설명	: 결제 상세화면 출력
+	파라미터	: int
+	리턴타입	: payVO
+	-->
+	<select id="detailPay" resultType="lecture" parameterType="int">
+	select  *
+	from
+	lecture
+	where lecture_no = #{lecture_no}
+	</select>
+
+		<!--
+	기능구분	: 결제
+	기능설명	: 결제 화면 상세보기
+	파라미터	: X
+	리턴타입	: payReq
+-->
+	<select id="selectPayDetail" resultType="payReq" parameterType="int">
+	select *
+	from member m, pay p,lecture l	
+	where m.member_id = p.student_id
+	and p.lecture_no = l.lecture_no
+	and p.pay_no = #{pay_no}
+	</select>
+<!--
+	기능구분	: 결제
+	기능설명	: 결제전 member_id를 student_id에 넣어주는 작업
+	파라미터	: X
+	리턴타입	: 
+-->
+	<update id="insertStudent">
+	insert into student(student_id) values(#{member_id})
+	</update>
+<!--
+	기능구분	: 결제
+	기능설명	: 회원이 수강결제 이력이 있으면 insert 하지 않고 결제 진행
+	파라미터	: X
+	리턴타입	: payReq
+-->	
+	<select id="checkStudent" resultType="payReq" parameterType="str">
+	select *
+	from member m, student s
+	where s.student_id = m.member_id
+	and s.student_id = #{member_id}
+	</select>
+	
+	<!--
+	기능구분	: 수강후기는 강의당 1번
+	기능설명	: 결제 상세화면 출력
+	파라미터	: X
+	리턴타입	: payVO
+	-->
+	<update id="reviewCheck" parameterType="str">
+		update pay
+		set
+		review_check = 1
+		where student_id = #{student_id}
+	</update>
+	
+	<!--
+	기능구분	: 수강생 확인
+	기능설명	: 결제 상세화면 출력
+	파라미터	: X
+	리턴타입	: payVO
+	-->
+	<select id="selectStudentList" resultType="student">
+		select  *
+		from student
+		
+	</select>
+	
+	
+	<!--
+	기능구분	: 결제 내역 출력
+	기능설명	: 내 결제 내역 출력
+	파라미터	: X
+	리턴타입	: payVO
+	-->
+	<select id="selectPayMyList" resultType="pay" parameterType="str">
+		select *
+		from pay
+		where student_id = #{student_id}
+		
+	</select>
+	<!--
+	기능구분	: 환불
+	기능설명	: 환불신청시 진행
+	파라미터	: X
+	리턴타입	: payVO
+	-->
+	<update id="insertRefund" parameterType="refund">
+		insert into refund(refund_no,refund_date,class_name)
+		values (#{refund_no},sysdate,#{class_name})
+	</update>
+	
+	
+	<!--
+	기능구분	: 결제 내역 출력
+	기능설명	: 내 결제 내역 출력
+	파라미터	: X
+	리턴타입	: payVO
+	-->
+	<select id="selectPayprofessorList" resultType="payReq" parameterType="str">
+	
+		select p.pay_no,p.lecture_no, p.professor_id, p.student_id, l.lecture_title, p.pay_price, p.pay_complete_date
+		from pay p, lecture l
+		where p.professor_id = l.professor_id
+        and  p.professor_id = #{professor_id}
+		
+	</select>
+	
+	<!--
+	기능구분	: 환불번호
+	기능설명	: 환불 번호를 1씩 증가 시킨다.
+	파라미터	: X
+	리턴타입	: int
+	-->
+	<select id="selectRefundSeqNext" resultType="int">
+		select refund_seq.nextval as refund_no from dual
+	</select>
+		
+		
+	<!--
+	기능구분	: 결제 삭제 - 교수 기준
+	기능설명	: 결제를 수정한다
+	파라미터	: professor_id
+	리턴타입	: X
+	-->
+	<update id="deletePayProfesser" parameterType="str">
+		delete pay
+		where professor_id = #{professor_id}
+	</update>
+	
+	<!--
+	기능구분	: 결제 삭제 - 번호 기준
+	기능설명	: 결제를 수정한다
+	파라미터	: pay_no
+	리턴타입	: X
+	-->
+	<update id="deletePayNo" parameterType="int">
+		delete pay
+		where pay_no = #{pay_no}
+	</update>
+	
+	<!--
+	기능구분	: 교수의 수강생 전체 조회
+	기능설명	: 교수의 수강생을 전체 조회하여 출석부 만드는데 이용
+	파라미터	: X
+	리턴타입	: payVO
+	-->
+	<select id="selectLectureStudentList" resultType="str">
+		select student_id
+		from pay
+		where professor_id = #{professor_id}
+	</select>
+	
+	<!--
+	기능구분	: 수강생 수강내역 확인
+	기능설명	: 수강내역 확인해서 수강을 하나만 진행 할수 있도록
+	파라미터	: string
+	리턴타입	: payVO
+	-->
+	<select id="selectPayStudentId" resultType="pay" parameterType="str">
+		select student_id
+		from pay
+		where student_id = #{student_id}
+	</select>
+	
+	
+	
+</mapper>

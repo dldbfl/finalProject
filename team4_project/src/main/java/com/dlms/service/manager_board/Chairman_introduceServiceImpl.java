@@ -1,0 +1,85 @@
+package com.dlms.service.manager_board;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.dlms.dao.manager_board.Chairman_introduceDAO;
+import com.dlms.dao.manager_board.Education_curriculumDAO;
+import com.dlms.dao.manager_board.Education_purposeDAO;
+import com.dlms.dto.Manager_boardVO;
+
+
+
+public class Chairman_introduceServiceImpl<L> implements Chairman_introduceService {
+	
+	private Chairman_introduceDAO chairman_introduceDAO;
+	public void setChairman_introduceDAO(Chairman_introduceDAO chairman_introduceDAO) {
+		this.chairman_introduceDAO = chairman_introduceDAO;
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	이사장 인사글 조회
+	 * @작성자		    : 	이누리
+	 * @작성날짜    	:	2020. 6. 9.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 9.오후 4:08:50
+	 * @see			    :	-
+	 * @param manager_board_no
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public Map<String, Object> getChairman_introduce(int manager_board_no) throws SQLException {
+		Map<String,Object> dataMap = new HashMap<String,Object>();
+		
+		Manager_boardVO manager_board = chairman_introduceDAO.selectManager_board_Chairman_introduce(manager_board_no);
+		String manager_data_filename = chairman_introduceDAO.selectManager_board_getimage(manager_board_no);
+		
+		manager_board.setManager_data_filename(manager_data_filename);
+		
+		dataMap.put("manager_board", manager_board);
+		dataMap.put("manager_board.manager_data_filename", manager_data_filename);
+		
+		return dataMap; 
+	}
+
+	/**
+	 * 
+	 * @기능설명		:	이사장 인사글 수정
+	 * @작성자		    : 	이누리
+	 * @작성날짜    	:	2020. 6. 9.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 9.오후 4:09:05
+	 * @see			    :	-
+	 * @param manager_board
+	 * @param manager_board_no
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public void modifyChairman_introduce(Manager_boardVO manager_board, int manager_board_no) throws SQLException {
+		
+		String manager_data_filename = chairman_introduceDAO.selectManager_board_getimage(manager_board_no);
+		
+		if(manager_board.getManager_data_filename() == null) {
+			manager_board.setManager_data_filename(manager_data_filename);
+		}
+		manager_board.setManager_board_no(manager_board_no);
+		System.out.println("manager_board.getManager_data_filename() : "+ manager_board.getManager_data_filename());	
+		System.out.println("manager_board : " + manager_board);
+		
+		chairman_introduceDAO.updateManager_board_Manager_data_filename(manager_board);
+		chairman_introduceDAO.updateManager_board_chairman_introduce(manager_board);
+	}
+
+
+
+
+
+
+	
+	
+}

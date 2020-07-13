@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="like-mapper">
+
+	<!--
+	기능구분	: 정보입력 (수강후기)
+	기능설명	: 좋아요 누른 아이디 정보입력
+	파라미터	: like
+	리턴타입	: X
+	-->
+	<update id="insertBoardLike" parameterType="like">
+		insert 
+		into 
+		liketable(like_no,lecture_review_no,like_id)
+		values
+		(#{like_no},#{lecture_review_no},#{like_id})
+	</update>
+
+	<!--
+	기능구분	: 정보 삭제
+	기능설명	: 좋아요 누른 아이디 정보를 삭제한다.
+	파라미터	: qna
+	리턴타입	: X
+	-->
+	<update id="deleteBoardLike" parameterType="int">
+		delete liketable 
+		where like_no=#{like_no}
+	</update>
+	
+	<!--
+	기능구분	: 상세보기 (수강후기)
+	기능설명	: 좋아요의 체크여부 확인
+	파라미터	: like
+	리턴타입	: int
+	-->	
+	<select id="detailLikeInfo" parameterType="like" resultType="like">
+		select *
+		from liketable
+		where lecture_review_no=#{lecture_review_no} and like_id=#{like_id}
+	</select>
+	
+	<!--
+	기능구분	: 번호 생성
+	기능설명	: 좋아요 번호를 생성한다.
+	파라미터	: X
+	리턴타입	: int
+	-->	
+	<select id="selectlikeSeqNext" resultType="int">
+		select like_seq.nextval as like_no from dual
+	</select>
+	
+</mapper>

@@ -1,0 +1,45 @@
+package com.dlms.dao.chairman_introduce;
+
+import java.sql.SQLException;
+
+import org.apache.ibatis.session.SqlSessionException;
+
+import com.dlms.dto.Enterprise_introduceVO;
+import com.dlms.dto.Manager_boardVO;
+import com.dlms.dto.Manager_dataVO;
+import com.dlms.request.Enterprise_introduceRequest;
+
+public interface Chairman_introduceDAO {
+
+	/**
+	 * 
+	 * @기능설명		:	관리자 게시판 - 이사장 소개 조회
+	 * @작성자		    :	이누리
+	 * @작성날짜    	:	2020. 6. 9.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 9.오후 2:17:40
+	 * @see			    :	-
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	Manager_boardVO selectManager_board_Chairman_introduce() throws SQLException;	
+		
+
+	/**
+	 * 
+	 * @기능설명		:	관리자 게시판 - 이사장 소개 수정
+	 * @작성자		    :	이누리
+	 * @작성날짜    	:	2020. 6. 9.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 9.오후 2:19:31
+	 * @see			    :	-
+	 * @param manager_board
+	 * @throws SQLException
+	 *
+	 */
+	void updateManager_board_enterprise_comming(Manager_boardVO manager_board)throws SQLException;
+	
+	
+
+}

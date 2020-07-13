@@ -1,0 +1,22 @@
+package com.dlms.service.enterprise_comming;
+
+import java.sql.SQLException;
+
+import java.util.Map;
+
+
+import com.dlms.dto.Manager_dataVO;
+
+
+public interface Enterprise_commingService {
+	
+
+	Map<String,Object> getEnterprise_comming(int manager_board_no)throws SQLException;
+	
+
+	void modifyEnterprise_comming(Manager_dataVO manager_data, int manager_board_no)throws SQLException;
+	
+	
+}
+
+

@@ -1,0 +1,26 @@
+package com.dlms.dao.lecture;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import com.dlms.dto.LectureVO;
+import com.dlms.dto.Lecture_dataVO;
+import com.dlms.request.SearchCriteria;
+
+public interface LectureDAO {
+	public List<LectureVO> selectSearchLectureList (SearchCriteria cri) throws SQLException;
+	public List<LectureVO> selectLectureList () throws SQLException;
+	public int selectLectureListCount() throws SQLException;
+	public LectureVO selectLectureDetail (int lecture_no) throws SQLException;
+	public void insertLecture(LectureVO lecture) throws SQLException;
+	public void insertLectureData(Lecture_dataVO lecture_data) throws SQLException;
+	public void updateLecture(LectureVO lecture) throws SQLException;
+	public void updateLectureData(Lecture_dataVO lecture_data) throws SQLException;
+	public void deleteLecture(int lecture_no) throws SQLException;
+	public void deleteLectureData(int lecture_no) throws SQLException;
+	public int selectLectureSeqNext() throws SQLException;
+	public int selectLectureDataSeqNext() throws SQLException;
+	public LectureVO selectLectureDetailByid(String professor_id) throws SQLException;
+	public List<Lecture_dataVO> selectLectureData(int lecture_no)throws SQLException;
+	public Lecture_dataVO selectLectureDataVideo(int lecture_data_no)throws SQLException;
+}

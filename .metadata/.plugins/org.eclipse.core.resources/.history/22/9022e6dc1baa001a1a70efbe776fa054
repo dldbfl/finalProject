@@ -1,0 +1,21 @@
+package com.dlms.service.education_curriculum;
+
+import java.sql.SQLException;
+
+import java.util.Map;
+
+import com.dlms.dto.Manager_boardVO;
+
+
+public interface Education_curriculumService {
+	
+    
+	Map<String,Object> getEducation_curriculum()throws SQLException;
+	
+	
+	void modifyEducation_curriculum(Manager_boardVO manager_board)throws SQLException;
+	
+	
+}
+
+

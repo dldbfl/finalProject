@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lecture-mapper">
+	
+	<!--
+	기능구분	: 검색기능
+	기능설명	: searchType이 L일 시 교과구분으로  출력,t일시 강의 명으로 출력
+	-->
+	<sql id="search">
+		<if test="searchType == 'l'.toString()">
+			and lecture_distinction like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 't'.toString()">
+			and lecture_title like '%'||#{keyword}||'%'			
+		</if>
+	</sql>
+	
+	<!--
+	기능구분	: 강의검색리스트
+	기능설명	: 강의 리스트를 불러온다
+	파라미터	: cri
+	리턴타입	: lecture
+	-->
+	<select id="selectSearchLectureList" parameterType="cri" resultType="lecture">
+		select  *
+		from
+		lecture
+		where lecture_no is not null
+		and lecture_recruit_status > sysdate 
+		<include refid="search" />
+		order by lecture_recruit_date desc
+	</select>
+	
+	<!--
+	기능구분	: 강의리스트카운트
+	기능설명	: 강의 리스트를 불러온 시 페이지 넘버를 가져오기 위한 장치
+	파라미터	: X
+	리턴타입	: int
+	-->
+	<select id="selectLectureListCount" resultType="int">
+		select
+		count(*) 
+		from lecture
+		where lecture_no is not null
+		and lecture_recruit_status > sysdate 
+		<include refid="search" />
+		order by lecture_recruit_date desc
+	</select>
+	
+	<!--
+	기능구분	: 강의리스트
+	기능설명	: 강의 전체 리스트를 불러온다
+	파라미터	: X
+	리턴타입	: lecture
+	-->
+	<select id="selectLectureList" resultType="lecture">
+		select  *
+		from
+		lecture
+		where lecture_no is not null
+		and lecture_recruit_status > sysdate	
+		order by lecture_recruit_date
+	</select>
+	
+	<!--
+	기능구분	: 강의리스트 - 관리자용
+	기능설명	: 강의 전체 리스트를 불러온다
+	파라미터	: X
+	리턴타입	: lecture
+	-->
+	<select id="selectLectureListAdmin" resultType="lecture">
+		select  *
+		from
+		lecture
+		where lecture_no is not null	
+		order by lecture_no desc
+	</select>
+	
+	<!--
+	기능구분	: 강의검색리스트 - 관리자용
+	기능설명	: 강의 리스트를 불러온다
+	파라미터	: cri
+	리턴타입	: lecture
+	-->
+	<select id="selectSearchLectureListAdmin" parameterType="cri" resultType="lecture">
+		select  *
+		from
+		lecture
+		where lecture_no is not null
+		<include refid="search" />
+		order by lecture_no
+	</select>
+	<!--
+	기능구분	: 강의리스트카운트 - 관리자용
+	기능설명	: 강의 리스트를 불러온 시 페이지 넘버를 가져오기 위한 장치
+	파라미터	: X
+	리턴타입	: int
+	-->
+	<select id="selectLectureListCountAdmin" resultType="int">
+		select
+		count(*) 
+		from lecture
+		where lecture_no is not null
+		<include refid="search" />
+		order by lecture_recruit_date desc
+	</select>
+	
+	<!--
+	기능구분	: 강의상세
+	기능설명	: 강의 리스트를 불러온다
+	파라미터	: int
+	리턴타입	: lecture
+	-->
+	<select id="selectLectureDetail" parameterType="int" resultType="lecture">
+		select  *
+		from
+		lecture
+		where lecture_no is not null and lecture_no=#{lecture_no}	  	
+		order by lecture_recruit_date desc
+	</select>
+	
+	<!--
+	기능구분	: 강의상세(교수용)
+	기능설명	: 강의 리스트를 불러온다
+	파라미터	: str
+	리턴타입	: lecture
+	-->
+	<select id="selectLectureDetailByid" parameterType="str" resultType="lecture">
+		select  *
+		from
+		lecture
+		where lecture_no is not null and professor_id=#{professor_id}	  	
+		order by lecture_recruit_date desc
+	</select>
+	
+	<!--
+	기능구분	: 강의자료리스트(교수용)
+	기능설명	: 강의 자료 리스트를 불러온다
+	파라미터	: int
+	리턴타입	: lecture_data
+	-->
+	
+	<select id="selectLectureDataList" parameterType="String" resultType="lectureData">
+		select *
+		from lecture, lecture_data
+		where lecture.professor_id is not null
+		and lecture.professor_id = #{professor_id}
+	</select>
+	
+	<!--
+	기능구분	: 강의자료리스트(기안서용)
+	기능설명	: 강의 자료 리스트를 불러온다
+	파라미터	: int
+	리턴타입	: lecture_data
+	-->
+	
+	<select id="selectLectureDataBylno" parameterType="int" resultType="lecture_data">
+		select *
+		from lecture_data
+		where professor_id is not null
+		and lecture_data_no = #{lecture_data_no}
+	</select>
+	
+	<!--
+	기능구분	: 강의동영상리스트
+	기능설명	: 강의동영상리스트를 불러온다
+	파라미터	: int
+	리턴타입	: lecture_data
+	-->
+	<select id="selectLectureData" parameterType="int" resultType="lectureData">
+		select  *
+		from
+		lecture_data
+		where lecture_data_no is not null 
+		and lecture_data_video = 'VIDEO' 
+		and lecture_no=#{lecture_no}	
+		and lecture_data_status = 1  	
+		order by lecture_data_regdate desc
+	</select>
+	
+	<!--
+	기능구분	: 강의동영상 상세보기
+	기능설명	: 강의동영상의 상세를 불러온다
+	파라미터	: int
+	리턴타입	: lecture_data
+	-->
+	<select id="selectLectureDataVideo" parameterType="int" resultType="lecture_data">
+		select  *
+		from
+		lecture_data
+		where lecture_data_no is not null 
+		and lecture_data_video = 'VIDEO'
+		and lecture_data_status = 1
+		and lecture_data_no=#{lecture_data_no}
+	</select>
+	
+	
+	<!--
+	기능구분	: 강의등록
+	기능설명	: 강의를 등록한다
+	파라미터	: lecture
+	리턴타입	: X
+	-->
+	<update id="insertLecture" parameterType="lecture">
+		insert 
+		into 
+		lecture(lecture_no,professor_id, 
+				manager_id, 
+				lecture_distinction, 
+				lecture_title, 
+				lecture_progress, 
+				lecture_recruit_date,
+				lecture_recruit_status,
+				lecture_img,
+				lecture_price,
+				lecture_content,
+				lecture_end)
+		values  (#{lecture_no},
+				 #{professor_id},
+				 #{manager_id},
+				 #{lecture_distinction},
+				 #{lecture_title},
+				 #{lecture_progress},
+				 #{lecture_recruit_date},
+				 #{lecture_recruit_status},
+				 #{lecture_img},
+				 #{lecture_price},
+				 #{lecture_content},
+				 #{lecture_end})
+	</update>
+	
+	<!--
+	기능구분	: 강의자료 첨부
+	기능설명	: 강의 자료를 첨부한다
+	파라미터	: lectureData
+	리턴타입	: X
+	-->
+	<update id="insertLectureData" parameterType="lectureData">
+		insert
+		into
+		lecture_data(lecture_data_no, lecture_no, professor_id, lecture_data_filename, lecture_data_image)
+		values
+		(#{lecture_data_no},#{lecture_no},#{professor_id},#{lecture_data_filename}, #{lecture_data_image ,jdbcType=VARCHAR })
+		
+	</update>
+	
+	<!--
+	기능구분	: 강의 수정
+	기능설명	: 강의를 수정한다
+	파라미터	: lecture
+	리턴타입	: X
+	-->
+	<update id="updateLecture" parameterType="lecture">
+		update lecture 
+		set professor_id=#{professor_id},
+			lecture_distinction=#{lecture_distinction},
+			lecture_title=#{lecture_title},
+			lecture_progress=#{lecture_progress},
+			lecture_recruit_date=#{lecture_recruit_date},
+			lecture_recruit_status=#{lecture_recruit_status},
+			lecture_img=#{lecture_img},
+			lecture_price=#{lecture_price},
+			lecture_content=#{lecture_content},
+			lecture_end=#{lecture_end}
+		where lecture_no=#{lecture_no}
+	</update>
+	
+	<!--
+	기능구분	: 강의자료 수정
+	기능설명	: 강의 자료를 수정한다
+	파라미터	: lecture_data
+	리턴타입	: X
+	-->
+	<update id="updateLectureData" parameterType="lecture_data">
+		update lecture_data
+		set
+		lecture_no=#{lecture_no},
+		professor_id=#{professor_id},
+		lecture_data_filename=#{lecture_data_filename},
+		lecture_data_status=#{lecture_data_status},
+		lecture_lastview_time=#{lecture_lastview_time},
+		lecture_data_memo=#{lecture_data_memo,jdbcType=VARCHAR},
+		lecture_data_favorites=#{lecture_data_favorites}
+		where lecture_data_no=#{lecture_data_no}
+	</update>
+	
+	<!--
+	기능구분	: 강의 삭제
+	기능설명	: 강의를 첨부한다
+	파라미터	: int
+	리턴타입	: X
+	-->
+	<update id="deleteLecture" parameterType="int">
+		delete lecture 
+		where lecture_no=#{lecture_no}
+	</update>
+	
+	<!--
+	기능구분	: 강의 자료 삭제
+	기능설명	: 강의 자료를 삭제 한다
+	파라미터	: int
+	리턴타입	: X
+	-->
+	<update id="deleteLectureData" parameterType="int">
+		delete lecture_data 
+		where lecture_no=#{lecture_no}
+	</update>
+	
+	<!--
+	기능구분	: 수강 후기 번호 생성
+	기능설명	: 수강 후기 번호를 생성한다.
+	파라미터	: X
+	리턴타입	: int
+	-->	
+	<select id="selectLectureSeqNext" resultType="int">
+		select lecture_seq.nextval as lecture_no from dual
+	</select>
+	
+	<!--
+	기능구분	: 강의 자료 번호 생성
+	기능설명	: 강의 자료 번호를 생성한다.
+	파라미터	: X
+	리턴타입	: int
+	-->	
+	<select id="selectLectureDataSeqNext" resultType="int">
+		select lecture_data_seq.nextval as lecture_data_no from dual
+	</select>
+	
+	<!--
+	기능구분	: 강의 리스트
+	기능설명	: 즐겨찾는 강의 리스트
+	파라미터	: int
+	리턴타입	: lecture_data
+	-->	
+	<select id="myFavoriteList" parameterType="int" resultType="lectureData">
+		select  *
+		from
+		lecture_data
+		where lecture_data_no is not null 
+		and lecture_data_video = 'VIDEO' 
+		and lecture_no=#{lecture_no}
+        and lecture_data_favorites = 1
+        and lecture_data_status = 1
+		order by lecture_data_regdate desc
+	</select>
+	
+	<!--
+	기능구분	: 즐겨찾기 등록, 취소
+	기능설명	: 즐겨찾기를 설정한다.
+	파라미터	: lecture_data_favorites,lecture_data_no
+	리턴타입	: X
+	-->
+	<update id="updateFavorite" parameterType="hashmap">
+		update lecture_data
+		set
+		lecture_data_favorites=#{lecture_data_favorites}
+		where lecture_data_no=#{lecture_data_no}
+	</update>
+	
+	<!--
+	기능구분	: 기안서 결재 시 동영상 업로드 
+	기능설명	: 기안서 결재 시 동영상 업로드 상태로 변경한다.
+	파라미터	: lecture_data_no
+	리턴타입	: X
+	-->
+	<update id="updateDataStatus" parameterType="int">
+		update lecture_data
+		set
+		lecture_data_status=1
+		where lecture_data_no=#{lecture_data_no}
+	</update>
+	
+	<!--
+	기능구분	: lecture_data 조회
+	기능설명	: lecture_data_no 기준으로 조회한다. (이미지, 동영상 이름 꺼내기 위한 용도)
+	파라미터	: lecture_data_no
+	리턴타입	: X
+	-->
+	<select id="selectLectureData_data_no" resultType="lecture_data" parameterType="int">
+		select *
+		from lecture_data
+		where lecture_data_no = #{lecture_data_no}
+	</select>
+	
+	
+	<select id="selectLectureBylecture_no" resultType="lecture" parameterType="int">
+		select  *
+		from lecture
+		where lecture_no = #{lecture_no}
+	</select>
+	
+	
+</mapper>

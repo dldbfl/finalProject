@@ -1,0 +1,100 @@
+package com.dlms.service.enterprise_introduce;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.dlms.dao.enterprise_introduce.Enterprise_introduceDAO;
+import com.dlms.dto.Enterprise_introduceVO;
+import com.dlms.dto.Manager_dataVO;
+import com.dlms.request.Enterprise_introduceRequest;
+
+/**
+ * 
+ * @사용목적		:	기업소개 관련 서비스
+ * @작성자			:	이누리
+ * @작성날짜     	:	2020. 6. 5.
+ * @마지막수정자	:	이누리
+ * @마지막수정일	:	2020. 6. 5.오후 2:41:43
+ * @see			:	-
+ * @param <L>
+ *
+ */
+public class Enterprise_introduceServiceImpl<L> implements Enterprise_introduceService {
+	
+	private Enterprise_introduceDAO enterprise_introduceDAO;
+	public void setEnterprise_introduceDAO(Enterprise_introduceDAO enterprise_introduceDAO) {
+		this.enterprise_introduceDAO = enterprise_introduceDAO;
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	기업소개 조회
+	 * @작성자			:	이누리
+	 * @작성날짜    	:	2020. 6. 5.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 7.오후 5:06:13
+	 * @see				:	-
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public Map<String, Object> getEnterprise_introduce(int enterprise_introduce_no) throws SQLException {
+		Map<String,Object> dataMap = new HashMap<String,Object>();
+		
+		Enterprise_introduceVO enterprise_introduce = enterprise_introduceDAO.selectEnterprise_introduce();
+		String manager_data_filename = enterprise_introduceDAO.selectEnterprise_introduce_getimage(enterprise_introduce_no);
+		
+		//System.out.println(manager_data_filename);
+		enterprise_introduce.setManager_data_filename(manager_data_filename);
+		
+		
+		dataMap.put("enterprise_introduce", enterprise_introduce);
+		dataMap.put("enterprise_introduce.manager_data_filename", manager_data_filename);
+		
+		return dataMap; 
+	}
+
+	/**
+	 * 
+	 * @기능설명		:	기업소개 수정
+	 * @작성자			:	이누리
+	 * @작성날짜    	:	2020. 6. 5.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 8.오후 1:06:49
+	 * @see			:	-
+	 * @param enterprise_introduce
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public void modifyEnterprise_introduce(Enterprise_introduceVO enterprise_introduce, int enterprise_introduce_no) throws SQLException {
+		//Manager_dataVO manager_data = null;
+				
+		String manager_data_filename = enterprise_introduceDAO.selectEnterprise_introduce_getimage(enterprise_introduce_no);
+		//manager_data.setManager_data_filename(manager_data_filename);
+		//System.out.println("manager_data : "+manager_data);
+		//enterprise_introduceReq.setOld_manager_data_filename(manager_data_filename);		
+		//Enterprise_introduceVO enterprise_introduce = enterprise_introduceReq.toEnterprise_introduceVO();
+		
+		if(enterprise_introduce.getManager_data_filename() == null) {
+			enterprise_introduce.setManager_data_filename(manager_data_filename);
+		}
+		
+		
+		System.out.println("enterprise_introduce.getManager_data_filename() : "+ enterprise_introduce.getManager_data_filename());	
+		System.out.println("enterprise_introduce : " + enterprise_introduce);
+		
+		enterprise_introduceDAO.updateManager_data_filename(enterprise_introduce);
+		enterprise_introduceDAO.updateEnterprise_introduce(enterprise_introduce);
+	}
+
+
+
+
+
+
+	
+	
+}

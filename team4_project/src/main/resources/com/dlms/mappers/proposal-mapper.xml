@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="proposal-mapper">
+
+
+<!--
+	기능구분	: 조회
+	기능설명	: 창업계획서를 조회한다.
+	파라미터	: X 
+	리턴타입	: consult
+-->	
+	<select id="selectProposalList" resultType="proposal">
+		select *
+		from proposal
+		order by proposal_regdate desc
+	</select>
+	
+	
+<!--
+	기능구분	: 상세조회
+	기능설명	: 해당 게시글의 상세내용을 조회할 수 있다.
+	파라미터	: int
+	리턴타입	: consult
+-->	
+	<select id="selectProposalByProposal_no" resultType="proposal" parameterType="int">
+		select *
+		from proposal
+		where proposal_num = #{proposal_num}
+	</select>
+
+
+<!--
+	기능구분	: 등록
+	기능설명	: 창업계획서를 등록할 수 있다.
+	파라미터	: proposal
+	리턴타입	: X
+-->
+	<update id="insertProposal" parameterType="proposal">
+		insert into proposal(proposal_num, proposal_writer, proposal_motivation, proposal_idea, proposal_propulsion, proposal_market, proposal_funds, proposal_effect, proposal_title)
+		values (#{proposal_num}, #{proposal_writer}, #{proposal_motivation}, #{proposal_idea}, #{proposal_propulsion}, #{proposal_market}, #{proposal_funds}, #{proposal_effect}, #{proposal_title})
+	</update>	
+	
+	
+	<!--
+	기능구분	: 수정
+	기능설명	: 수정한 내용을 가져와 등록한다.
+	파라미터	: proposal
+	리턴타입	: X
+-->	
+	<update id="updateProposal" parameterType="proposal">
+		update proposal
+		set proposal_motivation=#{proposal_motivation}, 
+			proposal_idea=#{proposal_idea}, 
+			proposal_propulsion=#{proposal_propulsion}, 
+			proposal_market=#{proposal_market}, 
+			proposal_funds=#{proposal_funds}, 
+			proposal_effect=#{proposal_effect}, 
+			proposal_title=#{proposal_title}, 
+			proposal_regdate=sysdate
+		where proposal_num=#{proposal_num}
+	</update>
+	
+	
+		<!--
+	기능구분	: 삭제
+	기능설명	: 해당 창업계획서를 삭제한다.
+	파라미터	: int
+	리턴타입	: X
+-->
+	<update id="deleteProposal" parameterType="int">
+		delete
+		from proposal
+		where proposal_num=#{proposal_num}
+	</update>
+	
+	
+		<!--
+	기능구분	: 창업계획서 번호
+	기능설명	: 창업계획서를 등록할 때 마다 1씩 증가한다.
+	파라미터	: X
+	리턴타입	: int
+-->
+	<select id="selectProposalSeqNext" resultType="int">
+		select proposal_seq.nextval as proposal_num from dual
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qna-mapper">
+	
+	<!--
+	기능구분	: 검색기능
+	기능설명	: searchType이 w일 시 작성자로  검색 c일 시 내용으로 검색,
+	          wc일시 작성자 내용으로 검색
+	-->
+	<sql id="search">
+		<if test="searchType == 't'.toString()">
+			and (qna_title like '%'||upper(#{keyword})||'%'
+			or qna_title like '%'||lower(#{keyword})||'%')		
+		</if>
+		<if test="searchType == 'w'.toString()">
+			and (qna_writer like '%'||upper(#{keyword})||'%'
+			or qna_writer like '%'||lower(#{keyword})||'%')			
+		</if>
+		<if test="searchType == 'tc'.toString()">
+			and ((
+			qna_title like '%'||upper(#{keyword})||'%'
+			or
+			qna_content like '%'||upper(#{keyword})||'%'						
+			)
+			or (
+			qna_title like '%'||lower(#{keyword})||'%'
+			or
+			qna_content like '%'||lower(#{keyword})||'%'						
+			))
+		</if>	
+		<if test="searchType == 'tcw'.toString()">
+			and ((
+			qna_title like '%'||upper(#{keyword})||'%'
+			or
+			qna_content like '%'||upper(#{keyword})||'%'
+			or
+			qna_writer like '%'||upper(#{keyword})||'%'					
+			)
+			or (
+			qna_title like '%'||lower(#{keyword})||'%'
+			or
+			qna_content like '%'||lower(#{keyword})||'%'
+			or
+			qna_writer like '%'||lower(#{keyword})||'%'				
+			))					
+		</if>
+	</sql>
+	
+	<!--
+	기능구분	: 질의문답 리스트
+	기능설명	: 질의문답 리스트를 불러온다
+	파라미터	: cri
+	리턴타입	: qna
+	-->
+	<select id="selectQnAList" parameterType="cri" resultType="qna">
+		select  *
+		from
+		qna
+		where qna_no is not null  	
+		<include refid="search" />
+		order by qna_regdate desc
+	</select>
+	
+		
+	<!--
+	기능구분	: 질의문답 리스트 카운트
+	기능설명	: 질의문답 리스트를 불러온 시 페이지 넘버를 가져오기 위한 장치
+	파라미터	: cri
+	리턴타입	: qna
+	-->
+	<select id="selectSearchQnAListCount" resultType="int">
+		select
+		count(*) 
+		from qna
+		where qna_no is not null
+		<include refid="search" />
+		order by qna_regdate desc
+	</select>
+	
+	<!--
+	기능구분	: 교수 지정질의문답 리스트
+	기능설명	: 질의문답 리스트를 불러온다
+	파라미터	: cri
+	리턴타입	: qna
+	-->
+	<select id="selectToProfessorQnAList" parameterType="hashmap" resultType="qna">
+		select  *
+		from
+		qna
+		where qna_no is not null and professor_id is not null and auto_remove = 0		  	
+		and professor_id = #{professor_id}
+		<include refid="search" />
+		order by qna_regdate desc
+	</select>
+	
+	<!--
+	기능구분	: 교수 지정질의문답 리스트 카운트
+	기능설명	: 질의문답 리스트를 불러온다
+	파라미터	: cri
+	리턴타입	: int
+	-->
+	<select id="selectToProfessorQnAListCount" parameterType="hashmap" resultType="int">
+		select
+		count(*)
+		from
+		qna
+		where qna_no is not null and professor_id is not null and auto_remove = 0
+		and professor_id = #{professor_id}		  	
+		<include refid="search" />
+		order by qna_regdate desc
+	</select>
+	
+	<!--
+	기능구분	: 답글이 등록된 리스트
+	기능설명	: 질의문답 리스트를 불러온다
+	파라미터	: cri
+	리턴타입	: qna
+	-->
+	<select id="registQnAList" parameterType="cri" resultType="qna">
+		select  *
+		from
+		qna
+		where qna_no is not null and qna_status = 1
+		<include refid="search" />
+		order by qna_regdate desc
+	</select>
+	
+	<!--
+	기능구분	: 답글이 등록된 리스트 카운트
+	기능설명	: 질의문답 리스트를 불러온 시 페이지 넘버를 가져오기 위한 장치
+	파라미터	: cri
+	리턴타입	: qna
+	-->
+	<select id="searchRegistQnAList" resultType="int">
+		select
+		count(*) 
+		from qna
+		where qna_no is not null and qna_status = 1
+		<include refid="search" />
+		order by qna_regdate desc
+	</select>
+	
+	<!--
+	기능구분	: 교수 지정 답글이 등록된 리스트
+	기능설명	: 질의문답 리스트를 불러온다
+	파라미터	: cri
+	리턴타입	: qna
+	-->
+	<select id="registFromProfessorQnAList" parameterType="hashmap" resultType="qna">
+		select  *
+		from
+		qna
+		where qna_no is not null and qna_status = 1 and professor_id is not null and auto_remove = 0
+		and professor_id = #{professor_id}
+		<include refid="search" />
+		order by qna_regdate desc
+	</select>
+	
+	<!--
+	기능구분	: 교수 지정 답글이 등록된 리스트 카운트
+	기능설명	: 질의문답 리스트를 불러온 시 페이지 넘버를 가져오기 위한 장치
+	파라미터	: cri
+	리턴타입	: qna
+	-->
+	<select id="searchRegistFromProfessorQnAList" parameterType="hashmap" resultType="int">
+		select
+		count(*) 
+		from qna
+		where qna_no is not null and qna_status = 1 and professor_id is not null and auto_remove = 0
+		and professor_id = #{professor_id}
+		<include refid="search" />
+		order by qna_regdate desc
+	</select>
+	
+	<!--
+	기능구분	: 답글 미등록 리스트
+	기능설명	: 질의문답 리스트를 불러온다
+	파라미터	: cri
+	리턴타입	: qna
+	-->
+	<select id="noRegistQnAList" parameterType="cri" resultType="qna">
+		select  *
+		from
+		qna
+		where qna_no is not null and qna_status = 0	  	
+		<include refid="search" />
+		order by qna_regdate desc
+	</select>
+	
+	<!--
+	기능구분	: 답글 미등록 리스트 카운트
+	기능설명	: 질의문답 리스트를 불러온 시 페이지 넘버를 가져오기 위한 장치
+	파라미터	: cri
+	리턴타입	: qna
+	-->
+	<select id="searchNoRegistQnAList" resultType="int">
+		select
+		count(*) 
+		from qna
+		where qna_no is not null and qna_status = 0
+		<include refid="search" />
+		order by qna_regdate desc
+	</select>
+	
+	<!--
+	기능구분	: 교수 지정답글 미등록 리스트
+	기능설명	: 질의문답 리스트를 불러온다
+	파라미터	: cri
+	리턴타입	: qna
+	-->
+	<select id="noRegistFromProfessorQnAList" parameterType="hashmap" resultType="qna">
+		select  *
+		from
+		qna
+		where qna_no is not null and qna_status = 0 and professor_id is not null and auto_remove = 0
+		and professor_id = #{professor_id}	  	
+		<include refid="search" />
+		order by qna_regdate desc
+	</select>
+	
+	<!--
+	기능구분	: 교수 지정 답글 미등록 리스트 카운트
+	기능설명	: 질의문답 리스트를 불러온 시 페이지 넘버를 가져오기 위한 장치
+	파라미터	: cri
+	리턴타입	: qna
+	-->
+	<select id="searchNoRegistFromProfessorQnAList" parameterType="hashmap" resultType="int">
+		select
+		count(*) 
+		from qna
+		where qna_no is not null and qna_status = 0 and professor_id is not null and auto_remove = 0
+		and professor_id = #{professor_id}
+		<include refid="search" />
+		order by qna_regdate desc
+	</select>
+	
+	
+	<!--
+	기능구분	: 전체 리스트 출력
+	기능설명	:  리스트 전체를 출력한다.
+	파라미터	: X
+	리턴타입	: qna
+	-->
+	<select id="selectQnaList" resultType="qna">
+		select *
+		from qna
+		order by qna_regdate desc
+	</select>
+	
+	<!--
+	기능구분	:  상세 조회
+	기능설명	:  게시글 번호로 상세 조회한다.
+	파라미터	:  X
+	리턴타입	: qna
+	-->
+	<select id="selectQnaByQna_no" resultType="qna">
+		select *
+		from qna
+		where qna_no=#{qna_no}
+	</select>
+	
+	
+	
+	
+	<!--
+	기능구분	: 커뮤니티 질문글 등록 
+	기능설명	: 질문글을 등록한다
+	파라미터	: qna
+	리턴타입	: X
+	-->
+	<update id="insertQnA" parameterType="qna">
+		insert 
+		into 
+		qna(qna_no,qna_writer,qna_title,qna_content,qna_type,qna_password,professor_id)
+		values
+		(#{qna_no},#{qna_writer},#{qna_title},#{qna_content},#{qna_type},#{qna_password},#{professor_id})
+	</update>
+	
+	<!--
+	기능구분	: 지정 교수 질문글 등록 
+	기능설명	: 질문글을 등록한다
+	파라미터	: qna
+	리턴타입	: X
+	-->
+	<update id="insertToPorofessorQnA" parameterType="qna">
+		insert 
+		into 
+		qna(qna_no,qna_writer,qna_title,qna_content,qna_type,professor_id)
+		values
+		(#{qna_no},#{qna_writer},#{qna_title},#{qna_content},#{qna_type},#{professor_id})
+	</update>
+	
+	<!--
+	기능구분	: 질문글 수정
+	기능설명	: 질문글을 수정한다
+	파라미터	: qna
+	리턴타입	: X
+	-->
+	<update id="updateQnA" parameterType="qna">
+		update qna 
+		set 
+		qna_title=#{qna_title},qna_content=#{qna_content},qna_password=#{qna_password},qna_type=#{qna_type}
+		where qna_no=#{qna_no}
+	</update>
+	
+	<!--
+	기능구분	: 질문글 삭제
+	기능설명	: 질문글을 삭제한다
+	파라미터	: qna
+	리턴타입	: X
+	-->
+	<update id="deleteQnA" parameterType="int">
+		delete qna 
+		where qna_no=#{qna_no}
+	</update>
+	
+	<!--
+	기능구분	: 답변글 등록,수정
+	기능설명	: 답변글을 등록, 수정 한다.
+	파라미터	: qna
+	리턴타입	: X
+	-->
+	<update id="insertAndUpdateAnswer" parameterType="qna">
+		update qna 
+		set 
+		qna_answer=#{qna_answer},answer_content=#{answer_content},qna_status=1
+		where qna_no=#{qna_no}
+	</update>
+	
+	<!--
+	기능구분	: 답변 삭제
+	기능설명	: 답변글을 삭제한다.
+	파라미터	: qna
+	리턴타입	: X
+	-->
+	<update id="deleteAnswer" parameterType="int">
+		update qna 
+		set 
+		qna_answer=null,answer_content=null
+		where qna_no=#{qna_no}
+	</update>
+	
+	<!--
+	기능구분	: 질의문답글 조회수 증가
+	기능설명	: 질의문답글 조회수를 증가 시킨다.
+	파라미터	: int
+	리턴타입	: X
+	-->
+	<update id="increaseQnAviewCnt" parameterType="int">
+		update qna 
+		set 
+		qna_viewcnt=qna_viewcnt+1
+		where qna_no=#{qna_no}
+	</update>
+	
+	<!--
+	기능구분	: 질의문답글 번호 생성
+	기능설명	: 질의문답글 번호를 생성한다.
+	파라미터	: X
+	리턴타입	: int
+	-->	
+	<select id="selectQnaSeqNext" resultType="int">
+		select qna_seq.nextval as qna_no from dual
+	</select>
+	
+	<!--       
+	기능구분	: 목록에서 제거
+	기능설명	: 한달이 지난글은 목록에서 사라진다
+	파라미터	: X
+	리턴타입	: int
+	-->	
+	<update id="autoRemove" parameterType="int">
+		update qna
+		set
+		auto_remove = 1
+		where qna_no=#{qna_no}
+	</update>
+	
+	<select id="myQnaList" parameterType="str" resultType="qna">
+		select *
+		from qna
+		where qna_writer = #{member_id}
+	</select>
+</mapper>

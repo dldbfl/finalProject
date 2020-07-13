@@ -1,0 +1,222 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<head>
+	<%-- <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"> -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+	<link href="<%=request.getContextPath() %>/resources/css/list/listCSS.css" rel="stylesheet"> --%>
+	
+	<title>Draft</title>
+	<!-- FAVIICON -->
+	<!-- link rel="shortcut icon" href="favicon.ico">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	Le fav and touch icons
+	<link rel="apple-touch-icon" sizes="114x114" href="apple-touch-icon-114x114.png" />
+	<link rel="icon" type="images/svg+xml" href="images/logo.svg" />
+ -->	
+</head>
+
+<style>
+	table{
+		border-collapse:separate ;
+		
+	}
+
+	#writeBtn{
+		width : 100px; 
+	}
+	
+	.form-group{
+		margin-top : 20px;	
+	
+	}
+	.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+		    padding: 15px 0px 10px 0px;
+		    line-height: 1.42857143;
+		    vertical-align: top;
+		    border-top: 1px solid #ddd;
+		    font-size: 18px;
+		}
+</style>
+
+<body class="blur-theme data-container-body">
+
+			<div class="container-dashboard" style="background-color: white;">
+				<div class="container-dashboard-inner">
+				<form id="cri" class="form-inline" id="Search" action="registForm" method="post">
+						<input name="page" id="page" type="hidden" value="${pageMaker.cri.page }">
+						<input name="perPageNum" type="hidden" value="${pageMaker.cri.perPageNum }">			
+				<div class="clearfix">
+					<div class="pull-left">
+						<h2>&nbsp;기안서 결재함</h2>
+					</div>	
+					<div class="pull-right" style="margin: 5px;">
+						<div class="form-group" style="display: hidden;">
+						
+						<select style="display: none;" class="form-control" name="searchType" id="searchType">
+							<option value="t" ${pageMaker.cri.searchType eq 'tcw' ? 'selected':'' }>전체</option>
+							<option value="t" ${pageMaker.cri.searchType eq 't' ? 'selected':'' }>제 목</option>
+							<option value="w" ${pageMaker.cri.searchType eq 'w' ? 'selected':'' }>작성자</option>
+							<option value="tc" ${pageMaker.cri.searchType eq 'tc' ? 'selected':'' }>제목+내용</option>
+						</select>	
+						
+							<input type="hidden" style="display: hidden;" onkeyup="enterkey(${pageMaker.cri.page},'${flag}');" type="text" class="form-control" placeholder="검색어를 입력해주세요" id="keyword" name="keyword" value="${pageMaker.cri.keyword }">
+							<%-- <i  class="fa fa-search search-box" aria-hidden="true" onclick="searchList_go(${pageMaker.cri.page},'${flag }')"  style="cursor:pointer;"></i> --%>
+						</div>
+					</div>
+				</div>
+				<div class="btn-group" style="display: none;">
+						<a data-toggle="dropdown" href="#" class="btn mini all" aria-expanded="false">전체<i class="fa fa-angle-down "></i>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a href="#" onclick="allAnswer()" id="all">전체</a></li>
+							<li><a href="#" onclick="pauseAnswer()" id="pause">결재 대기</a></li>
+							<li><a href="#" onclick="okAnswer()" id="ok">결재 승인</a></li>
+							<li><a href="#" onclick="noAnswer()" id="no">결재 반려</a></li>
+						</ul>
+				</div>
+				</form>		
+			<div class="table-responsive">
+					<table class="table table-striped">
+						<thead id="trtr">
+							<tr >
+								<th class="text-center">번호</th>
+								<th class="text-center">아이디</th>
+								<th class="text-center">이름</th>
+								<th class="text-center">분류</th>
+								<th class="text-center">제목</th>
+								<th class="text-center">등록일</th>
+								<th class="text-center">마감일</th>
+								<th class="text-center">가부</th>
+								<th class="text-center">결재일</th>
+							</tr>                       
+						</thead>
+						<tbody>
+						<c:if test="${not empty draft }" >
+						<c:forEach var="draft" items="${draft }" varStatus="status">
+						<input type="hidden" value="${draft.draft_no}" name="draft_no"> 
+						<input type="hidden" value="${nameList[status.index]}" name="professor_name">
+							<tr role="row" class="jqgrow ui-row-ltr ui-widget-content">
+								<td role="gridcell" style="text-align:center;" >
+									<a href="#" onclick="OpenWindow('detail?draft_no=${draft.draft_no }&name=${nameList[status.index]}','','850','913');">${draft.draft_no }</a>
+								</td>												
+								<td role="gridcell" style="text-align:center;" >${draft.professor_id }</td>
+								<td role="gridcell" style="text-align:center;" >${nameList[status.index]}</td>
+								<c:if test="${draft.draft_check == 0 }">
+									<td role="gridcell" style="text-align:center;" >동영상 </td>
+								</c:if>
+								<c:if test="${draft.draft_check == 1 }">
+									<td role="gridcell" style="text-align:center;" >강의모집</td>
+								</c:if>								
+								<td role="gridcell" style="text-align:center;" >${draft.draft_title}</td>
+								<td role="gridcell" style="text-align:center;" >
+									<c:set var="regdate" value="${draft.draft_regdate }"/>										
+										${fn:substring(regdate,0,10) }
+								</td>
+								<td role="gridcell" style="text-align:center;" >
+									<c:set var="deadline" value="${draft.draft_deadline }"/>										
+										${fn:substring(deadline,0,10) }
+								</td>
+								<td role="gridcell" style="text-align:center;" >${draft.draft_status }</td>
+								<td role="gridcell" style="text-align:center;" >
+									<c:if test = "${empty draft.draft_approveddate }">
+										-
+									</c:if>
+									<c:if test = "${not empty draft.draft_approveddate }">
+										<c:set var="approveddate" value="${draft.draft_approveddate }"/>										
+										${fn:substring(approveddate,0,10) }
+									</c:if>
+								</td>
+							</tr>
+						 </c:forEach> 
+						 </c:if>
+						 <c:if test="${empty draft }" >
+							
+						 </c:if>						 								
+						</tbody>
+					</table>
+				</div>
+				  <nav id="pageO" aria-label="member list Navigation" class="col-xs-offset-5 col-xs-7" style="position: relative;">
+					<ul class="pagination justify-content-center m-0">
+						<li class="page-item">
+							<a class="page-link" href="javascript:searchList_go(1,'${flag }');">
+							<i class="glyphicon glyphicon-step-backward"></i>
+							</a>
+						</li>
+						<li class="page-item">
+							<a class="page-link" href="javascript:searchList_go(
+							${pageMaker.prev ? pageMaker.startPage-1 : 1},'${flag }');"><i class="glyphicon glyphicon-chevron-left"></i></a>
+						</li>
+						<c:forEach begin="${pageMaker.startPage }" end="${pageMaker.endPage }" var="pageNum">						
+						<li class="page-item 
+							<c:out value="${pageMaker.cri.page == pageNum?'active':''}"/>">
+							<a class="page-link" href="javascript:searchList_go(${pageNum},'${flag }');" >${pageNum }
+							</a>
+						</li>
+						</c:forEach>
+						<li class="page-item">
+							<a class="page-link" href="javascript:searchList_go(
+							${pageMaker.next ? pageMaker.endPage+1 : pageMaker.cri.page},'${flag }'			
+							);"><i class="glyphicon glyphicon-chevron-right" ></i></a>
+						</li>
+						<li class="page-item">
+							<a class="page-link" href="javascript:searchList_go(
+								${pageMaker.realEndPage},'${flag }' );">
+								<i class="glyphicon glyphicon-step-forward"></i></a>
+						</li>	
+					</ul>
+				</nav>
+				<div>
+				</div>
+			</div>
+		</div>
+	<form id="jobForm">
+	<input type='hidden' name="page" value="${pageMaker.cri.page}" />
+	<input type='hidden' name="perPageNum" value="${pageMaker.cri.perPageNum}"/>
+	<input type='hidden' name="searchType" value="${pageMaker.cri.searchType }" />
+	<input type='hidden' name="keyword" value="${pageMaker.cri.keyword }" />
+</form>
+</body>
+<%@ include file="/WEB-INF/views/board/qna/qna.js.jsp" %>
+<script>
+/* $('#searchType').on('change',function(e){
+	alert('select#searchType')
+	var form = $('form#search');
+	
+	var searchType=$('select#searchType');
+	if(searchType.val()==""){
+		alert("검색구분을 선택하세요.");
+		searchType.focus();
+		return;
+	}
+	form.submit();
+}); */
+
+var okAnswer = function() {
+		location.href="list_ok?page="+paging+"&perPageNum="+perPageNum+"&searchType="+searchType+"&keyword="+keyword;	
+	}
+
+var noAnswer = function () {
+		location.href="list_no?page="+paging+"&perPageNum="+perPageNum+"&searchType="+searchType+"&keyword="+keyword;	
+	}
+
+var pauseAnswer = function () {
+		location.href="list_pause?page="+paging+"&perPageNum="+perPageNum+"&searchType="+searchType+"&keyword="+keyword;	
+	}
+
+var allAnswer = function () {
+		location.href="list?page="+paging+"&perPageNum="+perPageNum+"&searchType="+searchType+"&keyword="+keyword;	
+	}
+
+
+</script>
+
+
+
+
+

@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+.main-Img{
+	width: 250px;
+	height: 250px;
+	margin-left: 20px;
+}
+
+.main-h3{
+	
+	font-weight: bold;
+	font-size: 1.2em;
+	text-align: center;
+	
+}
+
+.img-div{
+	width: 300px;
+	height: 300px;
+	float: left;
+	margin: 15px 0px 15px 40px;
+}

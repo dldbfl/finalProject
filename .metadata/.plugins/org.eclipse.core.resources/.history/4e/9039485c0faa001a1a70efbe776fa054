@@ -1,0 +1,41 @@
+package com.dlms.dao.education_purpose;
+
+import java.sql.SQLException;
+
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionException;
+
+import com.dlms.dto.Enterprise_introduceVO;
+import com.dlms.dto.Manager_boardVO;
+import com.dlms.dto.Manager_dataVO;
+import com.dlms.request.Enterprise_introduceRequest;
+ 
+public class Education_purposeDAOImpl implements Education_purposeDAO{
+	
+	private SqlSession sqlSession;
+	public void setSqlSession(SqlSession sqlSession) {
+		this.sqlSession = sqlSession;
+	}
+	
+	
+	@Override
+	public Manager_boardVO selectManager_board_Education_purpose() throws SQLException {		
+		Manager_boardVO manager_board =null;
+		manager_board = sqlSession.selectOne("manager_board-mapper.selectManager_board", null);
+		return manager_board;
+	}
+
+	
+	@Override
+	public void updateManager_board_education_purpose(Manager_boardVO manager_board) throws SQLException {
+		sqlSession.update("manager_board-mapper.updateManager_board_enterprise_comming",manager_board);
+		
+	}
+	
+
+	
+	
+
+	
+	
+}

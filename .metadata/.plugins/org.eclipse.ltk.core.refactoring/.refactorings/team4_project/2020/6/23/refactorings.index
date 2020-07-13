@@ -1,0 +1,47 @@
+1591074777910	Copy file
+1591076784003	Rename resource 'introduce-mapper.xml'
+1591077208341	Copy file
+1591078213212	Copy file
+1591080449723	Delete element
+1591085588804	Copy file
+1591151102620	Copy compilation unit
+1591151558981	Copy compilation unit
+1591166614065	Copy compilation unit
+1591166645276	Rename compilation unit 'MemberService.java'
+1591168444557	Copy compilation unit
+1591168455054	Rename type 'LectureReviewServiceImpl'
+1591170863912	Delete element
+1591171030395	Rename type 'EmployeeController'
+1591171933750	Rename resource 'employee_list.jsp'
+1591172403074	Copy file
+1591231733931	Delete element
+1591231748745	Copy compilation unit
+1591231769522	Rename type 'ManagerDAO'
+1591233277768	Move file
+1591234978399	Move file
+1591234980050	Move file
+1591249381202	Copy compilation unit
+1591254344287	Encapsulate field 'lecture_attend_percent'
+1591266400032	Rename resource 'detail.jsp'
+1591266407049	Rename resource 'detail_js.jsp'
+1591266836665	Delete elements
+1591267021435	Rename resource 'profile.jsp'
+1591267028408	Rename resource 'profile_js.jsp'
+1591274421278	Copy file
+1591319153736	Copy compilation unit
+1591319156861	Delete element
+1591319177059	Rename type 'MemberVO'
+1591319180931	Rename type 'memberRequest'
+1591332882830	Copy compilation unit
+1591332896743	Rename type 'ManagerDAOImpl'
+1591335225312	Copy compilation units
+1591335557706	Rename type 'ManagerService'
+1591335566691	Rename type 'ManagerServiceImpl'
+1591337250574	Copy package
+1591337266612	Rename type 'ManagerController'
+1591339047204	Copy file
+1591339056630	Delete element
+1591339084082	Delete element
+1591339117164	Copy file
+1591339127735	Rename resource 'detail.jsp'
+1591339140399	Rename resource 'modify_ok.jsp'

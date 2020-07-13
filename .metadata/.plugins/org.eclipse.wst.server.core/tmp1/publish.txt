@@ -1,0 +1,4 @@
+#Tomcat publish data
+#Mon Jul 13 15:44:09 KST 2020
+org.eclipse.jst.jee.server\:/binary\:C\:\\maven_repository_project\\org\\springframework\\spring-web\\3.2.6.RELEASE\\spring-web-3.2.6.RELEASE.jar=WEB-INF/lib/spring-web-3.2.6.RELEASE.jar
+org.eclipse.jst.j2ee.server\:java-coolsms=WEB-INF/lib/javaSDK-2.2.jar

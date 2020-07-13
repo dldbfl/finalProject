@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="notice-mapper">
+
+	<!--
+	기능구분	: 검색 기능
+	기능설명	: 게시내용과 제목으로 검색이 가능하다.
+-->
+	<sql id="search">
+		<if test="searchType == 't'.toString()">
+			and notice_title like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'w'.toString()">
+			and notice_writer like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'c'.toString()">
+			and notice_content like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'tc'.toString()">
+			and (
+			notice_title like '%'||#{keyword}||'%'
+			or
+			notice_content like '%'||#{keyword}||'%'						
+			)			
+		</if>
+		<if test="searchType == 'cw'.toString()">
+			and (
+			notice_writer like '%'||#{keyword}||'%'
+			or
+			notice_content like '%'||#{keyword}||'%'						
+			)			
+		</if>
+		<if test="searchType == 'tcw'.toString()">
+			and (
+			notice_title like '%'||#{keyword}||'%'
+			or
+			notice_writer like '%'||#{keyword}||'%'
+			or
+			notice_content like '%'||#{keyword}||'%'						
+			)			
+		</if>
+	</sql>
+
+	<!--
+	기능구분	: 검색기능
+	기능설명	: 게시내용과 제목으로 검색이 가능하다.
+	파라미터	: cri
+	리턴타입	: notice
+-->
+	<select id="selectSearchNoticeList" resultType="notice" parameterType="cri">
+		select *
+		from notice
+		where notice_no is not null
+		and notice_point='nomal'
+		<include refid="search"/>
+		order by notice_no desc
+	</select>
+	
+		<!--
+	기능구분	: 리스트
+	기능설명	: 페이지 리스트를 보여주기 위한 보조장치
+	파라미터	: cri
+	리턴타입	: int
+-->
+	<select id="selectSearchNoticeListCount" resultType="int">
+		select count(*)
+		from notice
+		where notice_no is not null
+		<include refid="search"/>
+		order by notice_no desc
+	</select>
+	
+
+	
+	<!--
+	기능구분	: 상세보기
+	기능설명	: 해당 게시물의 상세내역을 가져온다.
+	파라미터	: X
+	리턴타입	: notice
+-->
+	<select id="selectNoticeByNotice_no" resultType="notice">
+		select *
+		from notice
+		where notice_no = #{notice_no}
+	</select>
+
+	<!--
+	기능구분	: 게시글 작성
+	기능설명	: 작성한 게시글을 등록한다.
+	파라미터	: notice
+	리턴타입	: X
+-->
+	<update id="insertNotice" parameterType="notice">
+		insert into notice(notice_no, notice_title, notice_content, notice_point, notice_finishdate)
+		values (#{notice_no}, #{notice_title}, #{notice_content}, #{notice_point}, #{notice_finishdate})
+	</update>	
+	
+	<!--
+	기능구분	: 게시글 수정
+	기능설명	: 수정한 내용을 등록한다.
+	파라미터	: notice
+	리턴타입	: X
+-->
+	<update id="updateNotice" parameterType="notice">
+		update notice
+		set notice_title=#{notice_title}, notice_content=#{notice_content}, notice_update_date=sysdate, notice_point=#{notice_point}, notice_finishdate=#{notice_finishdate}
+		where notice_no=#{notice_no}
+	</update>
+	
+	<!--
+	기능구분	: 게시글 삭제
+	기능설명	: 해당 게시글을 삭제한다.
+	파라미터	: int
+	리턴타입	: X
+-->
+	<update id="deleteNotice" parameterType="int">
+		delete
+		from notice
+		where notice_no=#{notice_no}
+	</update>
+	
+	<!--
+	기능구분	: 조회수
+	기능설명	: 조회수를 1씩 증가시킨다.
+	파라미터	: int
+	리턴타입	: X
+-->
+	<update id="increaseViewCnt" parameterType="int">
+		update notice
+		set notice_viewcnt = notice_viewcnt + 1
+		where notice_no = #{notice_no}
+	</update>
+	
+	<!--
+	기능구분	: 게시판 번호
+	기능설명	: 게시판 번호를 1씩 증가 시킨다.
+	파라미터	: X
+	리턴타입	: int
+-->
+	<select id="selectNoticeSeqNext" resultType="int">
+		select notice_seq.nextval as notice_no from dual
+	</select>
+
+
+	<select id="selectNoticePoint" parameterType="str" resultType="notice">
+		select *
+		from notice
+		where notice_point = #{notice_point}
+		order by notice_no desc
+	</select>
+	
+	<select id="next_notice_no" parameterType="int" resultType="int">
+	SELECT next_notice_no
+	FROM (
+	    SELECT notice_no, LEAD(notice_no,1,0) OVER(ORDER BY notice_no) next_notice_no
+	    FROM notice
+		) 
+	WHERE notice_no = #{notice_no}
+	</select>
+
+	<select id="prev_notice_no" parameterType="int" resultType="int">
+	SELECT prev_notice_no
+	FROM (
+	    SELECT notice_no, Lag(notice_no,1,0) OVER(ORDER BY notice_no) prev_notice_no
+	    FROM notice
+		) 
+	WHERE notice_no = #{notice_no}
+	</select>
+	
+	<select id="next_notice_title" parameterType="int" resultType="str">
+	SELECT next_notice_title
+	FROM (
+	    SELECT notice_no, LEAD(notice_title,1,0) OVER(ORDER BY notice_no) next_notice_title
+	    FROM notice
+		) 
+	WHERE notice_no = #{notice_no}
+	</select>
+	
+	<select id="prev_notice_title" parameterType="int" resultType="str">
+	SELECT prev_notice_title
+	FROM (
+	    SELECT notice_no, Lag(notice_title,1,0) OVER(ORDER BY notice_no) prev_notice_title
+	    FROM notice
+		) 
+	WHERE notice_no = #{notice_no}
+	</select>
+</mapper>

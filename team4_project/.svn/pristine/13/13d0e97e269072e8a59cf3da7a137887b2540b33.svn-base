@@ -1,0 +1,730 @@
+package com.dlms.controller.message;
+
+import java.io.File;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.eclipse.jdt.internal.compiler.lookup.MemberTypeBinding;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.dlms.dto.MemberVO;
+import com.dlms.dto.MessengerVO;
+import com.dlms.dto.ReceiverVO;
+import com.dlms.request.MessageRequest;
+import com.dlms.request.ProfessorListReq;
+import com.dlms.request.SearchCriteria;
+import com.dlms.request.message.Answer_Request;
+import com.dlms.request.message.Messenger_Request;
+import com.dlms.request.message.ToMessenger_Request;
+import com.dlms.service.manager.ManagerService;
+import com.dlms.service.message.MessengerService;
+import com.dlms.service.message.ReceiverService;
+import com.dlms.utils.DownloadView;
+
+@Controller
+@RequestMapping("/message")
+public class MessengerController {
+	
+	@Autowired
+	private MessengerService messengerService;
+	
+	@Autowired
+	private ReceiverService receiverService; 
+	
+	@Autowired
+	private ManagerService managerService;
+	
+	@Resource(name = "messageAttachPath")
+	private String messageAttachPath;
+	
+	/**
+	 * 
+	 * @기능설명		:	발신함 리스트
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 8.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 29.오후 5:14:54
+	 * @see			:	
+	 * @param cri
+	 * @param mnv
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping("/messenger_list")
+	@ResponseBody
+	public ModelAndView messengerList(SearchCriteria cri, ModelAndView mnv,HttpSession session ) throws Exception {
+		String url = "/message/messenger_list.page";
+		MemberVO member =(MemberVO)session.getAttribute("loginUser");
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+
+		dataMap.put("keyword", cri.getKeyword());
+		dataMap.put("page", cri.getPage());
+		dataMap.put("pageStartRowNum", cri.getPageStartRowNum());
+		dataMap.put("perPageNum", cri.getPerPageNum());
+		dataMap.put("searchType", cri.getSearchType());
+		dataMap.put("id", member.getMember_id());
+		dataMap = messengerService.getSearchMessengerList(dataMap);
+		mnv.addAllObjects(dataMap);
+		mnv.setViewName(url);
+		return mnv;
+	}
+	
+	
+	/**
+	 * 
+	 * @기능설명		:	수신함 리스트
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 8.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 8.오후 5:19:13
+	 * @see			:	
+	 * @param cri
+	 * @param mnv
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping("/receiver_list")
+	public ModelAndView receiverList(SearchCriteria cri, ModelAndView mnv, HttpSession session) throws Exception {
+		String url = "/message/receiver_list.page";
+		MemberVO member = (MemberVO)session.getAttribute("loginUser");
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+
+		dataMap.put("keyword", cri.getKeyword());
+		dataMap.put("page", cri.getPage());
+		dataMap.put("pageStartRowNum", cri.getPageStartRowNum());
+		dataMap.put("perPageNum", cri.getPerPageNum());
+		dataMap.put("searchType", cri.getSearchType());
+		dataMap.put("id", member.getMember_id());
+		dataMap = receiverService.getSearchReceiverList(dataMap);
+		mnv.addAllObjects(dataMap);
+		mnv.setViewName(url);
+		return mnv;
+		
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	발신함 상세
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 8.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 8.오후 5:24:06
+	 * @see			:	
+	 * @param messenger_no
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping("/messenger_Detail")
+	@ResponseBody
+	public ResponseEntity<MessengerVO> messengerDetail(@RequestBody int messenger_no) throws Exception{
+		ResponseEntity<MessengerVO> entity = null;
+		MessengerVO messenger =  messengerService.getMessengerDetail(messenger_no);
+		entity = new ResponseEntity<MessengerVO>(messenger, HttpStatus.OK);
+		return entity;
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	수신함 상세
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 8.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 8.오후 5:24:16
+	 * @see			:	
+	 * @param receiver_no
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping("/receiver_Detail")
+	@ResponseBody
+	public ResponseEntity<ReceiverVO> receiverDetail(@RequestBody int receiver_no) throws Exception{
+		ResponseEntity<ReceiverVO> entity = null;
+		ReceiverVO receiver = receiverService.getReceiverDetail(receiver_no);
+		entity = new ResponseEntity<ReceiverVO>(receiver, HttpStatus.OK);
+		return entity;
+	}
+
+	/**
+	 * 
+	 * @기능설명		:	쪽지 보내기
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 8.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 8.오후 5:16:36
+	 * @see			:	
+	 * @param msgReq
+	 * @param messenger_file
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping(value = "/message_send", method = RequestMethod.POST )
+	@ResponseBody
+	public ResponseEntity<String> messengerSend(Messenger_Request msgReq, MultipartFile messenger_file,HttpServletRequest request, HttpServletResponse response ) throws Exception {
+		
+		ResponseEntity<String> entity = null;
+		
+		MessengerVO messenger = msgReq.toMessenger();
+		
+		if(messenger_file.getSize() > 0) {
+		if (messenger_file.getSize() > 1024 * 1024 * 50) {//용량 50mb 제한
+			entity = new ResponseEntity<String>("MAX",HttpStatus.OK);
+			
+		}else {
+		// 파일 경로 생성
+		String uploadPath = messageAttachPath + File.separator;
+		messenger.setMessage_filePath(uploadPath);
+		// 중복명 제거
+		String fileName = UUID.randomUUID().toString().replace("-", "") + "$$" + messenger_file.getOriginalFilename();
+		messenger.setMessage_fileName(fileName);
+		/* 파일 경로확인 및 생성 */
+		File file = new File(uploadPath, fileName);
+		
+		
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+
+		/* 파일저장 */
+		messenger_file.transferTo(file);
+		
+		
+		entity = new ResponseEntity<String>(HttpStatus.OK);
+	}
+  }
+		messengerService.sendMessage(messenger);
+		messengerService.receiveMessage(messenger);
+		
+
+		return entity;
+		
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	대상을 지정해서 쪽지 보내기
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 8.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 8.오후 5:17:17
+	 * @see			:	
+	 * @param msgReq
+	 * @param tomessenger_file
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping(value = "/tomessage_send", method = RequestMethod.POST )
+	@ResponseBody
+	public ResponseEntity<String> toMessengerSend(ToMessenger_Request msgReq, MultipartFile tomessenger_file,HttpServletRequest request, HttpServletResponse response ) throws Exception {
+		
+		ResponseEntity<String> entity = null;
+		
+		MessengerVO messenger = msgReq.toMessenger();
+		
+		if(tomessenger_file.getSize() > 0) {
+			if (tomessenger_file.getSize() > 1024 * 1024 * 50) {//용량 50mb 제한
+				entity = new ResponseEntity<String>("MAX",HttpStatus.OK);
+				
+			}else {
+			// 파일 경로 생성
+			String uploadPath = messageAttachPath + File.separator;
+			messenger.setMessage_filePath(uploadPath);
+			// 중복명 제거
+			String fileName = UUID.randomUUID().toString().replace("-", "") + "$$" + tomessenger_file.getOriginalFilename();
+			messenger.setMessage_fileName(fileName);
+			/* 파일 경로확인 및 생성 */
+			File file = new File(uploadPath, fileName);
+			
+			
+			if (!file.exists()) {
+				file.mkdirs();
+			}
+
+			/* 파일저장 */
+			tomessenger_file.transferTo(file);
+			
+			
+			entity = new ResponseEntity<String>(HttpStatus.OK);
+		}
+	  }
+			messengerService.sendMessage(messenger);
+			messengerService.receiveMessage(messenger);
+		
+
+		return entity;
+		
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	답변 보내기
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 8.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 8.오후 5:53:11
+	 * @see			:	
+	 * @param msgReq
+	 * @param answer_file
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping(value = "/answer", method = RequestMethod.POST )
+	@ResponseBody
+	public ResponseEntity<String> answer(Answer_Request msgReq, MultipartFile answer_file,HttpServletRequest request, HttpServletResponse response ) throws Exception {
+		
+		ResponseEntity<String> entity = null;
+		
+		MessengerVO messenger = msgReq.toMessenger();
+		
+		if(answer_file.getSize() > 0) {
+			if (answer_file.getSize() > 1024 * 1024 * 50) {//용량 50mb 제한
+				entity = new ResponseEntity<String>("MAX",HttpStatus.OK);
+				
+			}else {
+			// 파일 경로 생성
+			String uploadPath = messageAttachPath + File.separator;
+			messenger.setMessage_filePath(uploadPath);
+			// 중복명 제거
+			String fileName = UUID.randomUUID().toString().replace("-", "") + "$$" + answer_file.getOriginalFilename();
+			messenger.setMessage_fileName(fileName);
+			/* 파일 경로확인 및 생성 */
+			File file = new File(uploadPath, fileName);
+			
+			
+			if (!file.exists()) {
+				file.mkdirs();
+			}
+
+			/* 파일저장 */
+			answer_file.transferTo(file);
+			
+			
+			entity = new ResponseEntity<String>(HttpStatus.OK);
+		}
+	  }
+			messengerService.sendMessage(messenger);
+			messengerService.receiveMessage(messenger);
+		
+
+		return entity;
+		
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	발신함 휴지통 리스트
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 8.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 8.오후 5:26:15
+	 * @see			:	
+	 * @param cri
+	 * @param mnv
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping("/messenger/recycle_list")
+	public ModelAndView messengerRecycleList(SearchCriteria cri, ModelAndView mnv, HttpSession session) throws Exception {
+		String url = "/message/messenger_recycle_list.page";
+		
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		MemberVO member =(MemberVO)session.getAttribute("loginUser");
+
+		dataMap.put("keyword", cri.getKeyword());
+		dataMap.put("page", cri.getPage());
+		dataMap.put("pageStartRowNum", cri.getPageStartRowNum());
+		dataMap.put("perPageNum", cri.getPerPageNum());
+		dataMap.put("searchType", cri.getSearchType());
+		dataMap.put("id", member.getMember_id());
+		
+		dataMap = messengerService.getSearchMessengerRecycleList(dataMap);
+		
+		mnv.addAllObjects(dataMap);
+		mnv.setViewName(url);
+		return mnv;
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	수신함 휴지통 리스트
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 8.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 8.오후 5:26:24
+	 * @see			:	
+	 * @param cri
+	 * @param mnv
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping("/receiver/recycle_list")
+	public ModelAndView receiverRecycleList(SearchCriteria cri, ModelAndView mnv, HttpSession session) throws Exception {
+		String url = "/message/receiver_recycle_list.page";
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		MemberVO member =(MemberVO)session.getAttribute("loginUser");
+		dataMap.put("keyword", cri.getKeyword());
+		dataMap.put("page", cri.getPage());
+		dataMap.put("pageStartRowNum", cri.getPageStartRowNum());
+		dataMap.put("perPageNum", cri.getPerPageNum());
+		dataMap.put("searchType", cri.getSearchType());
+		dataMap.put("id", member.getMember_id());
+		
+		dataMap = receiverService.getSearchReceiverRecycleList(dataMap);
+		mnv.addAllObjects(dataMap);
+		mnv.setViewName(url);
+		return mnv;
+	}
+	
+	
+	/**
+	 * 
+	 * @기능설명		:	발신함 휴지통 상세
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 8.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 8.오후 5:29:08
+	 * @see			:	
+	 * @param messenger_no
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping("/messenger_recycle_Detail")
+	@ResponseBody
+	public ResponseEntity<MessengerVO> messengerRecycleDetail(@RequestBody int messenger_no) throws Exception{
+		ResponseEntity<MessengerVO> entity = null;
+		MessengerVO messenger =  messengerService.getMessengerRecycleDetail(messenger_no);
+		entity = new ResponseEntity<MessengerVO>(messenger, HttpStatus.OK);
+		return entity;
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	수신함 휴지통 상세
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 8.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 8.오후 5:29:08
+	 * @see			:	
+	 * @param messenger_no
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping("/receiver_recycle_Detail")
+	@ResponseBody
+	public ResponseEntity<ReceiverVO> receiverRecycleDetail(@RequestBody int receiver_no) throws Exception{
+		ResponseEntity<ReceiverVO> entity = null;
+		ReceiverVO receiver = receiverService.getReceiverRecycleDetail(receiver_no);
+		entity = new ResponseEntity<ReceiverVO>(receiver, HttpStatus.OK);
+		return entity;
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	발신함 휴지통 복원
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 8.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 8.오후 5:17:29
+	 * @see			:	
+	 * @param messenger_no
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping("/messenger_restore")
+	@ResponseBody
+	public ResponseEntity<String> messengerRestore(@RequestBody int messenger_no) throws Exception {
+		ResponseEntity<String> entity = null;
+		
+		try {	
+			messengerService.restore(messenger_no);
+			entity = new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			
+		}
+
+		return entity;
+	
+	}
+	/**
+	 * 
+	 * @기능설명		:	수신함 휴지통 복원
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 8.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 8.오후 5:20:46
+	 * @see			:	
+	 * @param receiver_no
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping("/receiver_restore")
+	@ResponseBody
+	public ResponseEntity<String> receiverRestore(@RequestBody int receiver_no) throws Exception {
+		ResponseEntity<String> entity = null;
+		
+		try {	
+			receiverService.restore(receiver_no);
+			entity = new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			
+		}
+
+		return entity;
+	
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	발신함 휴지통으로 이동
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 8.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 8.오후 5:17:45
+	 * @see			:	
+	 * @param messenger_no
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping("/messenger_recycle")
+	@ResponseBody
+	public ResponseEntity<String> messengerRecycle(@RequestBody int messenger_no) throws Exception {
+		ResponseEntity<String> entity = null;
+		
+		try {	
+			messengerService.goRecycle(messenger_no);
+			entity = new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			
+		}
+
+		return entity;
+	
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	수신함 휴지통으로 이동
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 8.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 8.오후 5:17:56
+	 * @see			:	
+	 * @param receiver_no
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping("/receiver_recycle")
+	@ResponseBody
+	public ResponseEntity<String> receiverRecycle(@RequestBody int receiver_no) throws Exception {
+		ResponseEntity<String> entity = null;
+		try {	
+			receiverService.goRecycle(receiver_no);
+			entity = new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			
+		}
+
+		return entity;
+	
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	발신쪽지 영구 삭제
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 8.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 8.오후 5:18:07
+	 * @see			:	
+	 * @param messenger_no
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping("/messenger_remove")
+	@ResponseBody
+	public ResponseEntity<String> messengerRemove(@RequestBody int messenger_no) throws Exception {
+		ResponseEntity<String> entity = null;
+		
+		try {	
+			messengerService.removeMessage(messenger_no);
+			entity = new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			
+		}
+
+		return entity;
+	
+	}
+	
+	/** 
+	 * @기능설명		:	수신 쪽지 영구 삭제
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 8.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 8.오후 5:18:56
+	 * @see			:	
+	 * @param receiver_no
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping("/receiver_remove")
+	@ResponseBody
+	public ResponseEntity<String> receiverRemove(@RequestBody int receiver_no) throws Exception {
+		ResponseEntity<String> entity = null;
+		
+		try {	
+			receiverService.removeMessage(receiver_no);
+			entity = new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			
+		}
+
+		return entity;
+	
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	모달창 닫기
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 8.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 8.오후 5:23:53
+	 * @see			:	
+	 * @return
+	 *
+	 */
+	@RequestMapping("/writeCancel")
+	@ResponseBody
+	public ResponseEntity<String> writeCancel(){
+		ResponseEntity<String> entity = null;
+		
+		entity = new ResponseEntity<String>(HttpStatus.OK);
+		return entity;
+	}
+
+
+
+	
+	@RequestMapping("/receiver_answer")
+	public ModelAndView receiverAnswer(ModelAndView mnv, String receiver_NO) throws Exception {
+		String url = "/message/receiver_detail";
+	
+		
+		mnv.setViewName(url);
+		return mnv;
+	}
+
+	
+	/**
+	 * 
+	 * @기능설명		:	작성에 필요한 아이디 유무 검사
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 8.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 8.오후 5:28:26
+	 * @see			:	
+	 * @param messenger_receiver
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping("/getId")
+	@ResponseBody
+	public ResponseEntity<Integer> getId(@RequestBody String messenger_receiver) throws Exception{
+		ResponseEntity<Integer> entity = null;
+		int flag = 0;
+		List<ProfessorListReq> pList = managerService.getProfessorList();
+		
+		for(int i = 0; i < pList.size(); i++) {
+			String checkId = '"'+pList.get(i).getProfessor_id()+'"';
+			if(checkId.equals(messenger_receiver)) {
+				flag = 1;
+			}
+		}
+		
+		entity = new ResponseEntity<Integer>(flag, HttpStatus.OK);
+		return entity;
+	}
+
+	/**
+	 * 
+	 * @기능설명		:	첨부파일 다운로드
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 8.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 8.오후 5:27:23
+	 * @see			:	
+	 * @param fileName
+	 * @param filePath
+	 * @param downloadName
+	 * @param req
+	 * @param res
+	 * @param mnv
+	 * @throws Throwable
+	 *
+	 */
+	@RequestMapping(value="/fileDownload")
+	public void downLoad(String fileName, String filePath , String downloadName, 
+					    HttpServletRequest req, HttpServletResponse res, ModelAndView mnv)throws Throwable {
+		
+		try {
+			DownloadView fileDown = new DownloadView(); //파일다운로드 객체생성
+			fileDown.fileDown(req, res, filePath , fileName, downloadName, mnv); //파일다운로드 
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}

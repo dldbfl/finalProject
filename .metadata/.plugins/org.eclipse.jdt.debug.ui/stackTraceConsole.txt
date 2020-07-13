@@ -1,0 +1,16 @@
+@RequestMapping("/detail")
+	public String detail(String id, Model model) throws Exception {
+		String url = "employee/detail";
+		
+		//회원 정보 가져오기
+		Map<String, Object> dataMap = employeeService.getEmployee(id);
+		
+		//작성자 정보 가져오기
+		EmployeeVO employee = (EmployeeVO) dataMap.get("employee");
+		EmployeeVO register = (EmployeeVO) employeeService.getEmployee(employee.getRegister()).get("employee");
+		
+		dataMap.put("register", register);
+		model.addAllAttributes(dataMap);
+		
+		return url;
+	}

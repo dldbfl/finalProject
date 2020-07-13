@@ -1,0 +1,21 @@
+package com.dlms.service.chairman_introduce;
+
+import java.sql.SQLException;
+
+import java.util.Map;
+
+import com.dlms.dto.Manager_boardVO;
+
+
+public interface Chairman_introduceService {
+	
+   
+	Map<String,Object> getEducation_curriculum(int manager_board_no)throws SQLException;
+	
+	
+	void modifyEducation_curriculum(Manager_boardVO manager_board,int manager_board_no)throws SQLException;
+	
+	
+}
+
+

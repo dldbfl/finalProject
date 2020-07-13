@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="draft-mapper">
+
+	<!--
+	기능구분	: 검색기능
+	기능설명	: searchType이 p일 시 기안자로 검색, t일 시 제목으로 검색
+	-->
+	<sql id="search">
+		<if test="searchType == 'w'.toString()">
+			and professor_id like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 't'.toString()">
+			and draft_title like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 's'.toString()">
+			and draft_status like '%'||#{keyword}||'%'			
+		</if>				
+	</sql>
+	<!--
+	기능구분	: 기안서 검색 리스트
+	기능설명	: 기안서 전체를 불러온다
+	파라미터	: cri
+	리턴타입	: draft
+	-->
+	<select id="selectSearchDraftList" parameterType="cri" resultType="draft">
+		select  *
+		from
+		draft
+		where draft_no is not null		  	
+		<include refid="search" />
+		order by draft_regdate 
+	</select>
+	
+	<!--
+	기능구분	: 기안서 검토중 리스트
+	기능설명	: 기안서 전체를 불러온다
+	파라미터	: cri
+	리턴타입	: draft
+	-->
+	<select id="selectSearchDraftPauseList" parameterType="cri" resultType="draft">
+		select  *
+		from
+		draft
+		where draft_no is not null
+		and draft_status = '결재대기'
+		<include refid="search" />	  	
+		order by draft_regdate
+	</select>
+	
+	<!--
+	기능구분	: 기안서 승인 리스트
+	기능설명	: 기안서 전체를 불러온다
+	파라미터	: cri
+	리턴타입	: draft
+	-->
+	<select id="selectSearchDraftOkList" parameterType="cri" resultType="draft">
+		select  *
+		from
+		draft
+		where draft_no is not null
+		and draft_status = '결재승인'
+		<include refid="search" />		  	
+		order by draft_regdate 
+	</select>
+	
+	<!--
+	기능구분	: 기안서 반려 리스트
+	기능설명	: 기안서 전체를 불러온다
+	파라미터	: cri
+	리턴타입	: draft
+	-->
+	<select id="selectSearchDraftNoList" parameterType="cri" resultType="draft">
+		select  *
+		from
+		draft
+		where draft_no is not null
+		and draft_status = '결재반려'
+		order by draft_regdate 
+	</select>
+	
+	<!--
+	기능구분	: 기안서 리스트
+	기능설명	: 기안서 전체를 불러온다
+	파라미터	: -
+	리턴타입	: draft
+	-->
+	<select id="selectDraftList" resultType="draft">
+		select  *
+		from
+		draft
+		where draft_no is not null		  	
+		order by draft_regdate desc
+	</select>
+	
+	<!--
+	기능구분	: 기안서 상세정보
+	기능설명	: 기안서 상세 정보를 가져온다
+	파라미터	: int
+	리턴타입	: draft
+	-->
+	<select id="selectDraftDetail" parameterType="int" resultType="draft">
+		select  *
+		from
+		draft
+		where draft_no is not null and draft_no=#{draft_no}	  	
+	</select>
+	
+	<!--
+	기능구분	: 기안서 상세정보(lecture_data_no)
+	기능설명	: 기안서 상세 정보를 가져온다
+	파라미터	: int
+	리턴타입	: draft
+	-->
+	<select id="selectDraftDetailBylno" parameterType="int" resultType="draft">
+		select  *
+		from
+		draft
+		where lecture_data_no is not null and lecture_data_no=#{lecture_data_no}	  	
+	</select>
+	<!--
+	기능구분	: 기안서리스트 카운트
+	기능설명	: 리스트를 불러올떄 페이지를 매기기 위한 기능
+	파라미터	: X
+	리턴타입	: int
+	-->
+	<select id="selectDraftListCount" resultType="int">
+		select
+		count(*) 
+		from draft
+		where draft_no is not null
+		<include refid="search" />
+		order by draft_regdate desc
+	</select>
+	
+	<!--
+	기능구분	: 기안서첨부파일 리스트
+	기능설명	: 첨부파일 리스트를 불러온다
+	파라미터	: int
+	리턴타입	: draft_attach
+	-->
+	<select id="selectDraftAttachList" parameterType="int" resultType="draft_attach_req">
+		select  *
+		from
+		draft_attach
+		where draft_attach_no is not null and draft_no=#{draft_no}
+	</select>
+	
+	
+	<!--
+	기능구분	: 기안서첨부파일 선택
+	기능설명	: 첨부파일을 불러온다
+	파라미터	: int
+	리턴타입	: draft_attach
+	-->
+	<select id="selectDraftAttach" parameterType="int" resultType="draft_attach">
+		select  *
+		from
+		draft_attach
+		where draft_attach_no = #{draft_attach_no}
+	</select>
+	
+	
+	
+	<!--
+	기능구분	: 기안서글작성
+	기능설명	: 기안서글을 작성한다
+	파라미터	: draft
+	리턴타입	: X
+	-->
+	<update id="insertDraft" parameterType="draft">
+		insert 
+		into 
+		draft(draft_no,professor_id, draft_title, draft_content,draft_deadline,lecture_data_no)
+		values
+		(#{draft_no},#{professor_id},#{draft_title},#{draft_content},#{draft_deadline},#{lecture_data_no})
+	</update>
+	
+	<!--
+	기능구분	: 기안서첨부파일 추가
+	기능설명	: 기안서번호에 맞춰 첨부파일을 첨가한다
+	파라미터	: draft_attach
+	리턴타입	: X
+	-->
+	<update id="insertDraftAttach" parameterType="draft_attach">
+		insert
+		into
+		draft_attach(draft_attach_no, draft_no, draft_attach_filename)
+		values
+		(#{draft_attach_no},#{draft_no},#{draft_attach_filename})
+	</update>
+	
+	<!--
+	기능구분	: 기안서 수정
+	기능설명	: 기안서정보를 수정한다
+	파라미터	: draft
+	리턴타입	: X
+	-->
+	<update id="updateDraft" parameterType="draft">
+		update draft 
+		set 
+		draft_title=#{draft_title},draft_content=#{draft_content}
+		where draft_no=#{draft_no}
+	</update>
+	
+	<!--
+	기능구분	: 기안서 첨부파일 수정
+	기능설명	: 기안서 첨부파일을 수정한다
+	파라미터	: draft_attach
+	리턴타입	: X
+	-->
+	<update id="updateDraftattach" parameterType="draft_attach">
+		update draft_attach
+		set
+		draft_attach_filename=#{draft_attach_filename}
+		where draft_attach_no=#{draft_attach_no}
+	</update>
+	
+	<!--
+	기능구분	: 기안서 삭제
+	기능설명	: 기안서글을 삭제한다. 삭제시 첨부파일도 함께 삭제한다.
+	파라미터	: int
+	리턴타입	: X
+	-->
+	<update id="deleteDraft" parameterType="int">
+		delete draft 
+		where draft_no=#{draft_no}
+	</update>
+	
+	<!--
+	기능구분	: 기안서 첨부자료 삭제
+	기능설명	: 첨부자료를 삭제한다.
+	파라미터	: int
+	리턴타입	: X
+	-->
+	<update id="deleteDraftAttach" parameterType="int">
+		delete draft_attach
+		where draft_attach_no=#{draft_attach_no}
+	</update>
+	
+	<!--
+	기능구분	: 기안서 번호 생성
+	기능설명	: 기안서 번호를 생성한다.
+	파라미터	: X
+	리턴타입	: int
+	-->
+	<select id="selectDraftSeqNext" resultType="int">
+		select draft_seq.nextval as draft_no from dual
+	</select>
+	
+	<!--
+	기능구분	: 기안서 첨부번호 생성
+	기능설명	: 기안서 첨부 번호를 생성한다.
+	파라미터	: X
+	리턴타입	: int
+	-->
+	<select id="selectDraftAttachSeqNext" resultType="int">
+		select draft_attach_seq.nextval as draft_attach_no from dual
+	</select>
+
+	<!--
+	기능구분	: 관리자의 기안서 결재 승인 처리
+	기능설명	: 기안서정보를 수정한다
+	파라미터	: draft
+	리턴타입	: X
+	-->
+	<update id="updateDraftApproved" parameterType="draft">
+		update draft 
+		set 
+		draft_status=#{draft_status}, draft_approveddate = sysdate
+		where draft_no=#{draft_no}
+	</update>
+	
+	<!--
+	기능구분	: 관리자의 기안서 결재  반려 대기 처리
+	기능설명	: 기안서정보를 수정한다
+	파라미터	: draft
+	리턴타입	: X
+	-->
+	<update id="updateDraftApproved_pause_no" parameterType="draft">
+		update draft 
+		set 
+		draft_status=#{draft_status}, draft_approveddate = null
+		where draft_no=#{draft_no}
+	</update>
+	
+	
+	
+</mapper>

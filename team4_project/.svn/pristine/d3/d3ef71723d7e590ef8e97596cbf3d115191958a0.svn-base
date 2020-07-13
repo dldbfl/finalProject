@@ -1,0 +1,65 @@
+@charset "UTF-8";
+
+.head_top{
+	text-align: center;
+}
+
+.head_left{
+	float: left;
+	width: 45%;
+    height: 300px;
+    padding: 3%;
+}
+
+
+.head_right{
+
+	float: right;
+	width: 55%;
+    height: 300px;
+}
+.head_right label{
+	margin-left: 3%;
+    margin-top: 5%;
+	width: 30%;
+}
+.head_right input{
+	width: 60%;
+    PADDING: 1%;
+    MARGIN: 2%;
+}
+.head_right select{	
+	MARGIN: 3%;
+    HEIGHT: 12%;
+    WIDTH: 60%; 
+}
+.body_top{
+	margin-top: 10px;
+	
+}
+.body_top label{
+	margin: 1%;
+    margin-left: 6%;
+    margin-top: 10px;
+    width: 20%;
+}
+#registBtn{
+	
+	cursor: pointer;
+	margin-left: 75%;
+	font-size: 1.3em;
+
+}
+
+.span p{
+	
+	padding: 7%;
+	
+}
+.lecture-content{
+	margin-bottom: 20px;
+	border: 2px solid #bac6d0;
+}
+table{
+	border-collapse:separate ;
+}

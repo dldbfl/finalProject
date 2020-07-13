@@ -1,0 +1,102 @@
+<%@page import="java.util.Date"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<head>
+<title>기업소개 관리</title>
+<style type="text/css" id="fontFamilyStyleSheet">
+body { 
+	font-family: 'Malgun Gothic', sans-serif !important; 
+}
+.fileDrop{
+	width:90%;
+	height:100px;
+	border:1px dotted gray;
+	margin:auto;
+}
+select:disabled {
+	background: lightgray;
+  	border:1px solid gray; 
+}
+input:read-only, 
+textarea:read-only{
+  cursor: not-allowed;
+}
+
+</style>
+<script src="<%=request.getContextPath()%>/resources/scripts/common.js"></script>
+</head>
+<body >
+<h1>기업소개</h1>
+<button id = "modify" type="button" class="btn btn-sm btn-white btn-bold" onclick="Modfiy_go();">
+	<i class="red ace-icon fa fa-check bigger-120"></i><b>수정</b>
+</button>
+<button id = "submit" disabled type="button" class="btn btn-sm btn-white btn-bold" onclick="goSubmit('post');">
+	<i class="red ace-icon fa fa-check bigger-120"></i><b>확인</b>
+</button>
+<button id = "cansel" disabled type="reset" class="btn btn-sm btn-white btn-bold" onclick="Cansel_go();">
+	<i class="grey ace-icon fa fa-times bigger-120"></i><b>취소</b>
+</button>
+<!-- <button type="button" class="btn btn-sm btn-white btn-bold" onclick="javascript:goSubmit('close');">
+	<i class="grey ace-icon fa fa-times bigger-120"></i><b>취소</b>
+</button> -->
+
+<hr>
+
+<form role="form" id= "modifyform" name=modifyform method=post>
+	 <input readonly class="col-sm-12 enterprise_modifyset" name ="enterprise_name"    value="${enterprise_introduce.enterprise_name}">                					   <hr>
+	 <input readonly class="col-sm-12 enterprise_modifyset" name ="enterprise_regdate" value="${enterprise_introduce.enterprise_regdate}">               				  	  <hr>
+	 <input readonly class="col-sm-12 enterprise_modifyset" name ="enterprise_manager" value="${enterprise_introduce.enterprise_manager}">              				      <hr>
+	 <input readonly class="col-sm-12 enterprise_modifyset" name ="enterprise_location"value="${enterprise_introduce.enterprise_location}">           					      <hr>
+	 <input readonly class="col-sm-12 enterprise_modifyset" name ="enterprise_regno"   value="${enterprise_introduce.enterprise_regno}">          						      <hr>
+	 <input readonly class="col-sm-12 enterprise_modifyset" name ="enterprise_phone"   value="${enterprise_introduce.enterprise_phone}">  
+	 <input readonly class="col-sm-12 enterprise_modifyset" name ="enterprise_email"   value="${enterprise_introduce.enterprise_email}">  
+	 <input type="hidden" readonly class="col-sm-12 enterprise_modifyset" value="${enterprise_introduce.enterprise_introduce_writer}">                		   <hr>
+	 <input type="hidden" readonly name="enterprise_introduce_no" class="col-sm-12 enterprise_modifyset" value="${enterprise_introduce.enterprise_introduce_no}"><hr>
+</form>
+
+</body>
+
+<!-- form submit -->
+<script>
+
+function Modfiy_go(){
+	$('#modify').attr('disabled', true);
+	$('#cansel').removeAttr("disabled");
+	$('#submit').removeAttr("disabled");
+	$('.enterprise_modifyset').removeAttr("readonly");
+}
+
+function Cansel_go(){
+	$('#modify').removeAttr("disabled");
+	$('#cansel').attr('disabled', true);
+	$('#submit').attr('disabled', true);
+	$('.enterprise_modifyset').attr('readonly', true);	
+	$('#modifyform').each(function(){
+        this.reset();
+    });
+}
+
+function goSubmit(cmd){ 
+	var form = document.modifyform;
+	switch(cmd) {
+	case "post":		
+		form.submit();		
+		break;
+	case "close":
+		window.close();
+		return;
+		break;
+	default:
+		return;
+		break;
+	}	
+}
+
+</script>
+
+

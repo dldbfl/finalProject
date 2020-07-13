@@ -1,0 +1,154 @@
+@charset "UTF-8";
+
+#head-line{
+	background : linear-gradient( to right, #667db6, #0082c8,#0082c8,#667db6 );
+	text-align: center;
+	color: white;
+}
+.swiper-slide{
+	padding: 20px;
+}
+
+.img-line{
+	
+	text-align:center; 
+	border-right:1px solid black;  
+	width: 450px;
+	height: 300px;
+	float: left;
+	margin-left:100px;"
+}
+
+.slide-img{
+	
+	width:350px;
+	height:250px;
+	padding-top:10px;
+	margin-left: -100px;
+	cursor: pointer;
+	border: none;
+}
+
+.img-writer{
+	padding-top: 10px;
+	margin-left: -100px;
+}
+
+.review-line{
+	
+	width:450px;
+	height:300px;
+	float: left;
+	border-left: 1px solid black;
+	margin-left: 35px;
+	overflow: scroll;
+	border: none;
+}
+
+.review-con{
+	padding: 30px;
+}
+
+.sel-box{
+	margin-left: 20px;
+	width: 150px;
+	height: 30px;
+	text-align: center;
+}
+
+#chk{
+	position: relative;
+	margin-left:20px;
+     top: 7px;
+	width: 25px;
+	height: 25px;
+}
+.review-btn{
+	background-color: white;
+	margin-top : 15px;
+	margin-right: 20px;
+	height: 25px;
+	width: 100px;
+	border-radius: 10px;
+	float:right;
+	Outline: none;
+}
+.review-one{
+	font-size: 14px;
+	width: 400px;
+	margin: 0px 15px 0px 15px;
+	float: left;
+	cursor: pointer;
+}
+.review-one-info{
+	font-size: 14px;
+	width: 400px;
+	margin: 0px 15px 0px 15px;
+	float: left;
+}
+
+.review-hr{
+	margin: 5px 15px 10px 15px;
+	  height: 1px;
+  background: #bbb;
+  background-image: -webkit-linear-gradient(right, #667db6, #0082c8,#0082c8,#667db6);
+  background-image: -moz-linear-gradient(right, #667db6, #0082c8,#0082c8,#667db6);
+  background-image: -ms-linear-gradient(right, #667db6, #0082c8,#0082c8,#667db6);
+  background-image: -o-linear-gradient(right, #667db6, #0082c8,#0082c8,#667db6);
+}
+.like-btn{
+	float:right;
+	margin: 0px 35px 10px 15px;
+	background-color: white;
+	border:none;
+}
+.message{
+	float:right;
+	margin: 0px 35px 10px 15px;
+	color: red;
+	display: none;
+}
+.review-one-lecture{
+	margin: 10px 15px 10px 15px;
+	font-size: 16px;
+	font-weight: bold;
+	color: #0d6af7;
+	
+}
+
+.registForm-btn{
+	float: right;
+	height: 30px;
+	width: 50px;
+	margin-right: 5px;
+	margin-bottom: 20px;
+	position: relative;
+}
+
+#lecture_review_title{
+	
+	height: 30px;
+	width: 100%;
+    position: relative;
+}
+
+#regist{
+	
+	position: relative;	
+	margin-bottom: 0px;
+}
+
+#pay_no{
+	 float: left;
+	 width:50%;
+	 height: 30px;
+	 margin-bottom: 10px;
+}
+
+.review-detail{
+	font-size: 16px;
+	width: 400px;
+	margin: 0px 15px 0px 15px;
+	float: left;
+	cursor: pointer;
+}

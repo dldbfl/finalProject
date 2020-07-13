@@ -1,0 +1,272 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<head>
+	
+	<title>문서자료실</title>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+</head>
+
+<style>
+	table{
+		border-collapse:separate ;
+		
+	}
+
+	#writeBtn{
+		width : 100px; 
+	}
+	
+	.form-group{
+		margin-top : 20px;	
+	
+	}
+	.picker:hover {
+		cursor: pointer;
+	}
+	
+	img{
+		cursor: pointer;
+	}
+	.fa-share-alt{
+		cursor: pointer;
+	}
+	
+	.fa-share-alt.tooltips {
+	position: relative;
+	display: inline;
+}
+	.tooltips span {
+    position: absolute;
+    width: 160px;
+    color: #FFFFFF;
+    background: #000000;
+    height: 52px;
+    line-height: 46px;
+    text-align: center;
+    display: none;
+    border-radius: 6px;
+}
+	.tooltips span:after {
+	content: '';
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	margin-left: -8px;
+	width: 0;
+	height: 0;
+	border-top: 8px solid #000000;
+	border-right: 8px solid transparent;
+	border-left: 8px solid transparent;
+}
+.fa-share-alt:hover.tooltips span {
+	display: block;
+	opacity: 0.8;
+	bottom: 30px;
+	left: 50%;
+	margin-left: -76px;
+	z-index: 999;
+}
+
+.modal.modal-center {
+  text-align: center;
+}
+
+@media screen and (min-width: 768px) { 
+  .modal.modal-center:before {
+    display: inline-block;
+    vertical-align: middle;
+    content: " ";
+    height: 100%;
+  }
+}
+
+.modal-dialog.modal-center {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle; 
+}
+
+
+
+</style>
+
+
+
+<body class="blur-theme data-container-body">
+			
+			<div class="container-dashboard" style="background-color: white;">
+				<div class="container-dashboard-inner">
+				<form id="infoForm" class="form-inline" action="list">
+						<input name="page" type="hidden" value="${pageMaker.cri.page }">
+						<input name="perPageNum" type="hidden" value="${pageMaker.cri.perPageNum }">
+				<div class="clearfix">
+					<div class="pull-left">
+						<h3><a href="<%=request.getContextPath()%>/myPage/professorMain" style="color: black;">마이페이지</a>><a href="<%=request.getContextPath()%>/professor/pds/main" style="color: black;">자료실</a>><a href="<%=request.getContextPath()%>/pds/document/list" style="color: #3199f1;">문서 자료실</a></h3>
+					</div>	
+					 <div class="pull-right" id="keyword">
+						<div class="form-group">
+						
+						<select class="form-control" name="searchType" id="searchType">
+							<option value="tcw" ${pageMaker.cri.searchType eq 'tcw' ? 'selected':'' }>전체</option>
+							<option value="t" ${pageMaker.cri.searchType eq 't' ? 'selected':'' }>제 목</option>
+							<option value="w" ${pageMaker.cri.searchType eq 'w' ? 'selected':'' }>작성자</option>
+							<option value="tc" ${pageMaker.cri.searchType eq 'tc' ? 'selected':'' }>제목+내용</option>
+						</select>	
+						
+							<input onkeyup="enterkey()" type="text" class="form-control" placeholder="검색어를 입력해주세요" id="keyword" name="keyword" value="${pageMaker.cri.keyword }">
+							<i  class="fa fa-search search-box" aria-hidden="true" onclick="searchList_go()"  style="cursor:pointer;"></i>
+						</div>
+					</div>
+				</div>
+					<div class="pull-right"> 
+						<button id="write" class="form-control" type="button"
+							style="color: white; background-color: black; width: 100px;">&nbsp;&nbsp;&nbsp;등록</button>
+						<button id="delete" class="form-control" type="button"
+							style="color: black; background-color: gray; width: 100px;">&nbsp;&nbsp;&nbsp;삭제</button>
+					</div>
+			</form>				
+				<div class="table-responsive" style="width: 100%;">
+					<table class="table table-striped">
+						<tbody>
+							<tr>
+								<td class="text-center picker" onclick="picker();" style="5%;">선택</td>
+								<td class="text-center" style="5%;">번호</td>
+								<td class="text-center" style="16%;">작성자</td>
+								<td class="text-center" style="64%;">제목</td>
+								<td class="text-center" style="10%;">등록날짜</td>
+								<td class="text-center" style="5%;">타입</td>
+								<td class="text-center" >공유하기</td>
+							</tr>
+						 <c:forEach items="${document}" var="document">
+						 	<c:set value="${document.document_dataVO.document_data_type}" var="type"/>
+						 	
+							<tr>
+								<td class="text-center" style="5%;">
+								<input type="checkbox" id="document_checked" value="${document.document_no }">
+								</td>
+								<td class="text-center" style="5%;">${document.document_no}</td>
+								<td class="text-center" style="16%;">${document.document_writer}</td>
+								<td class="text-center" style="64%;"><a href="detail?document_no=${document.document_no }&page=${pageMaker.cri.page}&searchType=${pageMaker.cri.searchType}&perPageNum=${pageMaker.cri.perPageNum}&keyword=${pageMaker.cri.keyword}" style="cursor: pointer;">${document.document_title}</a></td>
+								<td class="text-center" style="10%;">
+									<i class="glyphicon glyphicon-time" aria-hidden="true"><fmt:formatDate value="${document.document_regdate}" pattern="yyyy-MM-dd"/></i>
+								</td>
+								<c:if test="${type eq 'pptx' || type eq 'ppt' }">
+								<td class="text-center" style="5%;">
+									<img width="20px;" height="20px;"src="<%=request.getContextPath() %>/resources/images/ppt.png">
+								</td>
+								</c:if>
+								<c:if test="${type eq 'hwp' }">
+								<td class="text-center" style="5%;">
+									<img width="20px;" height="20px;"src="<%=request.getContextPath() %>/resources/images/hwp.png" >
+								</td>
+								</c:if>
+								<c:if test="${type eq 'doc' || type eq 'docx' }">
+								<td class="text-center" style="5%;">
+									<img width="20px;" height="20px;" src="<%=request.getContextPath() %>/resources/images/doc.png">
+								</td>
+								</c:if>
+								<c:if test="${type eq 'xls' || type eq 'xlsx' }">
+								<td class="text-center" style="5%;">
+									<img width="20px;" height="20px;"src="<%=request.getContextPath() %>/resources/images/xls.png">
+								</td>
+								</c:if>
+								<c:if test="${type eq 'pdf'}">
+								<td class="text-center" style="5%;">
+									<img width="20px;" height="20px;"src="<%=request.getContextPath() %>/resources/images/pdf.png">
+								</td>
+								</c:if>
+								<td class="text-center">
+									<i class="fa fa-share-alt fa-2x tooltips" onclick="shareList(this);"  aria-hidden="true">
+										<span>
+											<b onclick="javascript:void(window.open('/pds/document/sendMailForm?documentNum=${document.document_no}', '공유(메일보내기)','width=900, height=750, scrollbars=no, location=no, toolbar=no, menubar=no, resizable=no, fullscreen=null, left=300, top=10'))"><i class="fa fa-envelope-o fa-lg" aria-hidden="true"></i></b>
+											&nbsp;&nbsp;&nbsp;
+											<b onclick="javascript:void(window.open('/pds/document/sendMessageForm?documentNum=${document.document_no}', '공유(메일보내기)','width=900, height=750, scrollbars=no, location=no, toolbar=no, menubar=no, resizable=no, fullscreen=null, left=300, top=10'))"><i class="fa fa-paper-plane-o fa-lg" aria-hidden="true"></i></b>
+										</span>
+									</i>
+									
+								</td>
+							</tr>			
+							</c:forEach>	
+						</tbody>
+					</table>
+				</div>
+			</div>
+				<nav aria-label="member list Navigation" class="col-xs-offset-5 col-xs-7" style="position: relative;">
+	<ul class="pagination justify-content-center m-0">
+		<li class="page-item">
+			<a class="page-link" href="javascript:searchList_go(1);">
+			<i class="glyphicon glyphicon-step-backward"></i>
+			</a>
+		</li>
+		<li class="page-item">
+			<a class="page-link" href="javascript:searchList_go(
+			${pageMaker.prev ? pageMaker.startPage-1 : 1}				
+			);"><i class="glyphicon glyphicon-chevron-left"></i></a>
+		</li>
+		<c:forEach begin="${pageMaker.startPage }" end="${pageMaker.endPage }" var="pageNum">						
+		<li class="page-item 
+			<c:out value="${pageMaker.cri.page == pageNum?'active':''}"/>">
+			<a class="page-link" href="javascript:searchList_go(${pageNum});" >${pageNum }
+			</a>
+		</li>
+		</c:forEach>
+		<li class="page-item">
+			<a class="page-link" href="javascript:searchList_go(
+			${pageMaker.next ? pageMaker.endPage+1 : pageMaker.cri.page}			
+			);"><i class="glyphicon glyphicon-chevron-right" ></i></a>
+		</li>
+		<li class="page-item">
+			<a class="page-link" href="javascript:searchList_go(
+				${pageMaker.realEndPage} );">
+				<i class="glyphicon glyphicon-step-forward"></i></a>
+		</li>	
+	</ul>
+</nav>   	
+			
+		</div>
+		
+	<form id="jobForm">
+	<input type='hidden' name="page" value="${pageMaker.cri.page}" />
+	<input type='hidden' name="perPageNum" value="${pageMaker.cri.perPageNum}"/>
+	<input type='hidden' name="searchType" value="${pageMaker.cri.searchType }" />
+	<input type='hidden' name="keyword" value="${pageMaker.cri.keyword }" />
+	</form>
+</body>
+<script>
+
+
+	//만들다 만거다...
+	function picker(){
+        if ($("#checkAll").is(':checked')) {
+            $("input[type=checkbox]").prop("checked", true);
+        } else {
+            $("input[type=checkbox]").prop("checked", false);
+        }
+		
+		if($("input[type='checkbox']").prop("checked")){
+			$("input[type='checkbox']").removeAttr("checked");
+		}else{
+			$("input[type='checkbox']").attr("checked","checked");
+		}
+	}
+	
+</script>
+<script>
+function closeLayer(obj) {
+    $(obj).parent().parent().hide();
+}
+</script>
+<%@ include file="/WEB-INF/views/summernote_js.jsp" %>
+<%@ include file="document.js.jsp" %>
+     
+
+
+
+
+
+
+

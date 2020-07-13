@@ -1,0 +1,45 @@
+package com.dlms.service.manager_board;
+
+import java.sql.SQLException;
+
+import java.util.Map;
+
+import com.dlms.dto.Manager_boardVO;
+
+
+public interface Chairman_introduceService {
+	
+   /**
+    * 
+    * @기능설명			:	이사장 인사 조회
+    * @작성자		    :	이누리
+    * @작성날짜    		:	2020. 6. 9.
+    * @마지막수정자		:	이누리
+    * @마지막수정일		:	2020. 6. 9.오후 4:05:16
+    * @see			    :	-
+    * @param manager_board_no
+    * @return
+    * @throws SQLException
+    *
+    */
+	Map<String,Object> getChairman_introduce(int manager_board_no)throws SQLException;
+	
+	/**
+	 * 
+	 * @기능설명		:	이사장 인사 수정
+	 * @작성자		    :	이누리
+	 * @작성날짜    	:	2020. 6. 9.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 9.오후 4:05:54
+	 * @see			    :	-
+	 * @param manager_board
+	 * @param manager_board_no
+	 * @throws SQLException
+	 *
+	 */
+	void modifyChairman_introduce(Manager_boardVO manager_board,int manager_board_no)throws SQLException;
+	
+	
+}
+
+

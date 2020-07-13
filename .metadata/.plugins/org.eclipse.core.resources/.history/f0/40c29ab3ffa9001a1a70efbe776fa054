@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="manager_board-mapper">
+
+	<!--
+		기능구분	: 조회
+		기능설명	: 관리자 전용 게시판 조회
+		파라미터	: -
+		리턴타입	: Manager_boardVO
+	-->
+	<select id="selectManager_board" resultType="manager_board">
+		select *
+		from manager_board
+	</select>
+	
+	<!--
+		기능구분	: 수정
+		기능설명	: 찾아오는길 수정
+		파라미터	: Manager_boardVO
+		리턴타입	: -
+	-->
+	<update id="updateManager_board_enterprise_comming" parameterType="manager_board">
+		update manager_board set
+		enterprise_comming =${enterprise_comming}		
+		where manager_board_no=#{manager_board_no}
+	</update>
+	
+	<!--
+		기능구분	: 수정
+		기능설명	: 교육과정 수정
+		파라미터	: Manager_boardVO
+		리턴타입	: -
+	-->
+	<update id="updateManager_board_education_progress" parameterType="manager_board">
+		update manager_board set
+		education_progress =${education_progress}		
+		where manager_board_no=#{manager_board_no}
+	</update>
+	<!--
+		기능구분	: 수정
+		기능설명	: 교육목표 수정
+		파라미터	: Manager_boardVO
+		리턴타입	: -
+	-->
+	<update id="updateManager_board_education_purpose" parameterType="manager_board">
+		update manager_board set
+		education_purpose =${education_purpose}		
+		where manager_board_no=#{manager_board_no}
+	</update>
+	<!--
+		기능구분	: 수정
+		기능설명	: 이사장인사글 수정
+		파라미터	: Manager_boardVO
+		리턴타입	: -
+	-->
+	<update id="updateManager_board_chairman_introduce" parameterType="manager_board">
+		update manager_board set
+		chairman_introduce =${chairman_introduce}		
+		where manager_board_no=#{manager_board_no}
+	</update>
+	
+	
+</mapper>

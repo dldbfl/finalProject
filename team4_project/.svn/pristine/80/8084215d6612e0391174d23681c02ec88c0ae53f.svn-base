@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="consult-mapper">
+
+
+	<!--
+	기능구분	: 검색기능
+	기능설명	: 작성자로 검색을 할 수 있다.
+-->
+<sql id="search">
+		<if test="searchType == 't'.toString()">
+			and (consult_title like '%'||upper(#{keyword})||'%'
+			or consult_title like '%'||lower(#{keyword})||'%')		
+		</if>
+		<if test="searchType == 'w'.toString()">
+			and (consult_writer like '%'||upper(#{keyword})||'%'
+			or consult_writer like '%'||lower(#{keyword})||'%')			
+		</if>
+		<if test="searchType == 'tc'.toString()">
+			and ((
+			consult_title like '%'||upper(#{keyword})||'%'
+			or
+			consult_content like '%'||upper(#{keyword})||'%'						
+			)
+			or (
+			consult_title like '%'||lower(#{keyword})||'%'
+			or
+			consult_content like '%'||lower(#{keyword})||'%'						
+			))
+		</if>	
+		<if test="searchType == 'tcw'.toString()">
+			and ((
+			consult_title like '%'||upper(#{keyword})||'%'
+			or
+			consult_content like '%'||upper(#{keyword})||'%'
+			or
+			consult_writer like '%'||upper(#{keyword})||'%'					
+			)
+			or (
+			consult_title like '%'||lower(#{keyword})||'%'
+			or
+			consult_content like '%'||lower(#{keyword})||'%'
+			or
+			consult_writer like '%'||lower(#{keyword})||'%'				
+			))					
+		</if>
+	</sql>
+
+	<!--
+	기능구분	: 검색기능
+	기능설명	: 작성자로 검색을 할 수 있다.
+	파라미터	: X
+	리턴타입	: consult
+-->
+	<select id="selectSearchConsultList" resultType="consult" parameterType="cri">
+		select *
+		from consult
+		where consult_no is not null
+		<include refid="search"/>
+		order by consult_regdate desc
+	</select>
+
+	
+		<!--
+	기능구분	: 
+	기능설명	: 
+	파라미터	: 
+	리턴타입	: 
+-->
+	<select id="selectSearchConsultListCount" resultType="int" parameterType="cri">
+		select count(*)
+		from consult
+		where consult_no is not null
+		<include refid="search"/>
+		order by consult_regdate desc
+	</select>
+	
+	
+	
+	
+	
+	<select id="registConsultList" parameterType="cri" resultType="consult">
+		select  *
+		from
+		consult
+		where consult_no is not null and consult_status = 1 	
+		<include refid="search" />
+		order by consult_regdate desc
+	</select>
+	
+	<!--
+	기능구분	: 답글이 등록된 리스트 카운트
+	기능설명	: 상담문의글 리스트를 불러온 시 페이지 넘버를 가져오기 위한 장치
+	파라미터	: cri
+	리턴타입	: consult
+	-->
+	<select id="searchRegistConsultList" resultType="int">
+		select
+		count(*) 
+		from consult
+		where consult_no is not null and consult_status = 1
+		<include refid="search" />
+		order by consult_regdate desc
+	</select>
+	
+	<!--
+	기능구분	: 답글 미등록 리스트
+	기능설명	: 상담문의글 리스트를 불러온다
+	파라미터	: cri
+	리턴타입	: consult
+	-->
+	<select id="noRegistConsultList" parameterType="cri" resultType="consult">
+		select  *
+		from
+		consult
+		where consult_no is not null and consult_status = 0	  	
+		<include refid="search" />
+		order by consult_regdate desc
+	</select>
+	
+		<!--
+	기능구분	: 답글이 등록된 리스트 카운트
+	기능설명	: 상담문의글 리스트를 불러온 시 페이지 넘버를 가져오기 위한 장치
+	파라미터	: cri
+	리턴타입	: consult
+	-->
+	<select id="searchNoRegistConsultList" resultType="int">
+		select
+		count(*) 
+		from consult
+		where consult_no is not null and consult_status = 0
+		<include refid="search" />
+		order by consult_regdate desc
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+	
+	<!--
+	기능구분	: 
+	기능설명	:  
+	파라미터	: 
+	리턴타입	:
+	-->
+	<select id="selectConsultByConsult_no" resultType="consult">
+		select *
+		from consult
+		where consult_no=#{consult_no}
+	</select>
+	
+	
+	
+	
+	<!--
+	기능구분	: 상담문의글 등록 
+	기능설명	: 상담문의글을 등록한다
+	파라미터	: consult
+	리턴타입	: X
+	-->
+	<update id="insertConsult" parameterType="consult">
+		insert 
+		into 
+		consult(consult_no,consult_writer,consult_title,consult_content,consult_type,consult_pwd)
+		values
+		(#{consult_no},#{consult_writer},#{consult_title},#{consult_content},#{consult_type},#{consult_pwd})
+	</update>
+
+
+	
+	<!--
+	기능구분	: 상담문의글 수정
+	기능설명	: 상담문의글을 수정한다
+	파라미터	: consult
+	리턴타입	: X
+	-->
+	<update id="updateConsult" parameterType="consult">
+		update consult 
+		set 
+		consult_title=#{consult_title},consult_content=#{consult_content},consult_pwd=#{consult_pwd},consult_type=#{consult_type}
+		where consult_no=#{consult_no}
+	</update>
+	
+	<!--
+	기능구분	: 상담문의글 삭제
+	기능설명	: 상담문의글을 삭제한다
+	파라미터	: consult
+	리턴타입	: X
+	-->
+	<update id="deleteConsult" parameterType="int">
+		delete consult 
+		where consult_no=#{consult_no}
+	</update>
+	
+	<!--
+	기능구분	: 답변글 등록,수정
+	기능설명	: 답변글을 등록, 수정 한다.
+	파라미터	: consult
+	리턴타입	: X
+	-->
+	<update id="insertAndUpdateAnswer" parameterType="consult">
+		update consult 
+		set 
+		consult_answer=#{consult_answer},consult_answer_content=#{consult_answer_content},consult_status=#{consult_status}
+		where consult_no=#{consult_no}
+	</update>
+	
+	<!--
+	기능구분	: 답변 삭제
+	기능설명	: 답변글을 삭제한다.
+	파라미터	: consult
+	리턴타입	: X
+	-->
+	<update id="deleteAnswer" parameterType="int">
+		update consult 
+		set 
+		consult_answer=null,consult_answer_content=null
+		where consult_no=#{consult_no}
+	</update>
+	
+	<!--
+	기능구분	: 상담문의글 조회수 증가
+	기능설명	: 상담문의글 조회수를 증가 시킨다.
+	파라미터	: int
+	리턴타입	: X
+	-->
+	<update id="increaseConsultviewCnt" parameterType="int">
+		update consult 
+		set 
+		consult_viewcnt=consult_viewcnt+1
+		where consult_no=#{consult_no}
+	</update>
+	
+	<!--
+	기능구분	: 상담문의글 번호 생성
+	기능설명	: 상담문의글 번호를 생성한다.
+	파라미터	: X
+	리턴타입	: int
+	-->	
+	<select id="selectConsultSeqNext" resultType="int">
+		select consult_seq.nextval as consult_no from dual
+	</select>
+	
+	
+	<!-- 
+	기능구분	: 상담문의 메인창 알림
+	기능설명	: 아이디에 해당하는 상담문의글 답변 완료 숫자를 계산한다.
+	파라미터	: member_id
+	리턴타입	: int
+	 -->
+	<select id="mainConsultAlert" parameterType="str" resultType="int">
+		select count(consult_status)
+		from member m, consult c
+		where m.member_id = #{member_id}
+		and m.member_id = c.consult_writer
+		and c.consult_status = 1
+	</select>
+	
+
+	<update id="read" parameterType="consult">
+		update consult 
+		set 
+		consult_status=2
+		where consult_no=#{consult_no}
+	</update>
+	
+	<select id="myConsultList" parameterType="str" resultType="consult">
+		select *
+		from consult
+		where consult_writer = #{member_id}
+	</select>
+</mapper>

@@ -1,0 +1,96 @@
+<%@page import="java.util.Date"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+
+<title>기업소개</title>
+<style type="text/css" id="fontFamilyStyleSheet">
+body { 
+	font-family: 'Malgun Gothic', sans-serif !important; 
+}
+.fileDrop{
+	width:90%;
+	height:100px;
+
+	margin:auto;
+}
+
+input:read-only, 
+textarea:read-only{
+  cursor: not-allowed;
+}
+div#picturePreView{
+	height:500px;
+	width:600px;
+	margin:0 auto;
+	margin-top : 15px;	  		
+	
+	background-image:url("<%=request.getContextPath()%>/manager/picture/enterprise_introduce/${enterprise_introduce.enterprise_introduce_no}");
+	background-repeat:no-repeat;
+	background-position:center;
+	background-size:cover;
+}
+.enterprise_modifyset{
+	font-size: 15px;
+    height: 60px;
+    border: none;
+}
+}
+
+
+</style>
+<body >
+<h1>기업소개 </h1>
+
+<form role="form" id= "modifyform" name='modifyform' method=post enctype="multipart/form-data" style="padding-top: 4%; margin-bottom: 50px;">
+	<div class="col-sm-12">
+		<div  class="col-sm-7" role="manager_data_filename">
+			<div id="picturePreView">		
+				<div id = "buttonset2">	
+					<label for="manager_data_filename"  id = "data_change" class="btn btn-xs btn-info" style="width:110px;margin-bottom:2px;visibility: hidden;">사진변경</label>
+					<input type="file" id="manager_data_filename" name="manager_data_filename" style="display:none;"/>
+			 		<input type="hidden" id="old_manager_data_filename" name="old_manager_data_filename" value="${enterprise_introduce.manager_data_filename }"/>		
+			 	</div>
+		 	</div>
+		 </div>
+	 			
+		 <div class="col-sm-5" style="padding-top: 13%;"> 
+		 	<table style="border: none;">
+		 		<tr>
+		 			<td style="padding: 8px; font-weight: bold; font-size: 15px;">기업명</td>
+		 			<td style="padding: 8px;">${enterprise_introduce.enterprise_name}</td>
+		 		</tr>
+		 		<tr>
+		 			<td style="padding: 8px; font-weight: bold; font-size: 15px;">설립일자</td>
+		 			<td style="padding: 8px;">${enterprise_introduce.enterprise_regdate}</td>
+		 		</tr>
+		 		<tr>
+		 			<td style="padding: 8px; font-weight: bold; font-size: 15px;">대표이사</td>
+		 			<td style="padding: 8px;">${enterprise_introduce.enterprise_manager}</td>
+		 		</tr>
+		 		<tr>
+		 			<td style="padding: 8px; font-weight: bold; font-size: 15px;">위치</td>
+		 			<td style="padding: 8px;">${enterprise_introduce.enterprise_location}</td>
+		 		</tr>
+		 		<tr>
+		 			<td style="padding: 8px; font-weight: bold; font-size: 15px;">등록번호</td>
+		 			<td style="padding: 8px;">${enterprise_introduce.enterprise_regno}</td>
+		 		</tr>
+		 		<tr>
+		 			<td style="padding: 8px; font-weight: bold; font-size: 15px;">전화번호</td>
+		 			<td style="padding: 8px;">${enterprise_introduce.enterprise_phone}</td>
+		 		</tr>
+		 		<tr>
+		 			<td style="padding: 8px; font-weight: bold; font-size: 15px;">이메일</td>
+		 			<td style="padding: 8px; ">${enterprise_introduce.enterprise_email}</td>
+		 		</tr>
+		 		
+		 	</table>
+			<input type="hidden" readonly class="col-sm-12 enterprise_modifyset" value="${enterprise_introduce.enterprise_introduce_writer}">                		  
+			<input type="hidden" readonly name="enterprise_introduce_no" class="col-sm-12 enterprise_modifyset" value="${enterprise_introduce.enterprise_introduce_no}">
+		 </div>
+	</div>
+</form>
+</body>
+
+

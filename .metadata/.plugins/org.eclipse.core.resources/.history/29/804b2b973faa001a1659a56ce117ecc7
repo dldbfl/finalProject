@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- DAO -->	
+	<bean id="freeboardDAO"
+		  class="com.dlms.dao.board.FreeBoardDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	<bean id="messageAttachDAO"
+		  class="com.dlms.dao.attach.MessageAttachDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	
+	<bean id="documentBoardDAO"
+		  class="com.dlms.dao.board.DocumentBoardDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	
+	<bean id="managerBoardDAO"
+		  class="com.dlms.dao.board.ManagerBoardDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	
+	<bean id="noticeBoardDAO"
+		  class="com.dlms.dao.board.NoticeBoardDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+
+	<bean id="noticeAttachDAO"
+		  class="com.dlms.dao.attach.NoticeAttachDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	
+	<bean id="foundedReviewDAO"
+		  class="com.dlms.dao.founded.FoundedReviewDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	
+	<bean id="lectureDAO"
+		  class="com.dlms.dao.lecture.LectureDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	
+	<bean id="managerDAO"
+		  class="com.dlms.dao.manager.ManagerDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	
+	<bean id="memberDAO"
+		  class="com.dlms.dao.member.MemberDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	
+	<bean id="messengerDAO"
+		  class="com.dlms.dao.message.MessengerDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	
+	<bean id="receiverDAO"
+		  class="com.dlms.dao.message.ReceiverDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	
+	<bean id="payDAO"
+		  class="com.dlms.dao.pay.PayDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	
+	<bean id="proposalDAO"
+		  class="com.dlms.dao.proposal.ProposalDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	
+	<bean id="consultBoardDAO"
+		  class="com.dlms.dao.board.ConsultBoardDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+	
+	<bean id="replyDAO"
+		  class="com.dlms.dao.board.FreeBoardReplyDAOImpl"
+		  p:sqlSession-ref="sqlSession"/>
+	
+	<bean id="lectureReviewDAO"
+		  class="com.dlms.dao.lecture.LectureReviewDAOImpl"
+		  p:sqlSession-ref="sqlSession"
+	/>
+
+	<bean id="foundedReviewImgDAO"
+		  class="com.dlms.dao.founded.FoundedReviewImgDAOImpl"
+		  p:sqlSession-ref="sqlSession"/>
+
+	<bean id="draftDAO"
+		class="com.dlms.dao.draft.DraftDAOImpl"
+		p:sqlSession-ref="sqlSession" />
+	
+	<bean id="qnaBoardDAO"
+		class="com.dlms.dao.board.QnaBoardDAOImpl"
+		p:sqlSession-ref="sqlSession" />
+		
+	<bean id="enterprise_introduceDAO"
+		  class="com.dlms.dao.enterprise_introduce.Enterprise_introduceDAOImpl"
+		  p:sqlSession-ref="sqlSession" />
+	
+	<!-- Service -->	
+	<bean id="messageAttachService"
+		  class="com.dlms.service.attach.MessengerAttachServiceImpl"
+		  p:messageAttachDAO-ref="messageAttachDAO"
+		  />
+		  
+	<bean id="consultBoardService"
+		  class="com.dlms.service.board.ConsultBoardServiceImpl"
+		  p:consultBoardDAO-ref="consultBoardDAO"
+		  />
+		  
+	<bean id="documentBoardService"
+		  class="com.dlms.service.board.DocumentBoardServiceImpl"
+		  p:documentBoardDAO-ref="documentBoardDAO"
+		  />
+		  
+	<bean id="freeboardReplyService"
+		  class="com.dlms.service.board.FreeboardReplyServiceImpl"
+		  p:replyDAO-ref="replyDAO"
+		  />
+		  
+	<bean id="freeboardService"
+		  class="com.dlms.service.board.FreeboardServiceImpl"
+		  p:freeDAO-ref="freeboardDAO"
+		  />
+		  
+	<bean id="noticeBoardService"
+		  class="com.dlms.service.board.NoticeBoardServiceImpl"
+		  p:noticeDAO-ref="noticeBoardDAO"
+		  p:noticeAttachDAO-ref="noticeAttachDAO"
+		  />
+		  
+	<bean id="anaBoardService"
+		  class="com.dlms.service.board.QnaBoardServiceImpl"
+		  p:qnaBoardDAO-ref="qnaBoardDAO"
+		  />
+		  
+	<bean id="draftService"
+		  class="com.dlms.service.draft.DraftServiceImpl"
+		  p:draftDAO-ref="draftDAO"
+		  />
+		  
+	<bean id="foundedReviewService"
+		  class="com.dlms.service.founded.FoundedReviewServiceImpl"
+		  p:foundedReviewDAO-ref="foundedReviewDAO"
+		  p:foundedReviewImgDAO-ref="foundedReviewImgDAO"
+		  />
+		  
+	<bean id="lectureReviewService"
+		  class="com.dlms.service.lecture.LectureReviewServiceImpl"
+		  p:lectureReviewDAO-ref="lectureReviewDAO"
+		  />
+
+	<bean id="lectureService"
+		  class="com.dlms.service.lecture.LectureServiceImpl"
+		  p:lectureDAO-ref="lectureDAO"
+		  />
+
+	<bean id="managerService"
+		  class="com.dlms.service.manager.ManagerServiceImpl"
+		  p:managerDAO-ref="managerDAO"
+		  />
+
+	<bean id="memberService"
+		  class="com.dlms.service.member.MemberServiceImpl"
+		  p:memberDAO-ref="memberDAO"
+		  />
+
+	<bean id="messengerService"
+		  class="com.dlms.service.message.MessengerServiceImpl"
+		  p:messengerDAO-ref="messengerDAO"
+		  />
+
+	<bean id="receiverService"
+		  class="com.dlms.service.message.ReceiverServiceImpl"
+		  p:receiverDAO-ref="receiverDAO"
+		  />
+
+	<bean id="ProposalService"
+		  class="com.dlms.service.proposal.ProposalServiceImpl"
+		  p:proposalDAO-ref="proposalDAO"
+		  />	
+		  
+  	<bean id="enterprise_introduceService"
+	      class="com.dlms.service.enterprise_introduce.Enterprise_introduceServiceImpl"
+	      p:enterprise_introduceDAO-ref="enterprise_introduceDAO" />
+	
+	
+	
+	<!-- upload -->
+
+	<bean class="java.lang.String" id="messageAttachPath">
+		<constructor-arg value="${filePath.message.attach}" />
+	</bean>	  	  		 		
+	
+	<bean class="java.lang.String" id="manager_Enterprise_Introduce_ImagePath">
+		<constructor-arg value="${filePath.manager.enterprise_introduce}"/>
+	</bean>
+	
+	<bean class="java.lang.String" id="manager_Enterprise_Introduce_ImagePath">
+		<constructor-arg value="${filePath.manager.enterprise_introduce}"/>
+	</bean>
+	
+	<bean class="java.lang.String" id="manager_Enterprise_Introduce_ImagePath">
+		<constructor-arg value="${filePath.manager.enterprise_introduce}"/>
+	</bean>
+	
+	<bean class="java.lang.String" id="manager_Enterprise_Introduce_ImagePath">
+		<constructor-arg value="${filePath.manager.enterprise_introduce}"/>
+	</bean>
+	
+	<bean class="java.lang.String" id="manager_Enterprise_Introduce_ImagePath">
+		<constructor-arg value="${filePath.manager.enterprise_introduce}"/>
+	</bean>
+</beans>

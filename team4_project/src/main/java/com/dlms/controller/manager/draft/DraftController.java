@@ -1,0 +1,320 @@
+package com.dlms.controller.manager.draft;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.dlms.dto.DraftVO;
+import com.dlms.dto.Draft_AttachVO;
+import com.dlms.dto.Lecture_attendVO;
+import com.dlms.dto.Lecture_dataVO;
+import com.dlms.dto.NoticeFileDownloadVO;
+import com.dlms.request.DraftAttachRequest;
+import com.dlms.request.SearchCriteria;
+import com.dlms.service.draft.DraftService;
+import com.dlms.service.lecture.LectureAttendService;
+import com.dlms.service.lecture.LectureService;
+import com.dlms.utils.DownloadView;
+
+/**
+ * 
+ * @사용목적		:   기안서 관리
+ * @작성자		    :	이누리
+ * @작성날짜     	:	2020. 6. 10.
+ * @마지막수정자	:	이누리
+ * @마지막수정일	:	2020. 6. 10.오후 3:19:55
+ * @see			    :	-
+ *
+ */
+
+
+@Controller
+@RequestMapping("/manager/draft/*")
+public class DraftController {
+
+	@Autowired
+	private DraftService draftService;
+	public void setDraftService(DraftService draftService) {
+		this.draftService = draftService;
+	}	
+	
+	@Autowired
+	private LectureService lectureService;
+	public void setLectureService(LectureService lectureService) {
+		this.lectureService = lectureService;
+	}
+	
+	@Autowired
+	private LectureAttendService lectureAttendService;
+	public void setLectureAttendService(LectureAttendService lectureAttendService) {
+		this.lectureAttendService = lectureAttendService;
+	}
+
+	@Resource(name = "draft_attachPath")
+	private String draft_attachPath;
+
+	/**
+	 * 
+	 * @기능설명		:	기안서 전체 리스트
+	 * @작성자		    :	이누리
+	 * @작성날짜    	:	2020. 6. 12.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 12.오후 4:14:42
+	 * @see			    :	-
+	 * @param status
+	 * @param cri
+	 * @param mnv
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@ResponseBody
+	@RequestMapping(value="list"/*, method=RequestMethod.GET*/,produces="text/plain;charset=utf-8")
+	public ModelAndView draftList(@RequestParam(value="status",required=false) String status, SearchCriteria cri, ModelAndView mnv) throws Exception {
+		String url = "manager/draft/draftList.page";
+		Map<String, Object> dataMap = draftService.getSearchDraftList(cri);
+		
+		mnv.addAllObjects(dataMap);	
+		mnv.addObject("flag", "전체");
+		mnv.setViewName(url);
+		
+		return mnv;
+	}	
+
+	/**
+	 * 
+	 * @기능설명		:	기안서 결재 승인 리스트
+	 * @작성자		    :	이누리
+	 * @작성날짜    	:	2020. 6. 12.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 12.오후 4:14:57
+	 * @see			    :	-
+	 * @param status
+	 * @param cri
+	 * @param mnv
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@ResponseBody
+	@RequestMapping(value="list_ok"/*, method=RequestMethod.GET*/,produces="text/plain;charset=utf-8")
+	public ModelAndView draftList_ok(@RequestParam(value="status",required=false) String status, SearchCriteria cri, ModelAndView mnv) throws Exception {
+		String url = "manager/draft/draftList.page";		
+		Map<String, Object> dataMap = draftService.getSearchDraftOkList(cri);
+		
+		mnv.addAllObjects(dataMap);	
+		mnv.addObject("flag", "결재승인");
+		mnv.setViewName(url);
+		
+		return mnv;
+	}	
+	
+	/**
+	 * 
+	 * @기능설명		:	기안서 결재 반려 리스트
+	 * @작성자		    :	이누리
+	 * @작성날짜    	:	2020. 6. 12.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 12.오후 4:15:14
+	 * @see			    :	-
+	 * @param status
+	 * @param cri
+	 * @param mnv
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@ResponseBody
+	@RequestMapping(value="list_no"/*, method=RequestMethod.GET*/,produces="text/plain;charset=utf-8")
+	public ModelAndView draftList_no(@RequestParam(value="status",required=false) String status, SearchCriteria cri, ModelAndView mnv) throws Exception {
+		String url = "manager/draft/draftList.page";		
+		Map<String, Object> dataMap = draftService.getSearchDraftNoList(cri);
+		
+		mnv.addAllObjects(dataMap);	
+		mnv.addObject("flag", "결재반려");
+		mnv.setViewName(url);
+		
+		return mnv;
+	}	
+	
+	/**
+	 * 
+	 * @기능설명		:	기안서 결재 대기 리스트
+	 * @작성자		    :	이누리
+	 * @작성날짜    	:	2020. 6. 12.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 12.오후 4:15:27
+	 * @see			    :	-
+	 * @param status
+	 * @param cri
+	 * @param mnv
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@ResponseBody
+	@RequestMapping(value="list_pause"/*, method=RequestMethod.GET*/,produces="text/plain;charset=utf-8")
+	public ModelAndView draftList_pause(@RequestParam(value="status",required=false) String status, SearchCriteria cri, ModelAndView mnv) throws Exception {
+		String url = "manager/draft/draftList.page";
+		Map<String, Object> dataMap = draftService.getSearchDraftPauseList(cri);
+		
+		mnv.addAllObjects(dataMap);	
+		mnv.addObject("flag", "결재대기");
+		mnv.setViewName(url);
+		
+		return mnv;
+	}	
+	/**
+	 * 
+	 * @기능설명		:	기안서 상세보기
+	 * @작성자		    :	이누리
+	 * @작성날짜    	:	2020. 6. 10.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 10.오후 3:55:14
+	 * @see			    :	-
+	 * @param Draft_no
+	 * @param mnv
+	 * @param cri
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping(value="detail", produces="text/plain;charset=utf-8")
+	public ModelAndView draftDetail(int draft_no, ModelAndView mnv, SearchCriteria cri, String name)throws Exception{
+		String url="manager/draft/draftDetail";
+		
+		Map<String,Object> dataMap = draftService.getDraftDetailInclude(draft_no);
+		dataMap.put("name", name);
+		mnv.addAllObjects(dataMap);
+		mnv.setViewName(url);
+		
+		return mnv;
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	기안서 가부 수정
+	 * @작성자		    :	이누리
+	 * @작성날짜    	:	2020. 6. 12.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 12.오후 2:54:46
+	 * @see			    :	-
+	 * @param category
+	 * @param bno
+	 * @param model
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping(value="modify_status", method=RequestMethod.GET)
+	//@ModelAttribute : 받은 데이터(String category)를 그대로 model에("category"라는 이름으로) 심을 수 있다
+	public void modifyForm(/*@ModelAttribute("name") String name*/String change_status, int draft_no/*, Model model*/) throws Exception {
+		DraftVO draft = draftService.getDraftDetail(draft_no);
+		draft.setDraft_status(change_status);
+		System.out.println("change_status : "+ change_status);
+		System.out.println("수정하고자 하는 draft : " + draft);
+		draftService.modifyDraftStatus(draft);
+		if(change_status.equals("결재승인")) {
+			
+			Lecture_attendVO lec_attend = new Lecture_attendVO();
+			lec_attend.setProfessor_id(draft.getProfessor_id());
+			lec_attend.setLecture_data_no(draft.getLecture_data_no());
+			
+			//출석부 등록
+			lectureAttendService.insertAttend(lec_attend);
+
+			//동영상 업로드 수치 1로 변경
+			lectureService.uploadVideo(draft.getLecture_data_no());
+		}
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	멤버 사진 들고오기
+	 * @작성자		    :	이누리
+	 * @작성날짜    	:	2020. 6. 17.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 17.오후 4:51:23
+	 * @see			    :	-
+	 * @param draft_attach_no
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping("getFile")
+	public ResponseEntity<NoticeFileDownloadVO> getFile(int draft_attach_no) throws Exception {
+		System.out.println("draft_attach_no : "+draft_attach_no);
+		ResponseEntity<NoticeFileDownloadVO> entity = null;
+
+		Draft_AttachVO attach_data = draftService.getDraftAttach(draft_attach_no);
+		System.out.println("attach_data : "+attach_data);
+		
+		NoticeFileDownloadVO fileDown = new NoticeFileDownloadVO();
+
+		
+		String filePath = attach_data.getDraft_attach_filename();
+		//String fileName = attach_data.getUuid() + "$$" + attach_data.get(0).getNotice_filename();
+		String originalName = attach_data.getDraft_attach_filename();
+		
+		fileDown.setFileName(filePath);
+		fileDown.setFilePath(filePath);
+		fileDown.setOriginalName(originalName);
+
+		entity = new ResponseEntity<NoticeFileDownloadVO>(fileDown, HttpStatus.OK);
+
+		return entity;
+
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	기안서 파일 다운로드
+	 * @작성자		    :	이누리
+	 * @작성날짜    	:	2020. 6. 17.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 17.오후 4:51:38
+	 * @see			    :	-
+	 * @param fileName
+	 * @param filePath
+	 * @param originalName
+	 * @param req
+	 * @param res
+	 * @param mnv
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping("getDown")
+	public void getDown(String fileName, String filePath, String originalName, HttpServletRequest req,
+			HttpServletResponse res, ModelAndView mnv) throws Exception {
+
+		System.out.println("fileName : "+fileName);
+		System.out.println("filePath : "+filePath);
+		System.out.println("originalName : "+originalName);
+
+		
+		try {
+			DownloadView fileDown = new DownloadView(); // 파일다운로드 객체생성
+			fileDown.fileDown(req, res, filePath, fileName, originalName, mnv); // 파일다운로드
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	
+
+	
+}

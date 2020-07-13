@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="freeReply-mapper">
+<!--
+	기능구분	: 댓글
+	기능설명	: 댓글리스트
+	파라미터	: reply
+	리턴타입	:
+-->	
+	<select id="selectReplyList" parameterType="int" resultType="reply">
+		select *
+		from freeboard_reply
+		where freeboard_no=#{freeboard_no}
+		order by freeboard_reply_no desc
+	</select>
+<!--
+	기능구분	: 댓글
+	기능설명	: 댓글상세보기
+	파라미터	: reply
+	리턴타입	:
+-->		
+	<select id="replyDetail" resultType="reply">
+		select freeboard_reply_no,freeboard_reply_content,freeboard_reply_regdate,freeboard_reply_replyer
+		from freeboard_reply
+		where freeboard_reply_no=#{freeboard_reply_no}
+	</select>
+	
+<!--
+	기능구분	: 댓글
+	기능설명	: 댓글카운트
+	파라미터	: int
+	리턴타입	:
+-->	
+	<select id="countReply" resultType="int">
+		select count(freeboard_no) 
+		from freeboard_reply
+		where freeboard_no=#{freeboard_no}
+	</select>
+<!--
+	기능구분	: 댓글
+	기능설명	: 댓글등록
+	파라미터	: 
+	리턴타입	:
+-->	
+	<update id="insertReply" >
+		insert into freeboard_reply(freeboard_reply_no,freeboard_no,freeboard_reply_content,freeboard_reply_regdate,freeboard_reply_replyer)
+		values(#{freeboard_reply_no},#{freeboard_no},#{freeboard_reply_content},sysdate,#{freeboard_reply_replyer})
+	
+	</update>
+<!--
+	기능구분	: 댓글
+	기능설명	: 댓글수정
+	파라미터	: freeBoard_replyVO
+	리턴타입	: -
+-->		
+	<update id="updateReply" parameterType="reply">
+		update freeboard_reply 
+		set 
+		freeboard_reply_content=#{freeboard_reply_content}
+		
+		where freeboard_reply_no=#{freeboard_reply_no}		
+	</update>
+<!--
+	기능구분	: 댓글
+	기능설명	: 댓글삭제
+	파라미터	: 
+	리턴타입	:
+-->		
+	<update id="deleteReply" parameterType="int">
+		delete from freeboard_reply
+		where freeboard_reply_no=#{freeboard_reply_no}		
+	</update>
+	
+	<select id="selectfreeBoardReplySeqNext" resultType="int">
+		select freeboardreply_seq.nextval as freeboard_reply_no from dual
+	</select>
+</mapper>

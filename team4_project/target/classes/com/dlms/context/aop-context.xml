@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/aop"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
+
+	<!-- pointcut 공통관심사항이 적용 될 Joinpoint -->
+<config>
+		<pointcut expression="execution(public * com.*.service..*(..))" id="servicePublicMethod"/>
+		<advisor advice-ref="txAdvice" pointcut-ref="servicePublicMethod"/>					
+	</config>
+	<!-- propagation 종류 및 설명
+	REQUIRED : 부모 트랜잭션 내에서 실행하며 부모 트랜잭션이 없을 경우 새로운 트랜잭션을 생성합니다.
+	REQUIRES_NEW : 부모 트랜잭션을 무시하고 무조건 새로운 트랜잭션이 생성되도록 합니다.
+	SUPPORT : 부모 트랜잭션 내에서 실행하며 부모 트랜잭션이 없을 경우 nontransactionally로 실행됩니다.
+	MANDATORY : 부모 트랜잭션 내에서 실행되며 부모 트랜잭션이 없을 경우 예외가 발생됩니다.
+	NOT_SUPPORT : nontransactionally로 실행하며 부모 트랜잭션 내에서 실행될 경우 일시 정지 됩니다.
+	NEVER : nontransactionally로 실행되며 부모 트랜잭션이 존재한다면 예외가 발생합니다.
+	NESTED : 해당 메서드가 부모 트랜잭션에서 진행될 경우 별개로 커밋되거나 롤백될 수 있습니다. 둘러싼 트랜잭션이 없을 경우 REQUIRED와 동일하게 작동합니다. -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*" propagation="REQUIRED"/>
+			<tx:method name="regist*" rollback-for="Exception"/>
+			<tx:method name="modify*" rollback-for="Excepiton"/>
+			<tx:method name="remove*" rollback-for="Exception"/>
+			<tx:method name="read*" rollback-for="Exception"/>
+			<tx:method name="get*" read-only="true"/>
+		</tx:attributes>	
+	</tx:advice>
+
+
+</beans:beans>

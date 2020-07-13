@@ -1,0 +1,46 @@
+package com.dlms.service.education_purpose;
+
+import java.sql.SQLException;
+
+import java.util.Map;
+
+import com.dlms.dto.Manager_boardVO;
+import com.dlms.dto.Manager_dataVO;
+
+
+public interface Education_purposeService {
+	
+    /**
+     * 
+     * @기능설명		:	교육목표 조회
+     * @작성자		    :	이누리
+     * @작성날짜    	:	2020. 6. 9.
+     * @마지막수정자	:	이누리
+     * @마지막수정일	:	2020. 6. 9.오후 3:15:24
+     * @see			    :	-
+     * @param manager_board_no
+     * @return
+     * @throws SQLException
+     *
+     */
+	Map<String,Object> getEducation_purpose()throws SQLException;
+	
+	/**
+	 * 
+	 * @기능설명		:	교육목표 수정
+	 * @작성자		    :	이누리
+	 * @작성날짜    	:	2020. 6. 9.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 9.오후 3:15:38
+	 * @see			    :	-
+	 * @param manager_data
+	 * @param manager_board_no
+	 * @throws SQLException
+	 *
+	 */
+	void modifyEducation_purpose(Manager_boardVO manager_board)throws SQLException;
+	
+	
+}
+
+

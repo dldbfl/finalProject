@@ -1,0 +1,778 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<script>
+
+history.pushState(null, null, location.href);
+window.onpopstate = function () {
+    history.go(1);
+};
+var page= $('input[name="page"]').val();
+//발신함 휴지통 복원 
+var messenger_restore = function(mno){
+	var bool = confirm('쪽지를 복원 하시겠습니까?');
+	if(bool){
+	$.ajax({
+		url : "<%=request.getContextPath()%>/message/messenger_restore",
+			type : "post",
+			data: JSON.stringify(mno),
+			contentType: "application/json; charset=utf-8;",
+            dataType: "json",
+            success:function(res){
+    		
+    		},
+    		error:function(error){
+    			alert("쪽지를 복원했습니다.");
+    			location.href="<%=request.getContextPath()%>/message/messenger/recycle_list?page="+page;
+    		}
+		})
+	}
+};
+
+//수신함 휴지통 복원
+var receiver_restore = function(rno){
+	var bool = confirm('쪽지를 복원 하시겠습니까?');
+	if(bool){
+	
+	$.ajax({
+		url : "<%=request.getContextPath()%>/message/receiver_restore",
+			type : "post",
+			data: JSON.stringify(rno),
+			contentType: "application/json; charset=utf-8;",
+            dataType: "json",
+            success:function(res){
+    		
+    		},
+    		error:function(error){
+    			
+    			alert("쪽지를 복원했습니다.");
+    			location.href="<%=request.getContextPath()%>/message/receiver/recycle_list?page="+page;
+    		}
+		})
+	}
+};
+
+//발신함 휴지통 일괄 복원
+var messenger_allRestore = function(){
+	var bool = confirm('선택된 쪽지를 복원 하시겠습니까?');
+	if(bool){
+		$('input:checkbox[id="recycle_checked"]:checked').each(function(i){
+			
+		var mno = $(this).val();
+	$.ajax({
+		url : "<%=request.getContextPath()%>/message/messenger_restore",
+			type : "post",
+			data: JSON.stringify(mno),
+			contentType: "application/json; charset=utf-8;",
+            dataType: "json",
+            success:function(res){
+    		
+    		},
+    		error:function(error){
+    			
+    		}
+		})
+	 });
+    	alert("쪽지를 복원했습니다.");
+		location.href="<%=request.getContextPath()%>/message/messenger/recycle_list?page="+page;
+   }
+};
+
+//수신함 휴지통 일괄 복원
+var receiver_allRestore = function(){
+	var bool = confirm('선택된 쪽지를 복원 하시겠습니까?');
+	if(bool){
+		$('input:checkbox[id="receiver_checked"]:checked').each(function(i){
+			
+		var rno = $(this).val();
+	
+	$.ajax({
+		url : "<%=request.getContextPath()%>/message/receiver_restore",
+			type : "post",
+			data: JSON.stringify(rno),
+			contentType: "application/json; charset=utf-8;",
+            dataType: "json",
+            success:function(res){
+    		
+    		},
+    		error:function(error){
+    			
+    		}
+		})
+	 });
+    	alert("쪽지를 복원했습니다.");
+		location.href="<%=request.getContextPath()%>/message/receiver/recycle_list?page="+page;
+   }
+};
+
+//발신함 쪽지 일괄 영구삭제
+var messenger_allRemove = function(){
+	var bool = confirm('선택된 쪽지를 영구삭제 합니다');
+	if(bool){
+		$('input:checkbox[id="recycle_checked"]:checked').each(function(i){
+			var mno = $(this).val();
+		
+	$.ajax({
+		url : "<%=request.getContextPath()%>/message/messenger_remove",
+				 type : "post",
+				 data: JSON.stringify(mno),
+				 contentType: "application/json; charset=utf-8;",
+           		 dataType: "json",
+           		 success:function(res){
+    		
+    			},
+    			error:function(error){
+    			
+    			}
+			});
+		});
+   			alert("쪽지를  삭제했습니다");
+			location.href="<%=request.getContextPath()%>/message/messenger/recycle_list?page="+page;
+	}
+};
+
+//수신함 쪽지 일괄 영구삭제
+var receiver_allRemove = function(){
+	var bool = confirm('선택된 쪽지를 영구삭제 합니다');
+	if(bool){
+		$('input:checkbox[id="recycle_checked"]:checked').each(function(i){
+			var rno = $(this).val();
+		
+	$.ajax({
+		url : "<%=request.getContextPath()%>/message/receiver_remove",
+				 type : "post",
+				 data: JSON.stringify(rno),
+				 contentType: "application/json; charset=utf-8;",
+           		 dataType: "json",
+           		 success:function(res){
+    		
+    			},
+    			error:function(error){
+    			
+    			}
+			});
+		});
+   			alert("쪽지를  삭제했습니다");
+   			location.href="<%=request.getContextPath()%>/message/receiver/recycle_list?page="+page;
+	}
+};
+
+// 발신함 쪽지 영구삭제
+var messenger_remove = function(mno){
+	var bool = confirm('쪽지를 영구삭제 합니다');
+	if(bool){
+	$.ajax({
+		url : "<%=request.getContextPath()%>/message/messenger_remove",
+			type : "post",
+			data: JSON.stringify(mno),
+			contentType: "application/json; charset=utf-8;",
+            dataType: "json",
+            success:function(res){
+    		
+    		},
+    		error:function(error){
+    			
+    			alert("쪽지를  삭제했습니다");
+    			location.href="<%=request.getContextPath()%>/message/messenger/recycle_list?page="+page;
+    		}
+		})
+	}
+};
+
+//수신함 쪽지 영구삭제
+var receiver_remove = function(rno){
+	var bool = confirm('쪽지를 영구삭제 합니다');
+	if(bool){
+	$.ajax({
+		url : "<%=request.getContextPath()%>/message/receiver_remove",
+			type : "post",
+			data: JSON.stringify(rno),
+			contentType: "application/json; charset=utf-8;",
+            dataType: "json",
+            success:function(res){
+    		
+    		},
+    		error:function(error){
+    			
+    			alert("쪽지를  삭제했습니다");
+    			location.href="<%=request.getContextPath()%>/message/receiver/recycle_list?page="+page;
+    		}
+		})
+	}
+};
+
+//발신함 휴지통 보내기
+var messenger_recycle = function(mno){
+	var bool = confirm('쪽지를 휴지통으로 보내시겠습니까?');
+	if(bool){
+	$.ajax({
+		url : "<%=request.getContextPath()%>/message/messenger_recycle",
+			type : "post",
+			data: JSON.stringify(mno),
+			contentType: "application/json; charset=utf-8;",
+            dataType: "json",
+            success:function(res){
+    		
+    		},
+    		error:function(error){
+    			
+    			alert("휴지통으로 보냈습니다");
+    			location.href="<%=request.getContextPath()%>/message/messenger_list?page="+page;
+    		}
+		})
+	}	
+};
+//발신함 일괄 휴지통 보내기
+var messenger_allRecycle = function(){
+	var bool = confirm('선택된 쪽지를 휴지통으로 보내시겠습니까?');
+	if(bool){
+	$('input:checkbox[id="messenger_checked"]:checked').each(function(i){
+		
+		var mno = $(this).val();
+		
+		$.ajax({
+			url : "<%=request.getContextPath()%>/message/messenger_recycle",
+				type : "post",
+				data: JSON.stringify(mno),
+				contentType: "application/json; charset=utf-8;",
+	            dataType: "json",
+	            success:function(res){
+	    		
+	    		},
+	    		error:function(error){
+	    		}
+			})
+		});
+	alert("휴지통으로 보냈습니다");
+	location.href="<%=request.getContextPath()%>/message/messenger_list?page="+page;
+	}
+}
+
+//수신함 휴지통 보내기
+var receiver_recycle = function(rno){
+	var bool = confirm('쪽지를 휴지통으로 보내시겠습니까?');
+	if(bool){
+	$.ajax({
+		url : "<%=request.getContextPath()%>/message/receiver_recycle",
+			type : "post",
+			data: JSON.stringify(rno),
+			contentType: "application/json; charset=utf-8;",
+            dataType: "json",
+            success:function(res){
+    		
+    		},
+    		error:function(error){
+    			
+    			alert("휴지통으로 보냈습니다");
+    			location.href="<%=request.getContextPath()%>/message/receiver_list?page="+page;
+    		}
+		})
+	}	
+};
+
+//수신함 일괄 휴지통 보내기
+var receiver_allRecycle = function(){
+	
+	var bool = confirm('쪽지를 휴지통으로 보내시겠습니까?');
+	if(bool){
+		$('input:checkbox[id="receiver_checked"]:checked').each(function(i){
+			
+			var rno = $(this).val();
+	$.ajax({
+		url : "<%=request.getContextPath()%>/message/receiver_recycle",
+			type : "post",
+			data: JSON.stringify(rno),
+			contentType: "application/json; charset=utf-8;",
+            dataType: "json",
+            success:function(res){
+    		
+    		},
+    		error:function(error){
+    			
+    		  }
+		  })
+		});
+		location.href="<%=request.getContextPath()%>/message/receiver_list?page="+page;
+	}
+};
+
+
+//발신함 상세 정보 가져오기
+var messenger_Detail = function(mno){
+
+	$.ajax({
+		url : "<%=request.getContextPath()%>/message/messenger_Detail",
+			type : "post",
+			data: JSON.stringify(mno),
+			contentType: "application/json; charset=utf-8;",
+            dataType: "json",
+            success:function(res){
+            	$('html, body').css({'overflow': 'hidden', 'height': '100%'});
+
+            	$('#element').on('scroll touchmove mousewheel', function(e) {
+            	   e.preventDefault();
+            	   e.stopPropagation();
+            	   return false;
+            	});
+    			var jsonString1 = JSON.stringify(res);
+    			var jsonObject1 = JSON.parse(jsonString1);
+  				$('#tomessenger_receiver').val(jsonObject1.messenger_receiver);
+    			$('input[id="detail_writer"]').val('받는 사람 ' + jsonObject1.messenger_receiver);
+    			$('input[id="detail_date"]').val('보낸 시간 ' + jsonObject1.format_date);
+    			$('#detail_content').append(jsonObject1.messenger_content);
+    			$('#fileName').val(jsonObject1.message_fileName);
+    			$('#realName').val(jsonObject1.real_name);
+    			$('#realPath').val(jsonObject1.real_path);
+    			
+    			function noEvent() { // 새로 고침 방지
+    				 
+    		        if ($("#detailState").val() == "1") {
+    		            if (event.keyCode == 116) {  		         
+    		                event.keyCode = 2;
+    		                return false;
+    		            } else if (event.ctrlKey
+    		                    && (event.keyCode == 78 || event.keyCode == 82)) {
+    		                return false;
+    		            }
+    		        }
+    		    }
+    		    document.onkeydown = noEvent;
+    		},
+    		error:function(res){
+    		}
+		});
+};
+//수신함 상세 정보 가져오기
+var receiver_Detail = function(rno){
+	$.ajax({
+		url : "<%=request.getContextPath()%>/message/receiver_Detail",
+			type : "post",
+			data: JSON.stringify(rno),
+			contentType: "application/json; charset=utf-8;",
+            dataType: "json",
+            success:function(res){
+            	$('html, body').css({'overflow': 'hidden', 'height': '100%'});
+
+            	$('#element').on('scroll touchmove mousewheel', function(e) {
+            	   e.preventDefault();
+            	   e.stopPropagation();
+            	   return false;
+            	});
+            	
+    			var jsonString1 = JSON.stringify(res);
+    			var jsonObject1 = JSON.parse(jsonString1);
+  				$('#tomessenger_receiver').val(jsonObject1.receiver_sender);
+  				$('#answer_receiver').val(jsonObject1.receiver_sender);
+    			$('input[id="detail_writer"]').val('보낸 사람 ' + jsonObject1.receiver_sender);
+    			$('input[id="detail_date"]').val('받은 시간 ' + jsonObject1.format_date);
+    			$('#detail_content').append(jsonObject1.receiver_content);
+    			$('#fileName').val(jsonObject1.message_fileName);
+    			$('#realName').val(jsonObject1.real_name);
+    			$('#realPath').val(jsonObject1.real_path);
+    			
+    			function noEvent() { // 새로 고침 방지
+    				 
+    		        if ($("#detailState").val() == "1") {
+    		            if (event.keyCode == 116) {  		         
+    		                event.keyCode = 2;
+    		                return false;
+    		            } else if (event.ctrlKey
+    		                    && (event.keyCode == 78 || event.keyCode == 82)) {
+    		                return false;
+    		            }
+    		        }
+    		    }
+    		    document.onkeydown = noEvent;
+    		},
+    		error:function(res){
+    		}
+		});
+};
+
+//발신함 휴지통 상세 정보 가져오기
+var messenger_recycle_Detail = function(mno){
+	$.ajax({
+		url : "<%=request.getContextPath()%>/message/messenger_recycle_Detail",
+			type : "post",
+			data: JSON.stringify(mno),
+			contentType: "application/json; charset=utf-8;",
+            dataType: "json",
+            success:function(res){
+               	$('html, body').css({'overflow': 'hidden', 'height': '100%'});
+
+            	$('#element').on('scroll touchmove mousewheel', function(e) {
+            	   e.preventDefault();
+            	   e.stopPropagation();
+            	   return false;
+            	});
+    			var jsonString1 = JSON.stringify(res);
+    			var jsonObject1 = JSON.parse(jsonString1);
+  				$('#tomessenger_receiver').val(jsonObject1.messenger_receiver);
+    			$('input[id="detail_writer"]').val('받는 사람 ' + jsonObject1.messenger_receiver);
+    			$('input[id="detail_date"]').val('보낸 시간 ' + jsonObject1.format_date);
+    			$('#detail_content').append(jsonObject1.messenger_content);
+    			$('#fileName').val(jsonObject1.message_fileName);
+    			$('#realPath').val(jsonObject1.real_path);
+    	
+    			function noEvent() { // 새로 고침 방지
+    				 
+    		        if ($("#detailState").val() == "1") {
+    		            if (event.keyCode == 116) {  		         
+    		                event.keyCode = 2;
+    		                return false;
+    		            } else if (event.ctrlKey
+    		                    && (event.keyCode == 78 || event.keyCode == 82)) {
+    		                return false;
+    		            }
+    		        }
+    		    }
+    		    document.onkeydown = noEvent;
+    		},
+    		error:function(res){
+    		}
+		});
+};
+
+//수신함 휴지통 상세정보 가져오기
+var receiver_recycle_Detail = function(rno){
+	$.ajax({
+		url : "<%=request.getContextPath()%>/message/receiver_recycle_Detail",
+			type : "post",
+			data: JSON.stringify(rno),
+			contentType: "application/json; charset=utf-8;",
+            dataType: "json",
+            success:function(res){
+               	$('html, body').css({'overflow': 'hidden', 'height': '100%'});
+
+            	$('#element').on('scroll touchmove mousewheel', function(e) {
+            	   e.preventDefault();
+            	   e.stopPropagation();
+            	   return false;
+            	});
+    			var jsonString1 = JSON.stringify(res);
+    			var jsonObject1 = JSON.parse(jsonString1);
+  				$('#tomessenger_receiver').val(jsonObject1.receiver_sender);
+  				$('#answer_receiver').val(jsonObject1.receiver_sender);
+    			$('input[id="detail_writer"]').val('보낸 사람 ' + jsonObject1.receiver_sender);
+    			$('input[id="detail_date"]').val('받은 시간 ' + jsonObject1.format_date);
+    			$('#detail_content').append(jsonObject1.receiver_content);
+    			$('#fileName').val(jsonObject1.message_fileName);
+    			$('#realName').val(jsonObject1.real_name);
+    			$('#realPath').val(jsonObject1.real_path);
+    			
+    			function noEvent() { // 새로 고침 방지
+    				 
+    		        if ($("#detailState").val() == "1") {
+    		            if (event.keyCode == 116) {  		         
+    		                event.keyCode = 2;
+    		                return false;
+    		            } else if (event.ctrlKey
+    		                    && (event.keyCode == 78 || event.keyCode == 82)) {
+    		                return false;
+    		            }
+    		        }
+    		    }
+    		    document.onkeydown = noEvent;
+    		},
+    		error:function(res){
+    		}
+		});
+};
+
+//메세지 보내기
+$('#sendMsg').on('click',function(){
+	  var writer = $('input[id="messenger_receiver"]').val();
+	  var title =  $('input[id="messenger_title"]').val()+'';
+	  var content =  $('#messenger_content').val()+'';
+	  
+	  if(title.length == 0){
+		  alert('제목을 입력해 주세요');
+		  return;
+	  }
+	  
+	  if(title.length > 30 || content.legnth > 500){
+		  alert('제목은 30자 내용은 500자 미만으로 해주세요');
+		  return;
+		  
+	  }else{
+	$.ajax({
+		url : "<%=request.getContextPath()%>/message/getId",
+			type : "post",
+			data: JSON.stringify(writer),
+			contentType: "application/json; charset=utf-8;",
+            dataType: "json",
+            success:function(res){
+    			if(res == 0){
+    				alert('존재하지 않는 사용자 입니다 다시 확인해 주세요');
+    				
+    			}else{
+    				
+    				var form = $('#messengerForm')[0];
+    				  var formData = new FormData(form);
+    				  
+    				   $.ajax({
+    				        type: "POST",
+    				        enctype: 'multipart/form-data',
+    				        url: "<%=request.getContextPath()%>/message/message_send",
+    				        data: formData,
+    				        processData: false,
+    				        contentType: false,
+    				        cache: false,
+    				        success: function (data) {
+    				        	
+    				        	if(data == 'MAX'){
+    				        		alert("파일 용량은 50MB 까지 입니다.");
+    				        	}else{
+    				        	
+    				            alert('쪽지를 전송했습니다.');
+    				            location.href = "#";
+    				            location.reload(true);
+    				        	} 
+    				            
+    				        },
+    				        error: function (e) {
+    				           
+    				            
+    				        }
+    				  });
+    				
+    				
+    			}
+    		},
+    		error:function(res){
+ 	
+    		}
+		});
+	  }
+});
+
+	
+
+//지정메세지 보내기
+$('#tosendMsg').on('click',function(){
+	  var writer = $('input[id="tomessenger_receiver"]').val();
+	  var title =  $('input[id="tomessenger_title"]').val()+'';
+	  var content =  $('#tomessenger_content').val()+'';
+	  
+	  if(title.length == 0){
+		  alert('제목을 입력해 주세요');
+		  return;
+	  }
+	  if(title.length > 30 || content.length > 500){
+		  alert('제목은 30자 내용은 500자 미만으로 해주세요');
+		  return;
+	  }else{
+	$.ajax({
+		url : "<%=request.getContextPath()%>/message/getId",
+			type : "post",
+			data: JSON.stringify(writer),
+			contentType: "application/json; charset=utf-8;",
+            dataType: "json",
+            success:function(res){
+    			if(res == 0){
+    				alert('존재하지 않는 사용자 입니다 다시 확인해 주세요');
+    				
+    			}else{
+    				
+    				var form = $('#tomessengerForm')[0];
+    				  var formData = new FormData(form);
+    				  
+    				   $.ajax({
+    				        type: "POST",
+    				        enctype: 'multipart/form-data',
+    				        url: "<%=request.getContextPath()%>/message/tomessage_send",
+    				        data: formData,
+    				        processData: false,
+    				        contentType: false,
+    				        cache: false,
+    				        success: function (data) {
+    				        	
+    				        	if(data == 'MAX'){
+    				        		alert("파일 용량은 50MB 까지 입니다.");
+    				        	}else{
+    				        	
+    				            alert('쪽지를 전송했습니다.');
+    				            location.href = "#";
+    				            location.reload(true);
+    				        	} 
+    				            
+    				        },
+    				        error: function (e) {
+    				           
+    				            
+    				        }
+    				  });
+    				
+    				
+    			}
+    		},
+    		error:function(res){
+ 	
+    		}
+		});
+	  }
+});
+
+//답변 보내기
+$('#answerBtn').on('click',function(){
+	
+	
+	  var writer = $('input[id="answer_writer"]').val();
+	  var title =  $('input[id="answer_title"]').val()+'';
+	  var content = $('#answer_content').val()+'';
+	  if(title.length == 0){
+		  alert('제목을 입력해 주세요');
+		  return;
+	  }
+	  if(title.length > 30 || content.length > 500){
+		  alert('제목은 30자 내용은 500자 미만으로 해주세요');
+		  return;
+	  }else{
+	$.ajax({
+		url : "<%=request.getContextPath()%>/message/getId",
+			type : "post",
+			data: JSON.stringify(writer),
+			contentType: "application/json; charset=utf-8;",
+            dataType: "json",
+            success:function(res){
+    			if(res == 0){
+    				alert('존재하지 않는 사용자 입니다 다시 확인해 주세요');
+    				
+    			}else{
+    				
+    				var form = $('#answerForm')[0];
+    				  var formData = new FormData(form);
+    				  
+    				   $.ajax({
+    				        type: "POST",
+    				        enctype: 'multipart/form-data',
+    				        url: "<%=request.getContextPath()%>/message/answer",
+    				        data: formData,
+    				        processData: false,
+    				        contentType: false,
+    				        cache: false,
+    				        success: function (data) {
+    				        	
+    				        	if(data == 'MAX'){
+    				        		alert("파일 용량은 50MB 까지 입니다.");
+    				        	}else{
+    				        	
+    				            alert('답변을 보냈습니다.');
+    				            location.href = "#";
+    				            location.reload(true);
+    				        	} 
+    				            
+    				        },
+    				        error: function (e) {
+    				           
+    				            
+    				        }
+    				  });
+    				
+    				
+    			}
+    		},
+    		error:function(res){
+ 	
+    		}
+		});
+	  }
+});
+
+//발신함 검색
+$('#messengerSearchBtn').on('click',function() {
+	var form = $('#messengerSearch');
+	form.submit();
+})
+
+//발신함 휴지통 검색
+$('#messengerRecycleSearchBtn').on('click',function() {
+	var form = $('#messengerRecycleSearch');
+	form.submit();
+})
+
+//수신함 검색
+$('#receiverSearchBtn').on('click',function() {
+	var form = $('#receiverSearch');
+	  form.submit(); 
+	  
+	 
+})
+
+//수신함 검색
+$('#receiverRecycleSearchBtn').on('click',function() {
+	var form = $('#receiverRecycleSearch');
+	  form.submit(); 
+	  
+	 
+})
+
+//모달 닫기
+var messenger_modal_cancel = function(){
+		
+		$('#detailState').val('0');// 모달 닫을떄 상세페이지 새로고침 해제
+		$.ajax({
+			url :"<%=request.getContextPath()%>/message/writeCancel",
+			success:function(){
+					
+					//스크롤 방지 해제
+					$('html, body').css({'overflow': 'visible', 'height': '100%'});
+	            	$('#element').off('scroll touchmove mousewheel');
+				
+					$("form[role='form']").each(function() {
+						this.reset();
+						
+					});
+					location.href = "#";
+					
+				}
+			});
+	};
+	//모두 체크 
+	$("#chkAll").click(function() {
+		$("input[type=checkbox]").prop("checked", true);
+
+	});
+
+	//모두 체크 해제
+	$("#unChkAll").click(function() {
+		$("input[type=checkbox]").prop("checked", false);
+
+	});
+
+	//읽은것만 체크
+	$("#readChk").click(function() {
+		$("input[type=checkbox]").prop("checked", false);
+		$('input[role="y"]').prop("checked", true);
+
+	});
+	
+	//읽지 않은것만 체크
+	$("#unReadChk").click(function() {
+		$("input[type=checkbox]").prop("checked", false);
+		$('input[role="n"]').prop("checked", true);
+
+	});
+	//다운로드
+	var fileDownload = function() {
+		var fileName = $('#realName').val();
+		var path = $('#realPath').val();
+		var downloadName = $('#fileName').val();
+		var file = { "fileName": fileName, "filePath": path, "downloadName":downloadName };
+	
+		
+		$.fileDownload("<%=request.getContextPath()%>/message/fileDownload", {
+			httpMethod: "POST",
+		    data: file,
+			successCallback: function(){
+			
+	   			
+			},
+			failCallback: function(){
+			
+			}
+		});
+
+	}
+
+</script>

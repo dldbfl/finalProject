@@ -1,0 +1,25 @@
+package com.dlms.service.enterprise_comming;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import com.dlms.dto.Enterprise_introduceVO;
+import com.dlms.dto.Manager_dataVO;
+import com.dlms.dto.ProfessorAllVO;
+import com.dlms.dto.StudentAllVO;
+import com.dlms.request.Enterprise_introduceRequest;
+import com.dlms.request.SearchCriteria;
+
+public interface Enterprise_commingService {
+	
+
+	Map<String,Object> getEnterprise_comming(int enterprise_introduce_no)throws SQLException;
+	
+
+	void modifyEnterprise_comming(Enterprise_introduceVO enterprise_introduce, int enterprise_introduce_no)throws SQLException;
+	
+	
+}
+
+

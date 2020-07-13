@@ -1,0 +1,10 @@
+package com.dlms.service.lecture;
+
+import java.sql.SQLException;
+
+import com.dlms.dto.Lecture_attendVO;
+import com.dlms.dto.StudentVO;
+
+public interface EvernoteSubscribeService {
+	public Lecture_attendVO getAttend(int lecture_no)throws SQLException;
+}

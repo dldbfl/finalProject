@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="receiver-mapper">
+	
+	<!--
+	기능구분	: 검색기능
+	기능설명	: searchType이 i일 시 발신자로  검색 c일 시 내용으로 검색
+	-->
+	<sql id="search">
+		<if test="searchType == 't'.toString()">
+			and receiver_title like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'c'.toString()">
+			and receiver_content like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 's'.toString()">
+			and receiver_sender like '%'||#{keyword}||'%'			
+		</if>
+	</sql>
+	
+	<!--
+	기능구분	: 수신함 리스트
+	기능설명	: 발신함 리스트를 불러온다
+	파라미터	: cri
+	리턴타입	: receiver
+	-->
+	<select id="selectSearchReceiverList" parameterType="hashmap" resultType="receiver">
+		select  *
+		from
+		receiver
+		where receiver_id is not null and receiver_status = 3
+		and receiver_id = #{id}	  	
+		<include refid="search" />
+		order by receiver_date desc
+	</select>
+	 
+	<!--
+	기능구분	: 수신함 리스트 카운트
+	기능설명	: 수신함 리스트를 불러온 시 페이지 넘버를 가져오기 위한 장치
+	파라미터	: X
+	리턴타입	: int
+	-->
+	<select id="selectSearchReceiverListCount" parameterType="hashmap" resultType="int">
+		select
+		count(*)
+		from
+		receiver
+		where receiver_id is not null and receiver_status = 3
+		and receiver_id = #{id}	  	
+		<include refid="search" />
+		order by receiver_date desc
+	</select>
+	
+	<!--
+	기능구분	: 수신함 상세
+	기능설명	: 수신함 상세를 불러온다
+	파라미터	: int
+	리턴타입	: messenger
+	-->
+	<select id="selectReceiverDetail"  parameterType="int" resultType="receiver">
+		select  *
+		from
+		receiver
+		where receiver_no is not null and receiver_status = 3 and receiver_no=#{receiver_no}  	
+		order by receiver_date desc
+	</select>
+	
+	<!--
+	기능구분	: 수신함 휴지통 리스트 
+	기능설명	: 수신함 휴지통 리스트를 출력한다.
+	파라미터	: cri
+	리턴타입	: receiver
+	-->
+	<select id="selectSearchReceiverRecycleList" parameterType="cri" resultType="receiver">
+		select  *
+		from
+		receiver
+		where receiver_id is not null and receiver_status = 2		  	
+		<include refid="search" />
+		order by receiver_date desc
+	</select>
+	 
+	<!--
+	기능구분	: 수신함 휴지통 리스트 카운트
+	기능설명	: 수신함 휴지통 리스트를 불러온 시 페이지 넘버를 가져오기 위한 장치
+	파라미터	: X
+	리턴타입	: int
+	-->
+	<select id="selectSearchReceiverRecycleListCount" resultType="int">
+		select
+		count(*)
+		from
+		receiver
+		where receiver_id is not null and receiver_status = 2		  	
+		<include refid="search" />
+		order by receiver_date desc
+	</select>
+	
+	<!--
+	기능구분	: 수신함 휴지통 상세
+	기능설명	: 수신함 휴지통 상세를 불러온다
+	파라미터	: int
+	리턴타입	: messenger
+	-->
+	<select id="selectReceiverRecycleDetail"  parameterType="int" resultType="receiver">
+		select  *
+		from
+		receiver
+		where receiver_no is not null and receiver_status = 2 and receiver_no=#{receiver_no}  	
+		order by receiver_date desc
+	</select>
+	
+	<!--
+	기능구분	: 수신함 메세지 휴지통 이동
+	기능설명	: 수신함 메시지를 휴지통에 저장한다.
+	파라미터	: receiver
+	리턴타입	: int
+	-->
+	<update id="goRecycle" parameterType="int">
+		update receiver
+		set
+		receiver_status=2
+		where receiver_no=#{receiver_no}
+		
+	</update>
+	
+	<!--
+	기능구분	: 수신함 메세지 완전 삭제
+	기능설명	: 수신함 메시지를 완적 삭제 한다.
+	파라미터	: int
+	리턴타입	: X
+	-->
+	<update id="deleteMessage" parameterType="int">
+		delete
+		receiver
+		where receiver_no=#{receiver_no}
+	</update>
+	
+	<!--
+	기능구분	: 메세지 복구
+	기능설명	: 휴지통에 있는 메세지를 복구한다..
+	파라미터	: int
+	리턴타입	: X
+	-->
+	<update id="restore" parameterType="int">
+		update receiver
+		set
+		receiver_status=3
+		where receiver_no=#{receiver_no}
+	</update>
+	
+	<!--
+	기능구분	: 수신 번호 생성
+	기능설명	: 수신 번호를 생성한다.
+	파라미터	: X
+	리턴타입	: int
+	-->	
+	<select id="selectReceiver_SeqNext" resultType="int">
+		select RECEIVER_SEQ.nextval as receiver_no from dual
+	</select>
+	
+	<!--
+	기능구분	: 상태 변경
+	기능설명	: 읽은 상태로 변경한다.
+	파라미터	: X
+	리턴타입	: int
+	-->	
+	<update id="openEnvelope" parameterType="int">
+		update receiver
+		set
+		receiver_check='y'
+		where receiver_no=#{receiver_no}
+	</update>
+	
+	<!--
+	기능구분	: 파일 체크
+	기능설명	: 읽은 상태로 변경한다.
+	파라미터	: X
+	리턴타입	: int
+	-->	
+	<update id="fileCheck" parameterType="int">
+		update receiver
+		set
+		receiver_filecheck='y'
+		where receiver_no=#{receiver_no}
+	</update>
+	
+</mapper>

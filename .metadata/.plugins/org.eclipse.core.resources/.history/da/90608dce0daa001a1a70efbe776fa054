@@ -1,0 +1,8 @@
+package com.dlms.dao.education_curriculum;
+
+public class Snippet {
+	public static void main(String[] args) {
+		Education
+	}
+}
+

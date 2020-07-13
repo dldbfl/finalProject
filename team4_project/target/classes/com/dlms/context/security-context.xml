@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<http pattern="/resources/**" security="none" />
+	
+	<authentication-manager>
+			<authentication-provider ref="authenticator"/>
+		
+	</authentication-manager>
+	<!-- 권한 주는 영역 -->
+ 	<http use-expressions="true" pattern="/**">
+		<!-- 로그인 폼 URL에는 로그인 하지 않아도 접근할 수 있도록 합니다.-->
+ 		 <intercept-url pattern="/board/consult/list" access="permitAll"/>
+ 		<!--  <intercept-url pattern="/lecture/video" access="hasRole('STUDENT')"/> -->
+ 		 <intercept-url pattern="/lecture/video" access="hasAnyRole('USER,STUDENT,PROFESSOR')"/>
+ 		 <intercept-url pattern="/myPage/professorMain" access="hasRole('PROFESSOR')"/>
+ 		 <intercept-url pattern="/**/document/**" access="hasRole('PROFESSOR')"/>	
+ 		 <intercept-url pattern="/**/reivew/**" access="permitAll"/>
+ 		 <intercept-url pattern="/**/free/regist" access="isAuthenticated()"/>
+ 		 <intercept-url pattern="/**/free/**" access="permitAll"/>
+ 		 <intercept-url pattern="/**/qna/**" access="permitAll"/>
+ 		 <intercept-url pattern="/**/foundReviewList/**" access="permitAll"/>
+ 		 <intercept-url pattern="/**/charLMS/**" access="isAuthenticated()"/>
+ 		 <intercept-url pattern="/professor/**" access="hasRole('PROFESSOR')"/>
+ 		 <intercept-url pattern="/message/**" access="hasRole('PROFESSOR')"/>
+ 		 <intercept-url pattern="/mypage/**" access="isAuthenticated()"/>
+ 		 <intercept-url pattern="/commons/**" access="permitAll"/>
+ 		 <intercept-url pattern="/board/**" access="permitAll"/>
+ 		 <intercept-url pattern="/notice/**" access="permitAll"/>
+ 		 <intercept-url pattern="/enterprise/**" access="permitAll"/>
+ 		 <intercept-url pattern="/lecture/**" access="permitAll"/>
+ 		 
+		<form-login
+			login-page="/commons/login"
+			login-processing-url="/commons/loginCheck"
+			username-parameter="member_id"
+			password-parameter="member_pwd"
+			default-target-url="/"
+			authentication-success-handler-ref="loginSuccessHandler"
+			authentication-failure-handler-ref="loginFailureHandler"
+		/>
+		
+		<logout 
+			logout-url="/commons/logout"
+			invalidate-session="true"
+			delete-cookies="JSESSIONID"
+			success-handler-ref="logoutSuccessHandler"					
+		/>
+		<!-- 중복 로그인 시도시 필터 -->
+		<session-management invalid-session-url="/commons/loginTimeOut">
+			<concurrency-control
+				expired-url="/commons/loginTimeOut"
+				max-sessions="1"
+				session-registry-ref="sessionRegistry"
+			/>
+		</session-management>
+		 <!--  권한에 맞지 않을때 보여주는 페이지  -->
+		 <access-denied-handler
+		 	error-page="/error/denied-page"
+		 />
+		 
+	</http> 
+	
+	<beans:bean id="sessionRegistry"
+				class="org.springframework.security.core.session.SessionRegistryImpl" 
+				/>
+	<beans:bean id="authenticator"
+			 	class="com.dlms.security.CustomAuthentication"
+			 	p:memberDAO-ref="memberDAO"
+				/>
+	<beans:bean id="loginSuccessHandler"
+				class="com.dlms.security.LoginSuccessHandler"
+				/>
+	<beans:bean id="loginFailureHandler"
+				class="com.dlms.security.LoginFailureHandler"
+				p:defaultFailureUrl="/commons/login"
+				p:useForward="true"
+				/>
+	<beans:bean id="logoutSuccessHandler"
+				class="com.dlms.security.CustomLogoutSuccessHandler"
+				/>
+</beans:beans>

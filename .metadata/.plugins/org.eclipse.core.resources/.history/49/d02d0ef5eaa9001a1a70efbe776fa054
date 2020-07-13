@@ -1,0 +1,64 @@
+package com.dlms.dao.entrerprise_introduce;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.SqlSession;
+
+import com.dlms.dto.Enterprise_introduceVO;
+import com.dlms.dto.ProfessorAllVO;
+import com.dlms.dto.StudentAllVO;
+import com.dlms.request.SearchCriteria;
+
+ 
+public class Entrerprise_introduceDAOImpl implements Entrerprise_introduceDAO{
+	
+	private SqlSession sqlSession;
+	public void setSqlSession(SqlSession sqlSession) {
+		this.sqlSession = sqlSession;
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	기업소개 조회
+	 * @작성자		:	이누리
+	 * @작성날짜    	:	2020. 6. 5.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 5.오후 2:06:31
+	 * @see			:	-
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public Enterprise_introduceVO selectEnterprise_introduce() throws SQLException {		
+		Enterprise_introduceVO enterprise_introduce =null;
+		enterprise_introduce = sqlSession.selectOne("enterprise_introduce-mapper.selectEnterprise_introduce", null);
+		return enterprise_introduce;
+	}
+
+
+	/**
+	 * 
+	 * @기능설명		:	기업소개 수정
+	 * @작성자		:	이누리
+	 * @작성날짜    	:	2020. 6. 5.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 5.오후 2:07:09
+	 * @see			:	-
+	 * @param enterprise_introduce
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public void updateEnterprise_introduce(Enterprise_introduceVO enterprise_introduce) throws SQLException {
+		sqlSession.update("enterprise_introduce-mapper.updateEnterprise_introduce",enterprise_introduce);
+		
+	}
+	
+	
+
+	
+	
+}

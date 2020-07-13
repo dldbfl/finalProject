@@ -1,0 +1,19 @@
+#freeboard attach
+filePath.free.attach=c:\\upload\\freeboard\\attach\
+
+#message attach
+filePath.message.attach=c:\\upload\\message\\attach
+
+#manager_Enterprise_Introduce_ImagePath
+filePath.manager.enterprise_introduce=c:\\upload\\manager\\enterprise_introduce
+
+#manager_Enterprise_Comming_ImagePath
+filePath.manager.enterprise_comming=c:\\upload\\manager\\enterprise_comming
+
+#manager_Education_Purpose_ImagePath
+filePath.manager.education_purpose=c:\\upload\\manager\\education_purpose
+
+#manager_Education_Curriculum_ImagePath
+filePath.manager.education_curriculum=c:\\upload\\manager\\education_curriculum
+
+

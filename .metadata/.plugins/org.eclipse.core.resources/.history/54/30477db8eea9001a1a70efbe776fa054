@@ -1,0 +1,5 @@
+#freeboard attach
+filePath.free.attach=c:\\upload\\freeboard\\attach\
+
+#message attach
+filePath.message.attach=c:\\upload\\message\\attach

@@ -1,0 +1,12 @@
+1592786290486	Delete element
+1592802828860	Copy file
+1592892555539	Encapsulate field 'lecture_data_favorites'
+1592898675572	Rename resource 'qnanote_js.jsp'
+1592898708135	Rename resource 'videonote.jsp'
+1592969391666	Rename resource 'videonote_js.jsp'
+1592970342571	Copy compilation unit
+1592970362260	Rename type 'LectureVO'
+1593049289350	Rename resource 'lecturemanagement.jsp'
+1593049292330	Rename resource 'lecturemanagement'
+1593049768014	Rename type 'LectureManagementController'
+1593049775706	Rename package 'com.dlms.controller.manager.lecturemanagement'

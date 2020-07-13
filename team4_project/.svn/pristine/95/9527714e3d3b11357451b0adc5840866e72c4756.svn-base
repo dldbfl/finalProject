@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd"> 
+
+<tiles-definitions>
+	<definition name ="base" template="/WEB-INF/tiles/layout.jsp">
+		<put-attribute name="aside" value="/WEB-INF/tiles/aside.jsp"/>
+		<put-attribute name="header" value="/WEB-INF/tiles/header.jsp"/>
+		<put-attribute name="footer" value="/WEB-INF/tiles/footer.jsp"/>
+	</definition>
+	
+	<definition name="*.page" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/{1}.jsp"/>
+	</definition>
+	<definition name="*/*.page" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp"/>
+	</definition>
+	<definition name="*/*/*.page" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}/{3}.jsp"/>
+	</definition>
+	
+	<!-- 로그인& 회원가입 &아이디 / 비밀번호 찾기 위한 화면  헤더와 셀렉션밖에 없다. -->
+	<definition name ="baseLogin" template="/WEB-INF/tiles/loginLayout.jsp">
+		<put-attribute name="login_header" value="/WEB-INF/tiles/login_header.jsp"/>
+	</definition>
+	<definition name="*.login" extends="baseLogin">
+		<put-attribute name="body" value="/WEB-INF/views/{1}.jsp"/>	
+	</definition>
+	<definition name="*/*.login" extends="baseLogin">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp"/>
+	</definition>
+	<definition name="*/*/*.login" extends="baseLogin">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}/{3}.jsp"/>
+	</definition>
+	
+	<!-- 메뉴 미표시 -->
+	<definition name="baseEmpty" template="/WEB-INF/views/tiles/loginLayout.jsp">
+	</definition>
+	<definition name="*.part" extends="baseEmpty">
+		<put-attribute name="body" value="/WEB-INF/views/{1}.jsp"/>	
+	</definition>
+	<definition name="*/*.part" extends="baseEmpty">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp"/>
+	</definition>
+	<definition name="*/*/*.part" extends="baseEmpty">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}/{3}.jsp"/>
+	</definition>
+</tiles-definitions>

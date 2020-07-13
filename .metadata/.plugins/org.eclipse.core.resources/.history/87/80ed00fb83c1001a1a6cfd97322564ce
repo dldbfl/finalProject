@@ -1,0 +1,954 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<!-- JQuery 3.4.1 -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+<!--  JQuery 1.12.1 UI -->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<!-- JQuery 2.2.0 Color -->
+<script src="https://code.jquery.com/color/jquery.color-2.2.0.min.js"></script>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+<link href="<%=request.getContextPath() %>/resources/css/lecture/lecture.css" rel="stylesheet">
+
+<!-- 하단 슬라이더 -->
+<!-- <link rel="stylesheet" href="https://unpkg.com/swiper/css/swiper.min.css"> -->
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.1/css/swiper.min.css">
+<link href="<%=request.getContextPath() %>/resources/css/lecture/video.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.1/js/swiper.min.js"></script>
+ 
+<script src="<%=request.getContextPath() %>/resources/scripts/common.js"></script>
+<%@ include file="videonote_js.jsp" %>
+
+<title>Insert title here</title>
+<style>
+	/* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+    
+        /* Modal Content/Box */
+        .modal-content {
+                background-color: #fefefe;
+			    margin: 15% auto;
+			    padding: 20px;
+			    padding-top: 30px;
+			    border: 1px solid #888;
+			    width: 40%;
+			    font-size: 13px;
+			    text-align: center;
+			    width: 50%;         
+        }
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .imagecover{
+        	width: 200px;
+        	height: 120px;
+        }
+        .footer {
+		  position: fixed;
+		  left: 0;
+		  bottom: 0;
+		  width: 100%;
+		  background-color: #6D6AB7;
+		  /* color: white; */
+		  /* text-align: center; */
+		} 
+		
+		.videobox{	
+			width: 75%;
+			float: left;
+			height: 82%;
+		}
+		.noteqnabox{
+			width: 25%;
+			float: right;
+			height: 90%;
+		}
+		.buttonbox{
+			float: left;
+			text-align: center;
+			height: 8%;
+			width: 75%;
+		}
+		#videoplay{
+			width: 100%;
+			height: 100%;
+		}
+		.iframeplay{
+			width: 100%;
+			height: 100%;
+   			/* padding-left: 1.5%; */
+		}
+		.bookmarkbox{
+		}
+		.notebox{
+			width: 100%;
+		}
+		.bookmarkbox{
+			width: 100%;
+		}
+		.maintitle{
+			border: 1px solid olive;
+			width: 100%;
+		}
+		.subtitle{
+			float: left;
+			width: 40%;
+		}
+		.buttons{
+			float: right;
+			width: 25%;
+		    margin-top: 5px;
+		}
+		.mainname{
+		    width: 100%;
+ 		    float: left;	
+		}
+		.btns{
+			z-index: 10;
+		}
+		#noteviewer_header{
+			height: 5%
+		}
+		
+		#play_img{
+			background:url('../../post_inc/video/play.PNG') no-repeat;
+			background-position:50% 50%;
+			position:absolute;
+			width:100%;
+			height:100%;
+			top:0;
+			left:0;
+			opacity:0.8;
+		}
+		
+		#seek-bar{
+			/* position:absolute;
+			left:o;
+			bottom:-10px;  */
+			/* width:100%;
+		    height: 15px;
+		    -webkit-appearance: none;
+		    background-color: #bddeff; */
+		    position: relative;
+   			bottom: 6px;
+		}
+
+		
+		#seek-bar::-webkit-slider-runnable-track {
+		    height: 15px;
+		    background: url('/resources/images/videoimage/bar_back.png');
+		    margin-bottom: 10px;
+		    
+		}
+		
+		#seek-bar::-webkit-slider-thumb {
+		    -webkit-appearance: none;
+		    border: none;
+			background:url('/resources/images/star.png') no-repeat;
+			background-size:100% 100%; 
+		    height: 32px;
+		    width: 32px; 
+		    margin-top: 5px;
+			/*margin:-12px 0 0 -10px; */
+		}
+		#playtime{
+			font-size: 17px;
+		    float: left;
+		    width: 12%;
+		    font-weight: bold;
+		    margin-left: 2%;
+		    margin-top: -3px;
+			
+		}
+		#play{
+			background-image:url("/resources/images/videoimage/080-play.png");
+		    background-repeat: no-repeat;
+		    background-position: center;
+		    background-size: cover;
+		    width: 30px;
+		    height: 50%;
+		    float: right;
+		    margin-left: 5%;
+		    margin-top: -4px;
+		}
+		#upspeed{
+			background-image:url("/resources/images/videoimage/029-fast-forward.png");
+		    background-repeat: no-repeat;
+		    background-position: center;
+		    background-size: cover;
+		    width: 30px;
+		    height: 50%;
+		    float: left;
+		    float: right;
+		    margin-left: 5%;
+		    margin-top: -4px;
+		}
+		#downspeed{
+			background-image:url("/resources/images/videoimage/043-rewind.png");
+		    background-repeat: no-repeat;
+		    background-position: center;
+		    background-size: cover;
+		    width: 30px;
+		    height: 50%;
+		    float: right;
+		    margin-left: 5%;
+		    margin-top: -4px;
+		}
+		
+		#loopplay{
+			background-image:url("/resources/images/videoimage/067-reload.png");
+		    background-repeat: no-repeat;
+		    background-position: center;
+		    background-size: cover;
+		    width: 30px;
+		    height: 50%;
+		    float: right;
+		    margin-left: 5%;
+		    margin-top: -4px;
+		}
+		#replay{
+			background-color:black;
+		    width: 30px;
+		    height: 50%;
+		    float: right;
+		    margin-left: 5%;
+		    margin-top: -4px;
+		    }
+		#bookmark{
+			background-image:url("/resources/images/videoimage/089-paperclip.png");
+		    background-repeat: no-repeat;
+		    background-position: center;
+		    background-size: cover;
+		    width: 30px;
+		    height: 50%;
+		    float: right;
+		    margin-left: 5%;
+		    margin-top: -4px;
+		}
+		#fullScreen{
+			background-image:url("/resources/images/videoimage/114-maximize.png");
+		    background-repeat: no-repeat;
+		    background-position: center;
+		    background-size: cover;
+		    width: 30px;
+		    height: 50%;
+		    float: right;
+		    margin-left: 5%;
+		    margin-top: -4px;
+		} 
+		#lastViewTime{
+			background-image:url("/resources/images/videoimage/124-logout.png");
+		    background-repeat: no-repeat;
+		    background-position: center;
+		    background-size: cover;
+		    width: 30px;
+		    height: 50%;
+		    float: right;
+		    margin-left: 5%;
+		    margin-right: 16%;
+		    margin-top: -4px;
+		}
+		#timeSet{
+			background-image:url("/resources/images/videoimage/009-back-arrow.png");
+		    background-repeat: no-repeat;
+		    background-position: center;
+		    background-size: cover;
+		    width: 30px;
+		    height: 50%;
+		    float: right;
+		    margin-left: 5%;
+		    margin-top: -4px;
+		}
+		.bookmarkList{
+		    text-align: center;
+   			font-size: 24px;
+		}
+		#openwriterbtn{
+			background-image:url("/resources/images/videoimage/020-edit.png");
+		    background-repeat: no-repeat;
+		    background-position: center;
+		    background-size: cover;
+		    width: 30px;
+		    height: 90%;
+			float: right;
+		}
+		#updatenotebtn{
+			background-image:url("/resources/images/videoimage/019-folder.png");
+		    background-repeat: no-repeat;
+		    background-position: center;
+		    background-size: cover;
+		    width: 30px;
+		    height: 90%;		
+			float: right;
+			display: none;
+		}
+		.note-toolbar panel-heading{
+			height: 39px;
+		}
+		.note-fontname, .note-style, .note-insert, .note-table, .note-para{
+			display: none;
+		} 
+		.subtitle{
+		    margin-left: 2%;	
+			position: relative;
+    		top: 7px;
+		}
+		#videolist{
+			background-color: lavender;
+		}
+	
+</style>
+<body>
+	<form role="form" name=modifyform method=post>
+		<input type="hidden" name="lecture_lastview_time">	
+		<input type="hidden" name="lecture_data_no" value="${lectureVideo.lecture_data_no}">	
+		<input type="hidden" name="lecture_data_memo" value="${lectureVideo.lecture_data_memo}">
+			
+	
+		<!-- <div class="container"> -->
+	        <div class="maintitle">
+				<!-- <h2 class="mainname">&nbsp;나의 강의실</h2> -->
+				<div class="subtitle">
+					<c:set var="length" value="${fn:length(lecturefilename)}"/> 
+					<c:set var="lecture_data_filename" value="${lectureVideo.lecture_data_filename }"/>
+					<input type="hidden" id="lecture_data_filename" value="${lectureVideo.lecture_data_filename }"> 
+		           <h4 id ="lecture_data_filenamecut">&nbsp;&nbsp;<%-- ${fn:substring(lecturefilename,0,length-4)} --%></h4>	           
+				</div>
+				<div class="buttons">
+		            <!-- <button onclick="noteview();" id="notebtn" class="btn btn-primary flex-item btn-primary active" type="button" >노트</button>
+		            <button onclick="qnaview()" id="qnabtn" class="btn btn-danger flex-item btn-primary active" type="button" >질문</button>
+		            <button onclick="bookmarkview()" id="bookmarkbtn" class="btn btn-info flex-item btn-primary active" type="button" >북마크</button> -->
+		        	<ul class="nav nav-tabs">
+					    <li class="active"><a onclick="noteview();" id="notebtn" data-toggle="tab" href="#home">노트</a></li>
+					    <li><a onclick="qnaview()" id="qnabtn" data-toggle="tab" href="#menu1">질문</a></li>
+					    <li><a onclick="bookmarkview()" id="bookmarkbtn" data-toggle="tab" href="#menu2">북마크</a></li>
+			    	</ul>
+			    </div>
+			</div>
+	        		<div class="videobox">
+	        			<!-- 현재 문제해결됨. -->
+		        		<video id="videoplay" preload="auto">
+				       		<source src="<%=request.getContextPath()%>/lecture/videofile/${lectureVideo.lecture_data_no}#t=${lectureVideo.lecture_lastview_time}" type="video/mp4"> 
+				       
+				       	</video> 
+				       	<%-- <video id="videoplay" preload="auto" src="/resources/video/${lectureVideo.lecture_data_filename}#t=${lectureVideo.lecture_lastview_time}" >
+				       	</video> --%>
+				       					       	
+					</div>
+					
+					<div class="tab-content noteqnabox">
+					    <div id="home" class="tab-pane fade in active">
+						     <div id = "notebox" class = "notebox">
+	        					
+       							<div id="noteviewer_header">
+       								<div id="openwriterbtn" onclick="openwriter()"></div>
+       								<div id="updatenotebtn" onclick="updatenote()"></div>
+									<!-- <button id="openwriterbtn" type="button" class="btns" style="float: right;" onclick="openwriter()">작성</button>
+									<button id="updatenotebtn" type="button" class="btns" style="float: right; display: none;" onclick="updatenote()">저장</button> -->
+       							</div>
+        							
+	        					
+        						<div id="noteviewer" style="min-height: 250px; padding: 8px 3px 3px; margin: 0px; overflow: auto;">
+							  		<div id= "memoview">${lectureVideo.lecture_data_memo}<br></div>
+								</div>
+								<div id="notewriter" style="color:black; display: none;">
+									<textarea id="content" name="answer_content">${lectureVideo.lecture_data_memo}</textarea>
+								</div>
+								<div id="begin_notewriter" style="color:black; display: none;" >
+									<textarea id="content" name="answer_content">${lectureVideo.lecture_data_memo}</textarea>
+								</div>    				
+		        			</div>
+					    </div>
+					    <div id="menu1" class="tab-pane fade">					    	
+		        			<div id = "qnabox" class = "qnabox" style="display: none;">
+				       			<c:choose>
+				       				<c:when test="${ not empty professor_id }">
+			        					<iframe class="iframeplay" src="http://localhost/lecture/qnalist?member_id=${member_id }&professor_id=${professor_id}" frameborder=0 framespacing=0 marginheight=0 marginwidth=0 scrolling=no vspace=0>대체내용이라고 합니다.</iframe>
+				        			</c:when>
+			        				<c:otherwise>
+						       			<iframe class="iframeplay" src="http://localhost/lecture/qnalist?member_id=${member_id }&professor_id=${lectureVideo.professor_id}" frameborder=0 framespacing=0 marginheight=0 marginwidth=0 scrolling=no vspace=0>대체내용이라고 합니다.</iframe>
+				       				</c:otherwise>
+				       			</c:choose>
+		        			</div>	 
+					    </div>
+					    <div id="menu2" class="tab-pane fade">
+					    	<div  id = "bookmarkbox" class="bookmarkbox" style="display: none;">			        		
+								<div class="bookmarkList"></div>
+							</div>  
+					    </div>
+					    
+				   </div> 
+				       	<!-- <div class="noteqnabox"> 
+			        	</div> -->
+				    <div class="buttonbox">
+				    	
+			    		<input type="range" id="seek-bar" value="0">
+			       		<div id="playtime"></div>
+
+			       		<div id="lastViewTime" onclick="lastViewTime('post');"></div>
+			       		<div id="timeSet" onclick="timeSet();"></div>
+			       		<div id="fullScreen" onclick="fullScreen();"></div>
+			       		<div id="bookmark" onclick="bookmark();"></div>
+			       		<div id="loopplay" onclick="loopplay();"></div>
+			       		<div id="downspeed" onclick="downspeed();"></div>
+			       		<div id="upspeed" onclick="upspeed();"></div>
+			       		<div id="replay" onclick="replay();"></div>
+			       		<div id="play" onclick="play();"></div>
+			       		<!-- <div id="play" onclick="lastViewTime('close');"></div> -->
+						<!-- <button type="button" class="btn btn-sm btn-white btn-bold" onclick="upspeed();">
+							<i class="grey ace-icon fa fa-times bigger-120"></i><b>배속 재생</b>
+						</button>    
+						<button type="button" class="btn btn-sm btn-white btn-bold" onclick="downspeed();">
+							<i class="grey ace-icon fa fa-times bigger-120"></i><b>감속 재생</b>
+						</button>  -->   
+						<!-- <button type="button" class="btn btn-sm btn-white btn-bold" onclick="big();">
+							<i class="grey ace-icon fa fa-times bigger-120"></i><b>영상 크게보기</b>
+						</button>    
+						<button type="button" class="btn btn-sm btn-white btn-bold" onclick="small();">
+							<i class="grey ace-icon fa fa-times bigger-120"></i><b>영상 작게보기</b>
+						</button> -->    
+			            <!-- <button type="button" class="btn btn-sm btn-white btn-bold" onclick="loopplay();">
+							<i class="grey ace-icon fa fa-times bigger-120"></i><b>반복재생</b>
+						</button>    
+						<button type="button" class="btn btn-sm btn-white btn-bold" onclick="replay();">
+							<i class="grey ace-icon fa fa-times bigger-120"></i><b>처음부터 보기</b>
+						</button> 
+						<button type="button" class="btn btn-sm btn-white btn-bold" onclick="bookmark();">
+							<i class="grey ace-icon fa fa-times bigger-120"></i><b>북마크</b>
+						</button> 
+			            <button type="button" class="btn btn-sm btn-white btn-bold" onclick="fullScreen();">
+							<i class="grey ace-icon fa fa-times bigger-120"></i><b>전체화면</b>
+						</button>  
+						<button type="button" class="btn btn-sm btn-white btn-bold" onclick="lastViewTime('post');">
+							<i class="grey ace-icon fa fa-times bigger-120"></i><b>현재시간 저장</b>
+						</button>   
+						<button type="submit" class="btn btn-sm btn-white btn-bold" onclick="lastViewTime('close');">
+							<i class="grey ace-icon fa fa-times bigger-120"></i><b>그냥 닫기</b>
+						</button> 
+						<button type="button" class="btn btn-sm btn-white btn-bold" onclick="timeSet();" id="urlModal">
+							<i class="grey ace-icon fa fa-times bigger-120"></i><b>url 공유</b>
+						</button> -->   
+			       	</div>
+		       		
+		       		<hr>		       		
+	        	<br>
+	        	<input type='hidden' name="student_id" value="${student_id }" />
+		       	<input type='hidden' name="member_id" value="${member_id }" />
+	        	<input type='hidden' name="professor_id" value="${lectureVideo.professor_id }" />
+	        	
+				
+				 <!-- The Modal -->
+			    <div id="myModal" class="modal">
+			 
+			      <!-- Modal content -->
+			      <div class="modal-content">
+			        <span class="close">&times;</span>                                                               
+			        <p id="hiperlink"></p>
+			        <button type="button" class="btn btn-sm btn-white btn-bold" onclick="copy();">
+						<i class="grey ace-icon fa fa-times bigger-120"></i><b>복사</b>
+					</button>
+			      </div>
+			 
+			    </div>
+		    </form>
+       
+		<!-- </div> -->
+	
+	<div class="footer">
+	<button type="button" class="btn btn-sm btn-white btn-bold"  id="videolist">
+		<i class="grey ace-icon fa fa-times bigger-120"></i><b>List</b>
+	</button>   
+	  	<div class="swiper-container" >
+		    <div class="swiper-wrapper" style="margin: 40px; height: 150px;">
+				<c:forEach items="${lectureDataList}" var="lecture" >
+					<div class="swiper-slide">				
+			           	<c:choose>
+			            	<c:when test="${not empty lecture.lecture_data_image}">	
+			            		<div style="width: 200; height: 120; overflow: hidden">		            		<%-- <input type="hidden" value="${lecture.lecture_data_image}" id ="lecture_data_image"> --%>
+			            			<img draggable="true" onclick="videoChange('${lecture.lecture_data_no}','${lecture.lecture_lastview_time }','${lecture.lecture_no }','${member_id }');" class="group list-group-image imagecover" src="<%=request.getContextPath()%>/lecture/picture/${lecture.lecture_data_no}" alt="" style="cursor: pointer; width: 100%; height: 100%;" />							
+		            			</div>
+		            		</c:when>
+			                <c:otherwise>
+								<img draggable="true" onclick="videoChange('${lecture.lecture_data_no}','${lecture.lecture_lastview_time }','${lecture.lecture_no }','${member_id }');" class="group list-group-image imagecover" src="/resources/images/videoimage/example.png" alt="" style="cursor: pointer;"/>
+							</c:otherwise>
+		                </c:choose>          
+	                    <h3 class="group inner list-group-item-heading" id="lecture_data_list_filename"></h3>
+	                </div>
+				</c:forEach> 
+			</div>
+			<!-- 네비게이션 -->
+		    <div class="swiper-button-next"></div>
+		    <div class="swiper-button-prev"></div>
+		    <!-- 페이징 -->
+			<div class="swiper-pagination"></div>
+		</div>
+	</div>
+	
+</body>
+
+<script> 
+	//이름 추가
+	var lecture_data_filename = $('#lecture_data_filename').val();
+	var lecture_data_filenamecut = lecture_data_filename.split('$$')[1];    
+    
+    /* $('#lecture_data_filenamecut').text(lecture_data_filenamecut.split('.jpg')[0]); */ 
+    
+    $('#lecture_data_filenamecut').text(lecture_data_filenamecut.slice(0,-4)); 
+    $('#lecture_data_list_filename').text(lecture_data_filenamecut.slice(0,-4)); 
+	
+	//노트 기능	
+	var noteviewer = document.getElementById("noteviewer");
+	var notewriter = document.getElementById("notewriter");
+	var begin_notewriter = document.getElementById("begin_notewriter");
+	var openwriterbtn = document.getElementById("openwriterbtn");
+	var updatenotebtn = document.getElementById("updatenotebtn");
+	
+	function openwriter(){
+		notewriter.style.display = 'block';
+		noteviewer.style.display = 'none';	
+		openwriterbtn.style.display = 'none';
+		updatenotebtn.style.display = 'block';
+	}
+	
+	var lecture_data_no = $('input[name=lecture_data_no]').val();
+	function updatenote(){
+		//내가 작성한 글
+		var lecture_data_memo = $('#content').val();
+		
+		console.log(lecture_data_memo);
+		var paramData = JSON.stringify();
+
+		var headers = {"Content-Type" : "application/json", "X-HTTP-Method-Override" : "POST"};
+		
+		$.ajax({
+			url: "/lecture/note"
+			, data : {	
+				"lecture_data_no": lecture_data_no,
+				"lecture_data_memo": lecture_data_memo
+				}
+			, type : 'POST'
+			, dataType : 'text'
+			, success: function(result){
+				console.log(lecture_data_memo);
+				
+				notewriter.style.display = 'none';
+				noteviewer.style.display = 'block';	
+				openwriterbtn.style.display = 'block';
+				updatenotebtn.style.display = 'none';
+				
+				$('#memoview').html(lecture_data_memo);
+			}
+			, error: function(error){				
+			  console.log("에러 : " + error);
+			}
+		}); 
+	}
+
+	
+
+	//버튼으로 아이프레임 내용물 교체
+	var notebox = document.getElementById("notebox");
+	var qnabox = document.getElementById("qnabox");
+	var bookmarkbox = document.getElementById("bookmarkbox");
+	function noteview(){
+		notebox.style.display = 'block';
+		qnabox.style.display = 'none';
+		bookmarkbox.style.display = 'none';
+	};
+	function qnaview(){
+		notebox.style.display = 'none';
+		qnabox.style.display = 'block';
+		bookmarkbox.style.display = 'none';
+	};
+	function bookmarkview(){
+		notebox.style.display = 'none';
+		qnabox.style.display = 'none';
+		bookmarkbox.style.display = 'block';
+	};
+	
+
+	//하단부 리스트
+	var swiper = new Swiper('.swiper-container', {
+	    slidesPerView: 5, // 보여지는 슬라이드 수
+	    spaceBetween: 0, // 슬라이드 간의 거리(px 단위)
+	    slidesPerGroup : 5, // 그룹으로 묶을 수, slidesPerView 와 같은 값을 지정하는게 좋
+		// 그룹수가 맞지 않을 경우 빈칸으로 메우기
+		// 3개가 나와야 되는데 1개만 있다면 2개는 빈칸으로 채워서 3개를 만듬
+	    centeredSlides: false, // 다음 슬라이드의 모습이 50%만 보입니다.(중앙) 
+		loopFillGroupWithBlank : true,
+		loop : true, // 무한 반복
+		pagination : { // 페이징
+			el : '.swiper-pagination',
+			clickable : true, // 페이징을 클릭하면 해당 영역으로 이동, 필요시 지정해 줘야 기능 작동
+		},
+	    navigation : { // 네비게이션
+	        nextEl : '.swiper-button-next', // 오른쪽(다음) 화살표
+	        prevEl : '.swiper-button-prev', // 왼쪽(이전) 화살표
+	    }
+	});
+	
+	//하단바 숨기고 열기
+	$(document).ready(function(){
+		$('#content').summernote
+		var submenu = $("#videolist").next(".swiper-container");
+		submenu.slideUp();
+		
+		$("#videolist").click(function(){
+	    /* var submenu = $(this).next(".swiper-container"); */
+		    // submenu 가 화면상에 보일때는 위로 보드랍게 접고 아니면 아래로 보드랍게 펼치기
+		    if( submenu.is(":visible") ){
+		        submenu.slideUp();
+		    }else{
+		        submenu.slideDown();
+		    }
+		})/* .mouseover(function(){
+		    $(this).next(".swiper-container").slideDown();
+		});  */
+		
+		
+	});
+	
+	//하단부 클릭 시 동영상 변경		
+	function videoChange(a,b,c,d){
+		var lecture_data_no = arguments[0];
+		var lecture_lastview_time = arguments[1];
+		var lecture_no = arguments[2];
+		var member_id = arguments[3];
+		//동영상 링크
+		window.location.href='<%=request.getContextPath() %>/lecture/video/view?lecture_data_no='+lecture_data_no+'&lecture_lastview_time='+lecture_lastview_time+'&lecture_no='+lecture_no+'&member_id='+member_id+'&lecture_lastview_time='+professor_id;		
+	 }
+		
+
+
+
+	//동영상
+	//객체 생성
+	var videocontrol = document.getElementById('videoplay');
+	
+	/* videocontrol.addEventListener("loadedmetadata", function(){
+			console.log("......................................" + videocontrol.currentTime);
+	}); */
+		
+	// timeupdate : 재생중에 지속적으로 발생하는 그 시간의 변화
+	videocontrol.addEventListener("timeupdate",PlayTime,false);
+	//미디어 재생이 종료되었을때 발생하는 이벤트 처리
+	videocontrol.addEventListener("ended",event,false);
+	
+	function PlayTime(e){
+	    document.getElementById("playtime").innerHTML = "재생 시간 : " + Math.floor(videocontrol.currentTime) + "/" + Math.floor(videocontrol.duration);
+	}
+	
+	// 슬라이드 바
+	// Sliders
+	var seekBar = document.getElementById("seek-bar");
+	
+
+	// 재생바가 있는 위치로 화면 이동
+	seekBar.addEventListener("change", function() {
+	  // Calculate the new time
+	  
+	  var time = videocontrol.duration * (seekBar.value / 100);
+	  
+	  // Update the video time
+	 /*  videocontrol.currentTime = time */;
+	  videocontrol.currentTime = time;
+	  /* videocontrol.currentSrc ="http://localhost/lecture/videofile/117#t=22"; */
+	  if(videocontrol.currentTime == 0){
+		  alert('잘못된값이 들어온 상태야 0임.')
+		  alert(typeof videocontrol.currentTime+" "+videocontrol.currentTime+" : "+ typeof time+" "+time)
+		  videocontrol.currentTime = time;
+
+		  <%-- //document.getElementById( 'videoplay' ).setAttribute('controls','')
+		  videocontrol.removeAttribute('src'); // src 프로퍼티를 제거
+		  videocontrol.setAttribute("src","<%=request.getContextPath() %>/lecture/videofile/"+lecture_data_no+"#t="+time");
+		  // 다른 미디어로 소스 변경
+		  videocontrol.load(); // 새로운 정보를 다시 로드
+		  videocontrol.play(); --%>
+		  
+		  
+	  }
+	  /* alert(videocontrol.currentTime)
+	  alert(videocontrol.currentSrc) */
+  	  /* videocontrol.play(); */
+	});
+
+
+	// 재생시간에 따른 재생바 이동
+	videocontrol.addEventListener("timeupdate", function() {
+	  // Calculate the slider value
+	  var value = (100 / videocontrol.duration) * videocontrol.currentTime;
+	  // Update the slider value
+	  seekBar.value = value;
+	});
+
+	// 재생바 드래그하려고 클릭시에 동영상 정지
+	seekBar.addEventListener("mousedown", function() {
+		videocontrol.pause(); 
+        $('#play').css({'background-image':'url("/resources/images/videoimage/080-play.png"'});
+	});
+
+	// 재생바 클릭 후에 동영상 재생
+	seekBar.addEventListener("mouseup", function() {
+		videocontrol.play();
+		$('#play').css({'background-image':'url("/resources/images/videoimage/087-pause.png"'});
+	});
+
+
+	
+	
+	//완료했을 시
+	function event(e){
+	    //이벤트가 발생하였을 경우에 대한 처리
+	    alert("출석되었습니다.");
+	    var lecture_data_no = $('input[name=lecture_data_no]').val();
+	    var student_id = $('input[name=student_id]').val();
+		
+		$.ajax({
+			type: "POST",
+			url: "/lecture/video/attend",	
+			async: false ,
+			data : {"lecture_data_no" : lecture_data_no,
+					"student_id" : student_id},
+			dataType: 'text'
+		}); 
+	}
+	
+	//반복재생
+	function loopplay() {
+		if(videocontrol.loop){
+			/* alert("반복재생을 취소하셨습니다."); */
+			videocontrol.removeAttribute('loop');
+		}else{
+			/* alert("반복재생을 적용하셨습니다."); */
+			videocontrol.setAttribute('loop','loop');
+		}
+					
+	}
+	//재생
+	function play(){
+	    //미디어 파일 재생 => 재생중일때 버튼을 누르면 메세지 출력
+        if(videocontrol.paused){
+            videocontrol.play();
+            $('#play').css({'background-image':'url("/resources/images/videoimage/087-pause.png"'});
+        }else{
+        	//현재 재생중
+            videocontrol.pause();
+            $('#play').css({'background-image':'url("/resources/images/videoimage/080-play.png"'});
+        }
+    }
+	//배속 재생
+	function upspeed(){
+		var currentspeed = videocontrol.playbackRate;
+		if(currentspeed < 1){
+			currentspeed = 1;
+		}		
+		if(currentspeed != 16){
+			videocontrol.playbackRate = currentspeed*2;
+			/* alert(videocontrol.playbackRate+"배");	 */	
+		}else{
+			videocontrol.playbackRate = 2;
+			/* alert(videocontrol.playbackRate+"배");	 */
+		}
+	}
+	//감속 재생
+	function downspeed(){
+		var currentspeed = videocontrol.playbackRate
+		if(currentspeed > 2){
+			currentspeed = 0.5;
+		}
+		if(currentspeed != 0.25){
+			videocontrol.playbackRate = currentspeed*(1/2) 
+			/* alert(videocontrol.playbackRate+"배") */
+		}else{
+			videocontrol.playbackRate = 0.5;
+			/* alert(videocontrol.playbackRate+"배"); */
+		}
+	}
+	
+	//화면 확대
+    function big(){
+        //'큰화면' 버튼을 클릭 : 현재 삽입된 미디어의 width, height 값을 각각 200씩 증가 시킴
+        videocontrol.width += 200;
+        videocontrol.height += 200;
+
+    }
+	//화면 축소
+    function small(){
+        //'작은화면' 버튼을 클릭 : 현재 삽입된 미디어의 width, height 값을 각각 200씩 감소 시킴
+        videocontrol.width -= 200;
+        videocontrol.height -= 200;
+	};
+	
+	//처음부터 보기 
+	function replay(){
+		
+		videocontrol.currentTime = 0;
+    	videocontrol.play();
+    }
+	
+	//책갈피 저장
+	var bookmarkCount = 1;
+	
+	var mycurrentTime = 0;
+	
+	function bookmark(){
+		if(bookmarkCount < 20){
+			mycurrentTime = videocontrol.currentTime;
+	        $(".bookmarkList").append("<a href='javascript:;' rel='" + mycurrentTime + "' class='bookmarkLink'>" + bookmarkCount +'번 북마크 : ' + Math.floor(mycurrentTime) + "초</a><br>");
+	    	bookmarkCount++;
+		}
+		else{
+			alert("북마크는 20개까지 저장가능합니다.")
+		}
+	};	
+    $(document).on('click', ".bookmarkList a", function() {
+    	var timm = videocontrol.currentTime;
+    	var time = $(this).attr('rel')*1;  
+    	/* alert(typeof time+' : '+time); */
+    	videocontrol.currentTime = time;
+    	/* alert(typeof videocontrol.currentTime +' : '+videocontrol.currentTime); */
+	   	videocontrol.play();
+    });
+   
+    
+	//풀스크린
+	function fullScreen(){
+		if (videocontrol.requestFullscreen) {
+			videocontrol.requestFullscreen();
+	    } else if (videocontrol.mozRequestFullScreen) {
+	    	videocontrol.mozRequestFullScreen();
+	    } else if (videocontrol.webkitRequestFullscreen) {
+	    	videocontrol.webkitRequestFullscreen();
+	    } else if (videocontrol.msRequestFullscreen) {
+	    	videocontrol.msRequestFullscreen();
+	    }
+	}
+
+	//닫으면서 다른 닫은 시간 업데이트해서 돌려보내기
+	function lastViewTime(cmd){ 
+		
+		$('input[name=lecture_lastview_time]').attr('value',Math.floor(videocontrol.currentTime))
+		var lecture_data_no = $('input[name=lecture_data_no]').val();
+		var lecture_lastview_time = $('input[name=lecture_lastview_time]').val();
+		alert(lecture_lastview_time);
+		
+		$.ajax({
+ 			type: "POST",
+ 			url: "/lecture/video/view",	
+ 			async: false ,
+ 			data : {"lecture_data_no" : lecture_data_no,				
+					"lecture_lastview_time" : lecture_lastview_time},
+ 			dataType: 'text'
+ 		});  
+		
+		switch(cmd) {
+		case "post":		
+			window.close();		
+			break;
+		case "close":
+			window.close();	
+			return;
+			break;
+		default:
+			return;
+			break;
+		}	 
+	}
+	
+	
+	//url 공유를 위한 스크립트
+	var url_time = $('input[name=lecture_lastview_time]').val();
+	var lecture_no = $('input[name=lecture_no]').val();
+    var student_id = $('input[name=student_id]').val();
+    var professor_id = $('input[name=professor_id]').val();
+    
+	function timeSet(){
+		modal.style.display = "block";
+		var ip = "<%=request.getLocalAddr()%>";
+		
+		$('#oldlink').remove();
+		$('input[name=lecture_lastview_time]').attr('value',Math.floor(videocontrol.currentTime));
+		url_time = $('input[name=lecture_lastview_time]').val();		
+		if (ip == "0:0:0:0:0:0:0:1"){
+			$('#hiperlink').append("<a id='oldlink' onclick='hiperlink()' href='#'> http://localhost/lecture/video/view?lecture_data_no="+${lectureVideo.lecture_data_no}+"&lecture_lastview_time="+url_time+"&lecture_no="+lecture_no+"&student_id="+student_id+"&professor_id="+professor_id+"</a>");		
+		}else{
+			$('#hiperlink').append("<a id='oldlink' onclick='hiperlink()' href='#'> http://<%=request.getLocalAddr()%>/lecture/video/view?lecture_data_no="+${lectureVideo.lecture_data_no}+"&lecture_lastview_time="+url_time+"&lecture_no="+lecture_no+"&student_id="+student_id+"&professor_id="+professor_id+"</a>");		
+
+		}
+		
+	}	
+		//클립보드 복사
+		function copy(){
+			var tempElem = document.createElement('textarea');
+			tempElem.value = $("#oldlink").text();  
+			document.body.appendChild(tempElem);
+			
+			tempElem.select();
+			document.execCommand("copy");
+			document.body.removeChild(tempElem);
+		}
+		//하이퍼 링크 구현
+		function hiperlink(){
+			window.location="<%=request.getContextPath() %>/lecture/video/view?lecture_data_no=${lectureVideo.lecture_data_no}&lecture_no=${lectureVideo.lecture_no}&student_id=${student_id}&professor_id=${lectureVideo.professor_id}&lecture_lastview_time="+url_time;	
+		}
+	
+	// This is Modal Setting!
+		// Get the modal
+	    var modal = document.getElementById('myModal');
+	
+	    // Get the <span> element that closes the modal
+	    var span = document.getElementsByClassName("close")[0];                                          
+	
+	    // When the user clicks on <span> (x), close the modal
+	    span.onclick = function() {
+	        modal.style.display = "none";
+	    }
+	
+	    // When the user clicks anywhere outside of the modal, close it
+	    window.onclick = function(event) {
+	        if (event.target == modal) {
+	            modal.style.display = "none";
+	        }
+	    }
+	    
+	    
+    
+
+	
+</script>
+

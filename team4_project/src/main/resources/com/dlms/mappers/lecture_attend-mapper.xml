@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lecture_attend-mapper">
+	
+	<!--
+	기능구분	: 출석부 리스트
+	기능설명	: 출석부 리스트를 불러온다
+	파라미터	: int
+	리턴타입	: attend
+	-->
+	<select id="selectAttend" parameterType="str" resultType="lecture_attend">
+		select  *
+		from
+		lecture_attend
+		where lecture_attend_no is not null
+		and student_id=#{student_id}
+	</select>
+	
+	<!--
+	기능구분	: 출석부 등록
+	기능설명	: 출석부를 등록한다
+	파라미터	: lecture_attend
+	리턴타입	: X
+	-->
+	<update id="insertlecture_attend" parameterType="lecture_attend">
+		insert 
+		into 
+		lecture_attend(lecture_attend_no,
+						lecture_data_no,
+						student_id, 
+						professor_id)
+				values  (#{lecture_attend_no},
+						 #{lecture_data_no},
+						 #{student_id},
+						 #{professor_id})
+	</update>
+	
+	<!--
+	기능구분	: 출석부 번호 생성
+	기능설명	: 수강 후기 번호를 생성한다.
+	파라미터	: X
+	리턴타입	: int
+	-->	
+	<select id="selectLectureAttendSeqNext" resultType="int">
+		select lecture_attend_seq.nextval as lecture_attend_no from dual
+	</select>
+	
+	<!--
+	기능구분	: 출석
+	기능설명	: 출석부를 수정한다
+	파라미터	: lecture_data_no,student_id
+	리턴타입	: X
+	-->
+	<update id="updatelecture_attend" parameterType="hashmap">
+		update lecture_attend
+		set
+		lecture_attend_status='출석'
+		where lecture_data_no=#{lecture_data_no}
+		and student_id = #{student_id}
+	</update>
+	
+	<!--
+	기능구분	: 출석부 리스트 - 교수기준
+	기능설명	: 출석부 리스트를 불러온다
+	파라미터	: str
+	리턴타입	: attend
+	-->
+	<select id="selectAttend_professor" parameterType="str" resultType="lecture_attend">
+		select  *
+		from
+		lecture_attend
+		where lecture_attend_no is not null
+		and professor_id=#{professor_id}
+	</select>
+	
+	<!--
+	기능구분	: 출석부 삭제 - 교수 기준
+	기능설명	: 출석부를 수정한다
+	파라미터	: professor_id
+	리턴타입	: X
+	-->
+	<update id="deletelecture_attend" parameterType="str">
+		delete lecture_attend
+		where professor_id = #{professor_id}
+	</update>
+	
+	<select id="selectLectureAttendStatusCnt" parameterType="str" resultType="int">
+		select count(*)
+		from lecture_attend
+		where student_id=#{member_id} 
+		and lecture_attend_status='출석'
+	</select>
+</mapper>

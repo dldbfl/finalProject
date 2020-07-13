@@ -1,0 +1,40 @@
+package com.dlms.dao.education_purpose;
+
+import java.sql.SQLException;
+
+import com.dlms.dto.Manager_boardVO;
+
+public interface Education_purposeDAO {
+
+
+	/**
+	 * 
+	 * @기능설명		:	관리자 게시판 - 교육목적 조회
+	 * @작성자		    :	이누리
+	 * @작성날짜    	:	2020. 6. 9.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 9.오후 2:05:39
+	 * @see			    :	-
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	Manager_boardVO selectManager_board_Education_purpose() throws SQLException;	
+		
+
+	/**
+	 * 
+	 * @기능설명		:	관리자 게시판 - 교육목적 수정
+	 * @작성자		    :	이누리
+	 * @작성날짜    	:	2020. 6. 9.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 9.오후 2:05:47
+	 * @see			    :	-
+	 * @param manager_board
+	 * @throws SQLException
+	 *
+	 */
+	void updateManager_board_education_purpose(Manager_boardVO manager_board)throws SQLException;
+	
+	
+}

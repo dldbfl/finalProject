@@ -1,0 +1,316 @@
+package com.dlms.dao.lecture;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.SqlSession;
+
+import com.dlms.dto.LectureVO;
+import com.dlms.dto.Lecture_dataVO;
+import com.dlms.request.SearchCriteria;
+
+/**
+ * 
+ * @사용목적		:	강의와 관련된 DAO
+ * @작성자		:	민태홍
+ * @작성날짜      	:	2020. 6. 2.
+ * @마지막수정자	:	민태홍
+ * @마지막수정일	:	2020. 6. 2.오전 11:08:22
+ * @see			:	lectureDAO
+ *
+ */
+public class LectureDAOImpl implements LectureDAO{
+	
+	private SqlSession sqlSession;
+	public void setSqlSession(SqlSession sqlSession) {
+		this.sqlSession = sqlSession;
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	강의 검색 리스트 출력
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 2.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 2.오전 11:08:59
+	 * @see			:	X
+	 * @param cri
+	 * @return lectureList
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public List<LectureVO> selectSearchLectureList(SearchCriteria cri) throws SQLException {
+		int offset = cri.getPageStartRowNum();		
+		int limit=cri.getPerPageNum();
+		RowBounds rowBounds = new RowBounds(offset,limit);
+		List<LectureVO> lectureList = new ArrayList<LectureVO>();
+		lectureList = sqlSession.selectList("lecture-mapper.selectSearchLectureList",cri,rowBounds);
+		return lectureList;
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	강의 리스트 페이지를 구현하기 위한 장치
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 2.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 2.오전 11:09:19
+	 * @see			:	X
+	 * @return count
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public int selectLectureListCount() throws SQLException {
+		int count = sqlSession.selectOne("lecture-mapper.selectLectureListCount");
+		return count;
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	강의 리스트 출력
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 2.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 2.오전 11:08:59
+	 * @see			:	X
+	 * @param cri
+	 * @return lectureList
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public List<LectureVO> selectLectureList() throws SQLException {
+		List<LectureVO> lectureList = new ArrayList<LectureVO>();
+		lectureList = sqlSession.selectList("lecture-mapper.selectLectureList");
+		return lectureList;
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	강의동영상 자료 리스트
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 2.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 17.오후 11:09:36
+	 * @see			:	X
+	 * @param cri
+	 * @return lectureDataList
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public List<Lecture_dataVO> selectLectureData(int lecture_no)throws SQLException {
+		
+		List<Lecture_dataVO> lectureDataList = new ArrayList<Lecture_dataVO>();
+		lectureDataList = sqlSession.selectList("lecture-mapper.selectLectureData",lecture_no);
+		return lectureDataList;
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	강의 동영상 자료 상세
+	 * @작성자		    :	이누리
+	 * @작성날짜    	:	2020. 6. 17.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 17.오후 9:01:54
+	 * @see			    :	-
+	 * @param lecture_data_no
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public Lecture_dataVO selectLectureDataVideo(int lecture_data_no)throws SQLException {
+		
+		Lecture_dataVO lectureVideo = new Lecture_dataVO();
+		lectureVideo = sqlSession.selectOne("lecture-mapper.selectLectureDataVideo",lecture_data_no);
+		return lectureVideo;
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	강의 상세
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 2.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 2.오후 5:13:53
+	 * @see			:	X
+	 * @param lecture_no
+	 * @return lecture
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public LectureVO selectLectureDetail(int lecture_no) throws SQLException {
+		LectureVO lecture = sqlSession.selectOne("lecture-mapper.selectLectureDetail",lecture_no);
+		return lecture;
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	강의 등록
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 2.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 2.오전 11:10:12
+	 * @see			:	X
+	 * @param lecture
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public void insertLecture(LectureVO lecture) throws SQLException {
+		sqlSession.update("lecture-mapper.insertLecture",lecture);
+		
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	강의 자료 첨부
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 2.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 2.오전 11:10:26
+	 * @see			:	X
+	 * @param lecture_data
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public void insertLectureData(Lecture_dataVO lecture_data) throws SQLException {
+		sqlSession.update("lecture-mapper.insertLectureData",lecture_data);
+		
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	강의 수정
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 2.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 2.오전 11:10:36
+	 * @see			:	X
+	 * @param lecture
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public void updateLecture(LectureVO lecture) throws SQLException {
+		sqlSession.update("lecture-mapper.updateLecture",lecture);
+		
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	강의 자료 수정
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 2.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 2.오전 11:10:44
+	 * @see			:	X
+	 * @param lecture_data
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public void updateLectureData(Lecture_dataVO lecture_data) throws SQLException {
+		sqlSession.update("lecture-mapper.updatelectureReviewIMG",lecture_data);
+		
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	강의 삭제
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 2.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 2.오전 11:10:53
+	 * @see			:	X
+	 * @param lecture_no
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public void deleteLecture(int lecture_no) throws SQLException {
+		sqlSession.delete("lecture-mapper.deleteLecture",lecture_no);
+		
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	강의 자료 삭제
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 2.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 2.오전 11:11:00
+	 * @see			:	X
+	 * @param lecture_no
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public void deleteLectureData(int lecture_no) throws SQLException {
+		sqlSession.delete("lecture-mapper.deleteLectureData",lecture_no);
+		
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	강의 번호 생성
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 2.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 2.오전 11:11:09
+	 * @see			:	X
+	 * @return lecture_no
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public int selectLectureSeqNext() throws SQLException {
+		int lecture_no = sqlSession.selectOne("lecture-mapper.selectLectureSeqNext");
+		return lecture_no;
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	강의 자료 번호 생성
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 2.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 2.오전 11:11:19
+	 * @see			:	X
+	 * @return lecture_data_no
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public int selectLectureDataSeqNext() throws SQLException {
+		int lecture_data_no = sqlSession.selectOne("lecture-mapper.selectLectureDataSeqNext");
+		return lecture_data_no;
+	}
+
+	/**
+	 * 
+	 * @기능설명		:	교수용 강의리스트 상세
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 15.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 15.오후 12:08:36
+	 * @see			:	X
+	 * @param professor_id
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public LectureVO selectLectureDetailByid(String professor_id) throws SQLException {
+		LectureVO lecture = sqlSession.selectOne("lecture-mapper.selectLectureDetailByid",professor_id);
+		return lecture;
+	}
+	
+}

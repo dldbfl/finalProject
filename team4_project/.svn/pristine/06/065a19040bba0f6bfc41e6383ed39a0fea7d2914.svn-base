@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="professor-mapper">
+	
+	<!--
+	기능구분	: 교수상세 정보(커리어 정보 제외)
+	기능설명	: 교수 정보를 불러온다
+	파라미터	: str
+	리턴타입	: student
+	-->
+	<select id="detailProfessor" parameterType="str" resultType="professor">
+		select  *
+		from
+		professor
+		where professor_id is not null
+		and professor_id=#{member_id}
+	</select>
+	
+	<!--
+	기능구분	: 교수상세 경력 정보 조회
+	기능설명	: 교수 경력 정보를 불러온다
+	파라미터	: str
+	리턴타입	: professorCareer
+	-->
+	<select id="detailProfessorCareer" parameterType="str" resultType="professorCareer">
+		select *
+		from professor_career
+		where professor_id is not null
+		and professor_id=#{professor_id}
+	</select>
+
+	<!--
+	기능구분	: 교수상세 경력 정보 삭제
+	기능설명	: 교수 경력 정보를 삭제한다.
+	파라미터	: str
+	리턴타입	: X
+	-->	
+	<update id="deleteProfessorCareer" parameterType="str">
+		delete professor_career
+		where professor_career=#{professor_career}
+	</update>
+	
+	<!--
+	기능구분	: 교수 회원 정보 수정
+	기능설명	: 교수 회원 정보를 수정한다.
+	파라미터	: str
+	리턴타입	: X
+	-->	
+	<update id="updateMember" parameterType="member">
+		update member
+		set
+		member_name = #{member_name},
+		member_post = #{member_post},
+		member_address1 = #{member_address1},
+		member_address2 = #{member_address2},
+		member_email = #{member_email},
+		member_gender = #{member_gender},
+		member_birth = #{member_birth},
+		member_picture = #{member_picture}
+		where member_id = #{member_id}  
+		
+	</update>
+	
+	<!--
+	기능구분	: 교수 정보 수정
+	기능설명	: 교수 정보를 수정한다.
+	파라미터	: str
+	리턴타입	: X
+	-->	
+	<update id="updateProfessor" parameterType="professor">
+		update professor
+		set
+		professor_hope_subject = #{professor_hope_subject},
+		professor_career_education = #{professor_career_education}
+		where professor_id = #{professor_id}  
+		
+	</update>
+	
+	<!--
+	기능구분	: 교수 경력 정보 수정
+	기능설명	: 교수 경력 정보를 수정한다.
+	파라미터	: str
+	리턴타입	: X
+	-->	
+	<update id="updateProfessorCareer" parameterType="professorCareer">
+		update professor_career
+		set
+		professor_career_company_name = #{professor_career_company_name},
+		professor_career_mainjob = #{professor_career_mainjob},
+		professor_career_position = #{professor_career_position},
+		professor_career = #{professor_career},
+		professor_career_startdate = #{professor_career_startdate},
+		professor_career_lastdate = #{professor_career_lastdate}
+		where professor_career_no = #{professor_career_no}  
+		
+	</update>
+	
+	
+</mapper>

@@ -1,0 +1,66 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true"%>
+
+
+
+<script>
+function goSubmit(){ 
+	
+		if($(".propsoalTable > tbody").length==5){
+			alert("최대수에 도달하였습니다.\n최대 5개까지 작성 가능합니다.");
+			
+		}else{
+	 	/* 	alert("클릭"); */
+			location.href="<%=request.getContextPath()%>/myPage/proposal/registForm"; 
+		}
+	
+	}
+
+
+	
+$('tr').on('click','#delete', function(e){
+
+	var proposal_num = $(this).parent().parent().children().eq(0).text();
+	var answer = confirm("정말 삭제하시겠습니까?");
+
+	if(answer){
+		$.ajax({
+			url:"<%=request.getContextPath()%>/myPage/proposal/delete",
+			type:"post",
+			data:{"proposal_num":proposal_num},
+			success:function(data){
+				alert("삭제되었습니다");
+				location.reload();
+			},
+			error:function(dd){
+			 	alert("삭제실패"); 
+			}
+		});
+	}
+	
+});
+
+$('tr').on('click','#modify', function(e){
+
+	var proposal_num = $(this).parent().parent().children().eq(0).text();
+
+		
+	
+		$.ajax({
+			url:"<%=request.getContextPath()%>/myPage/proposal/modifyForm1",
+			type:"get",
+			data:{"proposal_num":proposal_num},
+			success:function(data){
+				alert("수정");
+				location.href="<%=request.getContextPath()%>/proposal/modifyForm?proposal_num=" + proposal_num;
+				
+			},
+			error:function(dd){
+			 	alert("실패"); 
+			}
+		});
+	
+});
+
+</script>

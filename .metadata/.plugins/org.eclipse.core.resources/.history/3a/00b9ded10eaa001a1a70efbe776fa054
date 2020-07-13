@@ -1,0 +1,37 @@
+package com.dlms.dao.education_purpose;
+
+import java.sql.SQLException;
+
+public interface Education_purposeDAO {
+
+	/**
+	 * 
+	 * @기능설명		:	관리자 게시판 - 찾아오는길 조회
+	 * @작성자			:	이누리
+	 * @작성날짜    	:	2020. 6. 9.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 9.오후 12:49:12
+	 * @see				:	-
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	Manager_boardVO selectManager_board_Enterprise_comming() throws SQLException;	
+		
+
+	/**
+	 * 
+	 * @기능설명		:	관리자게시판 - 찾아오는길 수정
+	 * @작성자		    :	이누리
+	 * @작성날짜    	:	2020. 6. 9.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 9.오후 1:46:17
+	 * @see			    :	-
+	 * @param manager_board
+	 * @throws SQLException
+	 *
+	 */
+	void updateManager_board_enterprise_comming(Manager_boardVO manager_board)throws SQLException;
+	
+	
+}

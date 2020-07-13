@@ -1,0 +1,38 @@
+package com.dlms.dao.enterprise_comming;
+
+import java.sql.SQLException;
+
+import org.apache.ibatis.session.SqlSessionException;
+
+import com.dlms.dto.Enterprise_introduceVO;
+import com.dlms.dto.Manager_boardVO;
+import com.dlms.dto.Manager_dataVO;
+import com.dlms.request.Enterprise_introduceRequest;
+
+public interface Enterprise_commingDAO {
+
+	/**
+	 * 
+	 * @기능설명		:	
+	 * @작성자		:	이누리
+	 * @작성날짜    	:	2020. 6. 9.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 9.오후 12:49:12
+	 * @see			:	-
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	Manager_boardVO selectManager_board() throws SQLException;	
+		
+
+	void updateManager_board_enterprise_comming(Manager_boardVO manager_board)throws SQLException;
+	
+	
+	String selectManager_board_enterprise_comming_getimage(int manager_board_no) throws SqlSessionException;
+	
+	
+	void updateManager_board_enterprise_comming_Manager_data_filename(Manager_boardVO manager_board)throws SQLException;
+	
+
+}

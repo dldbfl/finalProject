@@ -1,0 +1,63 @@
+package com.dlms.service.education_curriculum;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.dlms.dao.education_curriculum.Education_curriculumDAO;
+import com.dlms.dao.education_purpose.Education_purposeDAO;
+import com.dlms.dto.Manager_boardVO;
+
+
+
+public class Education_curriculumServiceImpl<L> implements Education_curriculumService {
+	
+	private Education_curriculumDAO education_curriculumDAO;
+	public void setEducation_curriculumDAO(Education_curriculumDAO education_curriculumDAO) {
+		this.education_curriculumDAO = education_curriculumDAO;
+	}
+	/**
+	 * 
+	 * @기능설명		:	교육과정 조회
+	 * @작성자		    : 	이누리
+	 * @작성날짜    	:	2020. 6. 9.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 9.오후 4:01:59
+	 * @see			    :	-
+	 * @param manager_board_no
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public Map<String, Object> getEducation_curriculum(int manager_board_no) throws SQLException {
+		Map<String,Object> dataMap = new HashMap<String,Object>();
+		
+		Manager_boardVO manager_board = education_curriculumDAO.selectManager_board_Education_curriculum();
+		String manager_data_filename = education_curriculumDAO.selectManager_board_getimage(manager_board_no);
+		
+		manager_board.setManager_data_filename(manager_data_filename);
+		
+		dataMap.put("manager_board : ", manager_board);
+		dataMap.put("manager_board.manager_data_filename", manager_data_filename);
+		
+		return dataMap; 
+	}
+
+	
+	@Override
+	public void modifyEducation_curriculum(Manager_boardVO manager_board) throws SQLException {
+		
+		System.out.println("manager_board : " + manager_board);
+		
+		education_curriculumDAO.updateManager_board_education_curriculum(manager_board);
+	}
+
+
+
+
+
+
+	
+	
+}

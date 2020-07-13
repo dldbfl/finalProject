@@ -1,0 +1,45 @@
+package com.dlms.dao.education_curriculum;
+
+import java.sql.SQLException;
+
+import org.apache.ibatis.session.SqlSessionException;
+
+import com.dlms.dto.Enterprise_introduceVO;
+import com.dlms.dto.Manager_boardVO;
+import com.dlms.dto.Manager_dataVO;
+import com.dlms.request.Enterprise_introduceRequest;
+
+public interface Education_curriculumDAO {
+
+	/**
+	 * 
+	 * @기능설명		:	관리자 게시판 - 교육과정 조회
+	 * @작성자		    :	이누리
+	 * @작성날짜    	:	2020. 6. 9.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 9.오후 2:12:00
+	 * @see			    :	-
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	Manager_boardVO selectManager_board_Education_curriculum() throws SQLException;	
+		
+
+	/**
+	 * 
+	 * @기능설명		:	관리자 게시판 - 교육과정 수정
+	 * @작성자		    :	이누리
+	 * @작성날짜    	:	2020. 6. 9.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 9.오후 1:46:17
+	 * @see			    :	-
+	 * @param manager_board
+	 * @throws SQLException
+	 *
+	 */
+	void updateManager_board_education_curriculum(Manager_boardVO manager_board)throws SQLException;
+	
+	
+
+}

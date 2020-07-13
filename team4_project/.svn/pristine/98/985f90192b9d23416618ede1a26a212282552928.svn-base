@@ -1,0 +1,9 @@
+@charset "UTF-8";
+
+  	#day,#year{
+  		display: none;
+  	}
+  	.time_box{
+  		text-align: center;
+  	}
+  	

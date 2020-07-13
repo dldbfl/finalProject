@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="founded_review-mapper">
+<!--
+	기능구분	: 검색
+	기능설명	: SearchType이 t는 제목, w는 작성자,c는 내용, tc는 작성자와 내용, 
+			  tcw는 전체 로 검색이 가능하다  
+	파라미터	:
+	리턴타입	:
+-->	
+	<sql id="search">
+		<if test="searchType == 't'.toString()">
+			and founded_review_title like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'w'.toString()">
+			and founded_review_writer like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'c'.toString()">
+			and founded_review_content like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'tc'.toString()">
+			and (
+			founded_review_title like '%'||#{keyword}||'%'
+			or
+			founded_review_content like '%'||#{keyword}||'%'						
+			)			
+		</if>
+		<if test="searchType == 'cw'.toString()">
+			and (
+			founded_review_writer like '%'||#{keyword}||'%'
+			or
+			founded_review_content like '%'||#{keyword}||'%'						
+			)			
+		</if>
+		<if test="searchType == 'tcw'.toString()">
+			and (
+			founded_review_title like '%'||#{keyword}||'%'
+			or
+			founded_review_writer like '%'||#{keyword}||'%'
+			or
+			founded_review_content like '%'||#{keyword}||'%'						
+			)			
+		</if>
+	</sql>
+	
+	<!--
+	기능구분	: 조회(총게시글)
+	기능설명	: 창업 후기 게시글 총 갯수 가져오기
+	파라미터	: SearchCritaria
+	리턴타입	: int(갯수)
+	-->
+	<select id="selectFoundedReviewCriteriaTotalCount" resultType="int" parameterType="cri">
+		select
+		count(*)
+		from
+		founded_review
+		where founded_review_no is not null  			  	
+		<include refid="search" />
+		order by founded_review_no desc
+	</select>
+	
+	<select id="selectFoundedReviewSearchList" resultType="foundedReview" parameterType="cri">
+		select
+		*
+		from
+		founded_review
+		where founded_review_no is not null  			  	
+		<include refid="search" />
+		order by founded_review_no desc
+	</select>
+	
+	<!--
+	기능구분	: 창업후기 게시판 리스트
+	기능설명	: 창업후기 게시글 전체리스트 출력
+	파라미터	: 
+	리턴타입	: foundedReview
+	-->
+	<select id="selectFoundedReviewList" resultType="foundedReview">
+		select
+		*
+		from founded_review
+	
+	</select>
+	
+	<!--
+	기능구분	: 창업후기 게시판 상세보기
+	기능설명	: 창업후기 게시글 상세보기
+	파라미터	: founded_review_no(게시글번호)
+	리턴타입	: Founded_reviewVO
+	-->
+	<select id="selectFoundedReviewByReviewNo" parameterType="int" resultType="foundedReview">
+		select * 
+		from founded_review 
+		where founded_review_no=#{founded_review_no}
+	</select>
+	
+	<!--
+	기능구분	: 창업후기 게시판 등록
+	기능설명	: 창업후기 게시글 등록
+	파라미터	: foundedReview
+	리턴타입	: 
+	-->
+	<update id="insertFoundedReview" parameterType="foundedReview">
+		insert into
+		founded_review(founded_review_no,founded_review_title,founded_review_writer,founded_review_content)
+		values
+		(#{founded_review_no},#{founded_review_title},#{founded_review_writer},#{founded_review_content})
+	</update>
+	
+	<!--
+	기능구분	: 창업후기 게시판  수정
+	기능설명	: 창업후기 게시글 수정
+	파라미터	: foundedReview
+	리턴타입	: 
+	-->
+	<update id="updateFounded" parameterType="foundedReview">
+		update 
+		founded_review
+		set 
+		founded_review_title=#{founded_review_title}, founded_review_content=#{founded_review_content}, founded_review_regdate=sysdate
+			 
+		where founded_review_no=#{founded_review_no}
+	</update>
+	
+	<!--
+	기능구분	: 창업후기 게시판 삭제
+	기능설명	: 창업후기 게시글 삭제
+	파라미터	: int
+	리턴타입	: 
+	-->
+	<update id="deleteFoundedReview" parameterType="int">
+		delete 
+		from founded_review 
+		where founded_review_no=#{founded_review_no}
+	</update>
+	
+	<!--
+	기능구분	: 조회
+	기능설명	: 창업후기 게시글 번호 생성하여 가져오기
+	리턴타입	: 글번호
+	-->
+	<select id="selectFoundedReviewSeqNext" resultType="int">
+		select founded_review_seq.nextval as founded_review_no from dual
+	</select>
+	
+	<select id="selectPrevNexTitle" parameterType="int" resultType="foundedPrevNext">
+		select * from (select founded_review_no, lead(founded_review_no,1, 0) over (order by founded_review_no) nextNum, lead(founded_review_title,1 , '다음글없음') over (order by founded_review_no) nextTitle, lag(founded_review_no,1, 0) over (order by founded_review_no) prevNum, lag(founded_review_title,1, '이전글없음') over (order by founded_review_no) prevTitle from founded_review)
+		where founded_review_no=#{int}
+		
+	</select>
+	<!--
+	기능구분	: 수정
+	기능설명	: 창업후기글 수정 기능
+	파라미터	: 해당 창업후기 글 번호,제목,내용
+	-->
+	<update id="updateFoundedReview" parameterType="foundedReview">
+		update founded_review set
+		founded_review_title=#{founded_review_title},
+		founded_review_content=#{founded_review_content}
+		where founded_review_no=#{founded_review_no}
+	</update>
+	<!--
+	기능구분	: 수정
+	기능설명	: 창업후기 상세내용 클릭시 조회수 올리기
+	파라미터	: 해당조회 글 번호
+	-->
+	<update id="viewCountUP" parameterType="int">
+		update founded_review set
+		founded_review_viewcnt = founded_review_viewcnt+1
+		where founded_review_no=#{founded_review_no}
+	</update>
+	<!--
+	기능구분	: 조회
+	기능설명	: 조회수에 따른 상위 n번째 까지 가져오기
+	파라미터	: 조회 갯수
+	리턴타입	: 조회한 창업후기 글 리스트
+	-->
+	<select id="selectfoundedListByCount" parameterType="int" resultType="foundedReview">
+		select *
+        from(
+			select * 
+			from founded_review
+			order by founded_review_viewcnt desc
+            )
+        where rownum <![CDATA[<]]>=#{count}
+	</select>
+	
+	<select id="myfounded_reviewList" parameterType="str" resultType="foundedReview">
+        select *
+		from founded_review
+		where founded_review_writer = #{member_id}
+	</select>
+</mapper>

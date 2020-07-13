@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lecture_review-mapper">
+	<!--
+	기능구분	: 검색기능
+	기능설명	: searchType이 w일 시 작성자로 검색, t일 시 제목으로 검색, c일시 내용으로 검색
+	          wc일시 작성자,내용으로 검색, tc일시 제목,내용으로 검색한다.
+	-->
+	<sql id="search">
+				
+		<if test="keyword != null and keyword != 0">
+			<if test="searchType == 'many'">
+				and lecture.lecture_no = #{keyword}
+				order by lecture_review_viewcnt desc		
+			</if>
+			<if test="searchType == 'low'">
+				and lecture.lecture_no = #{keyword}
+				order by lecture_review_viewcnt asc		
+			</if>
+			 <if test="searchType == 'desc'">
+			 	and lecture.lecture_no = #{keyword}
+				order by lecture_review_regdate desc		
+			</if>
+			<if test="searchType == 'asc'">
+				and lecture.lecture_no = #{keyword}
+				order by lecture_review_regdate asc		
+			</if>
+		</if>
+		
+		<if test="keyword == 0">
+			<if test="searchType == 'many'">
+				order by lecture_review_viewcnt desc		
+			</if>
+			<if test="searchType == 'low'">
+				order by lecture_review_viewcnt asc		
+			</if>
+			 <if test="searchType == 'desc'">
+				order by lecture_review_regdate desc		
+			</if>
+			<if test="searchType == 'asc'">
+				order by lecture_review_regdate asc		
+			</if>
+		</if>
+	</sql>
+	
+	<!--
+	기능구분	: 수강후기 검색
+	기능설명	: 수강후기  검색 리스트를 불러온다
+	파라미터	: cri
+	리턴타입	: lecture_review
+	-->
+	<select id="selectSearchlectureReviewList" parameterType="cri" resultType="review">
+		select *
+		from member,student,pay,lecture_review,lecture
+		where member.member_id=student.student_id and student.student_id = pay.student_id and pay.pay_no = lecture_review.pay_no and pay.lecture_no = lecture.lecture_no  	
+		<include refid="search" />
+	</select>
+	
+	<!--
+	기능구분	: 베스트후기 검색
+	기능설명	: 수강후기  검색 리스트를 불러온다
+	파라미터	: cri
+	리턴타입	: lecture_review
+	-->
+	<select id="bestReviewList" parameterType="cri" resultType="review">
+		select *
+		from member,student,pay,lecture_review,lecture
+		where member.member_id=student.student_id and student.student_id = pay.student_id and pay.pay_no = lecture_review.pay_no and pay.lecture_no = lecture.lecture_no
+		and lecture_review_likecnt >=50 	
+		<include refid="search" />
+	</select>
+	
+	
+	<!--
+	기능구분	: 내 수강후기 검색
+	기능설명	: 수강후기  검색 리스트를 불러온다
+	파라미터	: cri
+	리턴타입	: lecture_review
+	-->
+	<select id="mylectureReviewList" parameterType="map" resultType="review">
+		select *
+		from member,student,pay,lecture_review,lecture
+		where member.member_id=student.student_id and student.student_id = pay.student_id and pay.pay_no = lecture_review.pay_no and pay.lecture_no = lecture.lecture_no
+		and member_id=#{member_id}
+		<include refid="search" /> 
+	</select>
+	
+	<!--
+	기능구분	: 내 수강후기 카운트
+	기능설명	: 내 수강후기  검색 리스트를 불러온다
+	파라미터	: cri
+	리턴타입	: lecture_review
+	-->
+	<select id="mylectureReviewListCount" parameterType="map" resultType="int">
+		select
+		count(*)
+		from member,student,pay,lecture_review,lecture
+		where member.member_id=student.student_id and student.student_id = pay.student_id and pay.pay_no = lecture_review.pay_no and pay.lecture_no = lecture.lecture_no
+		and member_id=#{member_id}
+		<include refid="search" /> 
+	</select>
+	
+	<!--
+	기능구분	: 수강후기카운트
+	기능설명	: 수강후기 리스트를 볼러올때 페이지를 매기기 위해 사용
+	파라미터	: X
+	리턴타입	: int
+	-->
+	<select id="selectlectureReviewListCount" resultType="int">
+		select
+		count(*)
+		from member,student,pay,lecture_review,lecture
+		where member.member_id=student.student_id and student.student_id = pay.student_id and pay.pay_no = lecture_review.pay_no and pay.lecture_no = lecture.lecture_no  	
+		<include refid="search" />
+	</select>
+	
+	<!--
+	기능구분	: 수강후기 리스트
+	기능설명	: 수강후기  검색 리스트를 불러온다
+	파라미터	: X
+	리턴타입	: lecture_review
+	-->
+	<select id="selectlectureReviewList" resultType="lecture_review">
+		select  *
+		from
+		lecture_review
+		where lecture_review_no is not null	
+		order by lecture_review_regdate desc
+	</select>
+	
+	<!--
+	기능구분	: 수강후기 상세
+	기능설명	: 수강후기  검색 리스트를 불러온다
+	파라미터	: int
+	리턴타입	: lecture_review
+	-->
+	<select id="selectlectureReviewDetail" parameterType="int" resultType="review">
+	select *
+		from member,student,pay,lecture_review,lecture
+		where member.member_id=student.student_id and student.student_id = pay.student_id and pay.pay_no = lecture_review.pay_no and pay.lecture_no = lecture.lecture_no
+		and lecture_review_no=#{lecture_review_no}
+	</select>
+	
+	<!--
+	기능구분	: 수강후기 상세
+	기능설명	: 수강후기  검색 리스트를 불러온다
+	파라미터	: int
+	리턴타입	: lecture_review
+	-->
+	<select id="selectlectureReviewDetailById" parameterType="str" resultType="lecture_review">
+		select  *
+		from
+		lecture_review
+		where lecture_review_writer is not null and lecture_review_writer = #{lecture_review_writer} 
+		order by lecture_review_regdate desc
+	</select>
+	
+	<!--
+	기능구분	: 수강후기 작성
+	기능설명	: 수강후기를 작성한다.
+	파라미터	: X
+	리턴타입	: lecture_review
+	-->
+	<update id="insertlectureReview" parameterType="lecture_review">
+		insert 
+		into 
+		lecture_review(lecture_review_no, pay_no, lecture_review_title, lecture_review_writer, lecture_review_content)
+		values
+		(#{lecture_review_no},#{pay_no},#{lecture_review_title},#{lecture_review_writer},#{lecture_review_content})
+	</update>
+	
+	<!--
+	기능구분	: 수강후기 수정
+	기능설명	: 수강후기를 수정한다.
+	파라미터	: lecture_review
+	리턴타입	: X
+	-->
+	<update id="updatelectureReview" parameterType="review">
+		update lecture_review 
+		set 
+		lecture_review_title=#{lecture_review_title},lecture_review_content=#{lecture_review_content}
+		where lecture_review_no=#{lecture_review_no}
+	</update>
+	
+	<!--
+	기능구분	: 수강후기 삭제
+	기능설명	: 수강후기를 삭제한다.
+	파라미터	: int
+	리턴타입	: X
+	-->
+	<update id="deletelectureReview" parameterType="int">
+		delete lecture_review 
+		where lecture_review_no=#{lecture_review_no}
+	</update>
+
+	
+	<!--
+	기능구분	: 수강 후기 번호 생성
+	기능설명	: 수강 후기 번호를 생성한다.
+	파라미터	: X
+	리턴타입	: int
+	-->	
+	<select id="selectLectureReviewSeqNext" resultType="int">
+		select lecture_review_seq.nextval as lecture_review_no from dual
+	</select>
+	
+	<!--
+	기능구분	: 수강 후기 조회수 증가
+	기능설명	: 수강 후기 조회수를 증가 시킨다
+	파라미터	: X
+	리턴타입	: int
+	-->	
+	<update id="reviewCountUp" parameterType="int">
+		update lecture_review
+		set lecture_review_viewcnt = lecture_review_viewcnt + 1
+		where lecture_review_no = #{lecture_review_no} 
+	</update>
+	<!--
+	기능구분	: 수강 후기 좋아요 증가
+	기능설명	: 수강 후기 좋아요를 증가 시킨다
+	파라미터	: X
+	리턴타입	: int
+	-->	
+	<update id="reviewLikeCountUp" parameterType="int">
+		update lecture_review
+		set lecture_review_likecnt = lecture_review_likecnt + 1
+		where lecture_review_no = #{lecture_review_no} 
+	</update>
+	
+		<!--
+	기능구분	: 수강 후기 좋아요 감소
+	기능설명	: 수강 후기 좋아요를 감소 시킨다
+	파라미터	: X
+	리턴타입	: int
+	-->	
+	<update id="reviewLikeCountDown" parameterType="int">
+		update lecture_review
+		set lecture_review_likecnt = lecture_review_likecnt - 1
+		where lecture_review_no = #{lecture_review_no} 
+	</update>
+	
+</mapper>

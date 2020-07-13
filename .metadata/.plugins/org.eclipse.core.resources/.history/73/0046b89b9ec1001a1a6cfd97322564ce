@@ -1,0 +1,607 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<link rel="stylesheet" href="<%=request.getContextPath() %>/resources/css/slider/sliderDisplay.css" />
+<link rel="stylesheet" href="<%=request.getContextPath() %>/resources/css/slider/sliderOption.css" />
+<link rel="stylesheet" href="<%=request.getContextPath() %>/resources/css/commons/clock.css" />
+<link rel="stylesheet" href="<%=request.getContextPath() %>/resources/css/commons/card.css" />
+<link rel="stylesheet" href="<%=request.getContextPath() %>/resources/css/commons/cheer.css" />
+ <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+ <script src="<%=request.getContextPath() %>/resources/js/slider/jquery.slides.min.js"></script>
+
+ <!-- 팝업 -->
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.1/css/swiper.min.css">
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.1/js/swiper.min.js"></script>
+ <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<style>
+	.lastRow{
+		margin-bottom: 50px;
+	}
+	li{
+		list-style-type:none;
+		
+	}
+	ol a{
+		padding-left:21px;
+		padding-right: 40px;
+	}
+  	span#popup1{
+		text-align: center;
+	    background-image:url("<%=request.getContextPath()%>/manager/popup/1"); 
+	    background-repeat: no-repeat;
+	    background-position: center;
+	    background-size: cover;
+	    z-index: 98;
+	}
+	span#popup2{
+		text-align: center;
+	    background-image:url("<%=request.getContextPath()%>/manager/popup/2");
+	    background-repeat: no-repeat;
+	    background-position: center;
+	    background-size: cover;
+	    z-index: 99;
+
+	}
+	span#popup3{		
+	    text-align: center;
+	     background-image:url("<%=request.getContextPath()%>/manager/popup/3");
+	    background-repeat: no-repeat;
+	    background-position: center;
+	    background-size: cover;
+	    z-index: 98;
+	}
+	div#count_consult_end{
+		display:none;
+		background-color: lavenderblush;
+		position:fixed; 
+		font-size:22px;
+		border:gold 6px double;
+		width:500px;
+		height:127px;
+		top:799px;
+		left:1000px; 
+		color:white;
+		z-index:99;
+		text-align: center;
+		display:flex; 
+		font-weight: bold;
+   		 color: lightcoral;
+		
+	}
+	.swiper-container {
+	z-index: 99;
+    left: 109px;
+    top: 321px;
+    position: fixed;
+    width: 420px;
+    height: 640px;
+    border: 5px double #523700;
+    border-radius: 7px;
+    box-shadow: 0 0 20px #ccc inset;
+	}
+	.swiper-slide {
+		text-align:center;
+		display:flex; /* 내용을 중앙정렬 하기위해 flex 사용 */
+		align-items:center; /* 위아래 기준 중앙정렬 */
+		justify-content:center; /* 좌우 기준 중앙정렬 */
+	}
+	.swiper-slide img {
+		box-shadow:0 0 5px #555;
+	}
+	
+	.noticeWrap li,.lectureReviewWrap li ,.foundedReviewWrap li ,.lectureWrap li ,.recommendWrap li{
+		overflow: hidden;
+	    text-overflow: ellipsis;
+	    white-space: nowrap;
+	}
+	.noticeDate{
+		float: right;
+		margin-right: 10px;
+	}
+	.mainTotalCheer{
+	    margin-left: 33px;
+		
+	}
+	.popupclose{
+		font-size: 45px;
+		position: fixed;
+		z-index: 99;
+		left: 791px;
+		top: 860px;
+		cursor: pointer;
+	}
+	.popupclose2{
+		font-size: 20px;
+	    position: fixed;
+	    z-index: 99;
+        left: 632px;
+	    top: 878px;
+	    cursor: pointer;
+	    font-weight: bold;
+	}
+	li a{
+	    overflow: hidden;
+    	text-overflow: ellipsis;
+	}
+	li span{
+		float: right;
+    	margin-right: 10px;
+	}
+	.cardtitdetailWrap li{
+		font-size: 1.4em;
+	}
+	.cardtitdetailWrap li span{
+		font-size: 0.8em;
+	}
+	
+	
+</style>
+	
+<body>
+	<div>
+	  <div id="slides">
+	    <img src="<%=request.getContextPath() %>/resources/images/corona19banner.jpg">
+	    <img src="<%=request.getContextPath() %>/resources/images/banner2.jpg">
+	    <img src="<%=request.getContextPath() %>/resources/images/corona19banner2.jpg">
+	    <img src="<%=request.getContextPath() %>/resources/images/successSeminarbanner.jpg">
+	  </div>
+	</div>
+	<div>
+		<div class="row">
+			<div class="col-xs-offset-1 col-xs-10 cheerUpWrap" >
+				<div class="cheerUpTitle">
+					<h3>서로에게 <span style="color: blue;">응원을!</span></h3>
+					<span class="mainTotalCheer">전체 : 건</span>
+				</div>
+				<div class="cheerUpText">
+					<input type="text" name="cheerUpText"><button type="button" onclick="CheerUpload();" class="btn btn-primary">응원하기</button>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-offset-1 col-xs-2">
+				<div class="clock">
+					<div class="date_box " style="font-size: 2.2em;text-align: center;padding-top: 10px;">
+						<span id="year"></span>
+						<span class="point"></span>
+						<div class="moths" style="font-size: 0.6em;">
+							<span id="month"></span>
+							<span class="point">월</span>
+						</div>
+						<div class="dates" style="font-size: 1.6em;">
+							<span id="date"></span>
+							<span class="point">일</span>
+						</div>
+					</div>
+					<div class="time_box">
+						<span class="txt_lg" id="hours"></span>
+						<span class="mark01">:</span>
+						<span class="txt_lg" id="min"></span>
+						<span class="mark02">.</span>
+						<span class="txt_sm" id="sec"></span>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-8 dateViewer">
+				<div class="cheer" style="overflow: hidden; position: relative; height: 100%;">
+					<ul id="cheerList" class="cheerList">
+					
+					</ul>
+	  			</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-4 col-xs-4"  style="height:180px; border-radius: 26px; margin: 10px 20px 10px 30px; ">
+				<div class="card-body noticeWrap">
+					<div class="cardtitleWrap">
+						<ol class="cardol">
+							<li><i class="fa fa-bullhorn fa-2x" aria-hidden="true"></i> <span class="cardTitle">공지사항</span></li>
+						</ol>
+						<p class="cardoP"><a href="/board/notice/list">더 보기&nbsp; ></a></p>
+					</div>
+					<div class="cardtitdetailWrap scrollbars">
+						<ol>
+						 	<c:forEach items="${noticeList }" var="notice" begin="0" end="9" >
+							<li>
+								<a class="col-sm-8" href="<%=request.getContextPath() %>/board/notice/detail?notice_no=${notice.notice_no }">${notice.notice_title }</a>
+								<span class="noticeDate"><fmt:formatDate value="${notice.notice_regdate }"  pattern = "yyyy.MM.dd" /></span>
+							</li>
+							</c:forEach> 
+						</ol> 
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-7" style="height: 180px; border-radius: 26px; margin: 10px;">
+				<div class="card-body recommendWrap">
+					<div class="cardtitleWrap">
+						<ol class="cardol">
+							<li><i class="fa fa-list fa-2x" aria-hidden="true"></i><span class="cardTitle"> 창업뉴스</span></li>
+						</ol>
+					</div>
+					<div class="cardtitdetailWrap scrollbars">
+						<ol>
+						</ol> 
+					</div>
+				</div>
+			</div>
+		</div>
+		<br>
+		<br>
+		<div class="row lastRow">
+			<div class="col-xs-4" style="height:180px; border-radius: 26px; margin: 10px 20px 10px 30px;">
+				<div class="card-body lectureWrap">
+						<div class="cardtitleWrap">
+							<ol class="cardol">
+								<li><i class="fa fa-calendar fa-2x" aria-hidden="true"></i><span class="cardTitle"> 이달의 모집과정</span></li>
+							</ol>
+							<p class="cardoP"><a href="/lecture/list">더 보기&nbsp; ></a></p>
+						</div>
+						<div class="cardtitdetailWrap scrollbars">
+							<ol>
+							</ol> 
+						</div>
+					</div>
+				</div>
+			<div class="col-xs-4" style="height: 180px; border-radius: 26px; margin: 10px; ">
+				<div class="card-body lectureReviewWrap">
+					<div class="cardtitleWrap">
+						<ol class="cardol">
+							<li><i class="fa fa-graduation-cap fa-2x" aria-hidden="true"></i><span class="cardTitle"> 수강 후기</span></li>
+						</ol>
+						<p class="cardoP"><a href="/lecture/review/list">더 보기&nbsp; ></a></p>
+					</div>
+					<div class="cardtitdetailWrap scrollbars">
+						<ol>
+						</ol> 
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-3" style="height: 180px; border-radius: 26px; margin: 10px;">
+				<div class="card-body foundedReviewWrap">
+					<div class="cardtitleWrap">
+						<ol class="cardol">
+							<li><i class="fa fa-commenting fa-2x" aria-hidden="true"></i><span class="cardTitle"> 창업 후기</span></li>
+						</ol>
+						<p class="cardoP"><a href="/board/foundReviewList" data-transition="fade">더 보기&nbsp; ></a></p>
+					</div>
+					<div class="cardtitdetailWrap scrollbars">
+						<ol>
+						</ol> 
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+				
+	 <!-- 팝업 -->
+	<!-- <span id="popup3">
+		<input id="popup3close" value="비활성화" type="image" src="/resources/images/x2.png" style="float: right; width: 12px;visibility: visible;">
+	</span>
+		
+	<span id="popup2">
+		<input id="popup2close" value="비활성화" type="image" src="/resources/images/x2.png" style="float: right; width: 12px;visibility: visible;">
+	</span>
+	<span id="popup1">
+		<input id="popup1close" value="비활성화" type="image" src="/resources/images/x2.png" style="float: right; width: 12px;visibility: visible;">
+	</span>  -->
+	
+	<!-- 상담문의 완료 알림 -->
+	<div id="count_consult_end" class="col-sm-12" style="display:none;" >
+		<div  id="count_consult_end2" class ="col-sm-12"  onclick="location.href ='http://localhost/board/consult/list'" style="cursor:pointer;display: table;` padding-left: 95px; ">
+			<input id="popupclose" type="image" src="/resources/images/letter.png" style="width: 77px; position: FIXED; padding-top: 25px;">
+			<div id="count_consult_end_text" style="display:table-cell; vertical-align: middle;padding-top: 40px; padding-left: 95px;" ></div>
+		</div>				
+	</div>	
+	
+	<!-- 팝업 알림 -->
+	<c:if test="${not empty popup.popup1 && not empty popup.popup2 && not empty popup.popup3}" >
+		<div class="swiper-container" style="display: none;">
+			<!-- <input id="popupclose" type="image" src="/resources/images/x2.png" style="width: 42px; position: FIXED; left: 402px; top: 280px; z-index: 120;float: right; visibility: visible;"> -->
+			<span class="popupclose">&times;</span>
+			<span class="popupclose2">오늘하루열지않음</span>
+			<div class="swiper-wrapper">
+				<c:if test="${not empty popup.popup1}" >
+					<span class="swiper-slide" id="popup1"></span>
+				</c:if>
+				<c:if test="${not empty popup.popup2}" >
+					<span class="swiper-slide" id="popup2"></span>
+				</c:if>
+				<c:if test="${not empty popup.popup3}" >
+					<span class="swiper-slide" id="popup3"></span>
+				</c:if>
+			</div>
+					
+			<!-- 네비게이션 버튼 -->
+			<div class="swiper-button-next"></div><!-- 다음 버튼 (오른쪽에 있는 버튼) -->
+			<div class="swiper-button-prev"></div><!-- 이전 버튼 -->
+		
+			<!-- 페이징 -->
+			<div class="swiper-pagination"></div>
+		</div>
+	</c:if>
+<script src="/resources/js/cookie.js"></script>
+<script>
+	var userId="${loginUser.member_id}";
+	$(document).ready(function() {
+		
+		<%-- $('#picturePreView1').css({'background-image':'url("<%=request.getContextPath()%>/manager/popup/1"'});
+		$('#picturePreView2').css({'background-image':'url("<%=request.getContextPath()%>/manager/popup/2"'});
+		$('#picturePreView3').css({'background-image':'url("<%=request.getContextPath()%>/manager/popup/3"'}); --%>
+		var count_consult_end = ${count_consult_end}+0;
+		/* alert(count_consult_end); */
+		if(count_consult_end>0){
+			/* $('#count_consult_end').css({'visibility':'visible'}); */
+			$('#count_consult_end_text').text(${count_consult_end}+'개의 완료된 상담글이 있습니다.');
+			$("#count_consult_end").fadeIn(4000);
+			$("#count_consult_end").fadeOut(15000); 
+						
+		}else{
+			$('#count_consult_end').css({'visibility':'hidden'});
+		}		
+		
+	/* $('#count_consult_end').on('click',function(){
+		$('#count_consult_end').hide();
+	}); */	
+	
+	//팝업닫기
+	$('.popupclose').on('click',function(){
+		$('.swiper-container').hide();
+	}); 
+	//팝업 오늘은 그만보기
+	$('.popupclose2').on('click',function() {
+    	setCookie('todayClose','Y', 1);
+        $(".swiper-container").hide();
+    });
+	
+	if(getCookie("todayClose")!="Y"){
+	    $(".swiper-container").show();
+	}
+	function setCookie(cookieName, value, exdays){
+	    var exdate = new Date();
+	    exdate.setDate(exdate.getDate() + exdays);
+	    var cookieValue = escape(value) + ((exdays==null) ? "" : "; expires=" + exdate.toGMTString());
+	    document.cookie = cookieName + "=" + cookieValue;
+	}
+	function deleteCookie(cookieName){
+	    var expireDate = new Date();
+	    expireDate.setDate(expireDate.getDate() - 1);
+	    document.cookie = cookieName + "= " + "; expires=" + expireDate.toGMTString();
+	}
+	function getCookie(cookieName) {
+	    cookieName = cookieName + '=';
+	    var cookieData = document.cookie;
+	    var start = cookieData.indexOf(cookieName);
+	    var cookieValue = '';
+	    if(start != -1){
+	        start += cookieName.length;
+	        var end = cookieData.indexOf(';', start);
+	        if(end == -1)end = cookieData.length;
+	        cookieValue = cookieData.substring(start, end);
+	    }
+	    return unescape(cookieValue);
+	}
+	
+	new Swiper('.swiper-container', {
+		/* effect : 'fade', */
+		loop : true,// 슬라이드 반복
+		autoplay: 1000,
+		// 자동높이 사용여부 : 사용하지 않을시 기본값은 false
+		/* autoHeight : true, */
+		pagination : { // 페이징 설정
+			el : '.swiper-pagination',
+			clickable : true, // 페이징을 클릭하면 해당 영역으로 이동, 필요시 지정해 줘야 기능 작동
+		},
+		navigation : { // 네비게이션 설정
+			nextEl : '.swiper-button-next', // 다음 버튼 클래스명
+			prevEl : '.swiper-button-prev', // 이번 버튼 클래스명
+		},
+	});
+});
+	//응원글 리스트 가져오는 기능
+	$.ajax({
+		url:"/cheerList",
+		type:"get",
+		success :function(suc){
+			cheerListMaker(suc);
+
+		},
+		error:function(err){
+			alert("에러");
+		}
+		
+	})
+	
+	//응원글 리스트 만드는 기능 
+	function cheerListMaker(data){
+		$(".cheerUpTitle span:last").text("전체 :"+data.cheerCnt+"건")
+		for(var i= 0; i<data.memberList.length; i++){
+		var li= $("<li></li>");
+			var member= data.memberList[i];
+			var cheer= data.cheerList[i];
+			var photoDiv= $("<div class='photo'></div>");
+
+			var studentInfoDiv= $("<div class='studentInfo'></div>")
+			var member_idhidden= $("<input type='hidden' name="+member.member_id+" value="+member.member_id+">");
+			var member_idSpan= $("<span>"+member.member_id+"</span>");
+			var member_nameSpan= $("<span>"+member.member_name+"</span>");
+				
+			
+			var boundarySpan= $("<span class='boundary'>|</span>");
+			var cheerTextP= $("<p class='cheerText'>"+cheer.cheer_content+"</p>");
+			var dateWrapDiv= $("<div class='dateWrap'></div>");
+			
+			var  day = new Date(cheer.cheer_regdate);
+			var date=day.format("yyyy-MM-dd");
+			
+			var cheerdateP = $("<p class='cheerdate'>"+date+"</p>")
+			
+			li.append(photoDiv);
+			li.append(studentInfoDiv);
+			li.append(boundarySpan);
+			li.append(cheerTextP);
+			li.append(dateWrapDiv);
+			studentInfoDiv.append(member_idhidden);
+			studentInfoDiv.append(member_idSpan);
+			studentInfoDiv.append(member_nameSpan);
+			dateWrapDiv.append(boundarySpan);
+			dateWrapDiv.append(cheerdateP);
+			/* var pictureStr = member.member_picture; */
+			photoDiv.css({"background-image":"url(<%=request.getContextPath()%>/commons/images/"+member.member_id+")"});
+			$("#cheerList").append(li);
+		}
+	}
+	
+	//응원글 슬라이드 처리 부분
+	function tick2(){ 
+		$('#cheerList li:first').slideUp( function () { $(this).appendTo($('#cheerList')).slideDown(); });
+	}
+		var interval=setInterval(function(){ tick2 () }, 3000);
+	
+	$('#cheerList').hover(function(){	//mousehover 시 멈춤 
+		clearInterval(interval);
+	},
+	function(){//mouseout 시 재시작
+		interval=setInterval(function(){ tick2 () }, 3000);
+		
+	})
+</script>
+<script>
+	
+
+	$.ajax({
+		url:"/lecture/review/quickList",
+		type:"get",
+		success:function(suc){
+			newlectureReviewList(suc);
+		},
+		error:function(err){
+			alert("newFoundedReviewList 에러");
+		}
+		
+	})
+
+
+	 function newlectureReviewList(lectureReview){
+		for(var i=0; i<lectureReview.length; i++){
+			var li = $("<li></li>");
+			var lecture= lectureReview[i];
+			
+			var aTeg=$("<a class='col-sm-8'>"+lecture.lecture_review_title+"</a>");
+			var spanTeg=$("<span>"+moment(lecture.lecture_review_regdate).format("YYYY-MM-DD")+"</span>");
+			aTeg.attr({"href":"<%=request.getContextPath()%>/lecture/review/detail?lecture_review_no="+lecture.lecture_review_no+""});
+		li.append(aTeg);
+		li.append(spanTeg);
+		$(".lectureReviewWrap ol:last").append(li)
+		}
+	} 
+</script>
+<script>
+	
+
+	$.ajax({
+		url:"/foundedReviewList",
+		type:"get",
+		success:function(suc){
+			newFoundedReviewList(suc);
+		},
+		error:function(err){
+			alert("newFoundedReviewList 에러");
+		}
+		
+	})
+
+	//창업후기 리스트 만드는 기능
+	 function newFoundedReviewList(foundedList){
+		for(var i=0; i<foundedList.length; i++){
+			var li = $("<li></li>");
+			var found= foundedList[i];
+			
+			
+			var aTeg=$("<a class='col-sm-7'>"+found.founded_review_title+"</a>");
+			var spanTeg=$("<span>"+moment(found.founded_review_regdate).format("YYYY-MM-DD")+"</span>");
+			aTeg.attr({"href":"<%=request.getContextPath()%>/board/foundedReview/detail?founded_review_no="+found.founded_review_no+""});
+		li.append(aTeg);
+		li.append(spanTeg);
+		$(".foundedReviewWrap ol:last").append(li)
+		}
+	} 
+	
+	
+	$.ajax({
+		url:"/news",
+		type:"get",
+		dataType: "json",
+		success:function(suc){
+			
+			newsList(suc);
+		},
+		error:function(err){
+			alert("에러");
+		}
+	})
+	 //뉴스 리스트 만드는 기능
+	 function newsList(obj){
+		var newsList=obj.items;
+		for(var i=0; i<newsList.length; i++){
+			var li = $("<li></li>");
+			var news= newsList[i];
+			var aTeg=$("<a class='col-sm-9'>"+news.title+"</a>");
+			var spanTeg=$("<span>"+moment(news.pubDate).format("YYYY-MM-DD")+"</span>");
+			aTeg.attr({"href":news.originallink});
+			
+		li.append(aTeg);
+		li.append(spanTeg);
+		$(".recommendWrap ol:last").append(li)
+		
+		}
+	} 
+	
+	
+	$.ajax({
+		url:"/lectureThisMonth",
+		type:"get",
+		success:function(suc){
+			lectureThisMonthList(suc);
+		},
+		error:function(err){
+			alert("에러");
+		}
+	})
+	//모집강의 리스트 기능
+ 	function lectureThisMonthList(obj){
+		
+		var startDay=obj[0].lecture_recruit_date;
+		var endDay=obj[0].lecture_recruit_status;
+		
+		var startDate= new Date(startDay);
+		var endDate= new Date(endDay);
+		
+		var formatStartDate=startDate.format('yyyy.MM.dd');
+		var formatEndDate=endDate.format('yyyy.MM.dd');
+		var title= obj[0].lecture_title;
+		
+		
+		for(var i=0; i<obj.length; i++){
+			var li = $("<li></li>");
+			var lecture= obj[i];
+			var aTeg=$("<a class='col-sm-5'>"+lecture.lecture_title+"</a>");
+			var spanTeg=$("<span>"+formatStartDate+" ~ "+formatEndDate+"</span>");
+			aTeg.attr({"href":"/lecture/detail?lecture_no="+lecture.lecture_no});
+			li.append(aTeg);
+			li.append(spanTeg);
+			$(".lectureWrap ol:last").append(li)
+		}
+	}  
+	
+</script>
+
+
+
+
+<script src="<%=request.getContextPath()%>/resources/js/commons/cheer.js"></script>	
+<script src="<%=request.getContextPath()%>/resources/js/commons/clock.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/commons/slider.js"></script>
+</body>

@@ -1,0 +1,85 @@
+package com.dlms.service.enterprise_introduce;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.dlms.dao.entrerprise_introduce.Entrerprise_introduceDAO;
+import com.dlms.dao.lecture.LectureReviewDAO;
+import com.dlms.dao.manager.ManagerDAO;
+import com.dlms.dto.Enterprise_introduceVO;
+import com.dlms.dto.Lecture_reviewVO;
+import com.dlms.dto.Lecture_review_imgVO;
+import com.dlms.dto.ProfessorAllVO;
+import com.dlms.dto.StudentAllVO;
+import com.dlms.request.PageMaker;
+import com.dlms.request.SearchCriteria;
+
+/**
+ * 
+ * @사용목적		:	기업소개 관련 서비스
+ * @작성자		:	이누리
+ * @작성날짜     	:	2020. 6. 5.
+ * @마지막수정자	:	이누리
+ * @마지막수정일	:	2020. 6. 5.오후 2:41:43
+ * @see			:	-
+ * @param <L>
+ *
+ */
+public class Entrerprise_introduceServiceImpl<L> implements Entrerprise_introduceService {
+	
+	private Entrerprise_introduceDAO entrerprise_introduceDAO;
+	public void setEntrerprise_introduceDAO(Entrerprise_introduceDAO entrerprise_introduceDAO) {
+		this.entrerprise_introduceDAO = entrerprise_introduceDAO;
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	기업소개 조회
+	 * @작성자		:	이누리
+	 * @작성날짜    	:	2020. 6. 5.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 5.오후 3:06:13
+	 * @see			:	-
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public Map<String, Object> getEnterprise_introduce() throws SQLException {
+		Map<String,Object> dataMap = new HashMap<String,Object>();
+		
+		Enterprise_introduceVO enterprise_introduce = entrerprise_introduceDAO.selectEnterprise_introduce();
+				
+		dataMap.put("enterprise_introduce", enterprise_introduce);
+		
+		return dataMap; 
+	}
+
+	/**
+	 * 
+	 * @기능설명		:	기업소개 수정
+	 * @작성자		:	이누리
+	 * @작성날짜    	:	2020. 6. 5.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 5.오후 3:06:49
+	 * @see			:	-
+	 * @param enterprise_introduce
+	 * @throws SQLException
+	 *
+	 */
+	@Override
+	public void modifyEnterprise_introduce(Enterprise_introduceVO enterprise_introduce) throws SQLException {
+		
+		entrerprise_introduceDAO.updateEnterprise_introduce(enterprise_introduce);
+	}
+
+
+
+
+
+
+	
+	
+}

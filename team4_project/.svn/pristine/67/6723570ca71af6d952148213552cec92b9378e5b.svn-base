@@ -1,0 +1,286 @@
+@charset "UTF-8";
+
+.button4{
+  background: green;
+	 color:#ffffff;
+  border: 0px solid #aaa;
+	 border-radius: 8px;
+  cursor: pointer;
+	 transition: all 0.2s ease-out;
+  padding: 10px 30px 10px 30px;
+}
+
+h4{
+	font-size: 2.0em;
+	margin-left: 15px;
+}
+
+#image{
+	margin-top:40px;
+	margin-left: 15px;
+	margin-right: 15px;
+	width: 200px;
+	height: 250px;
+	float: left;
+}
+
+#table-o{
+	width: 300px;
+	height:300px;	
+	margin-left: 10px;
+	border: 1px solid black;
+
+}
+
+.tr-o{
+	text-align: center;
+	background: white;
+	
+	
+}
+.th-o{
+	text-align: center;
+	border: 1px solid black;
+}
+.text-center{
+	
+}
+.td-o{
+	text-align: center;
+	border: 1px solid black;
+}
+.button3 {
+	
+	 background: #FE980F;
+	 color:#ffffff;
+	 font-family: Helvetica, Arial, sans-serif;
+	text-align: center;
+	 font-size: 14px;
+	 padding: 10px 10px 10px 10px;
+	 border: 0px solid #aaa;
+	 border-radius: 8px;
+	 box-shadow: 0 px 3px rgba(0, 0, 0, 0.15);
+	 text-decoration: none;
+	 text-shadow: 0 px 0 ;
+	 cursor: pointer;
+	 transition: all 0.2s ease-out;
+     width: 300px;
+}
+ .button3:hover {
+	 border-color: #999;
+	 box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+ .button3:active {
+	 box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset;
+}
+ .overlay {
+	 position: absolute;
+	 top: 0;
+	 bottom: 0;
+	 left: 0;
+	 right: 0;
+	 background: rgba(0, 0, 0, 0.5);
+	 transition: opacity 200ms;
+	 visibility: hidden;
+	 opacity: 1;
+	 z-index: 9;
+}
+ .overlay.light {
+	 background: rgba(255, 255, 255, 0.9);
+	 
+}
+ .overlay .cancel {
+	 position: absolute;
+	 width: 100%;
+	 height: 100%;
+	 cursor: default;
+}
+ .overlay:target {
+	 visibility: visible;
+	 opacity: 1;
+}
+ .popup1 {
+	 top: 50%;
+	 left: 50%;
+	 transform: translate(-50%, -50%);
+	 width: 50%;
+	 margin: 50px auto;
+	 padding: 0px;
+	 background: white;
+	 border: 1px solid #666;
+	 width: 550px;
+	 box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+	 position: fixed;
+	 height: 650px;
+     
+}
+ .light .popup1 {
+	 border-color: #aaa;
+	 box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+}
+ .popup1 h3 {display: flex;
+   color: green;
+  align-items: center;
+  justify-content: center;
+	 margin-top: 10;
+   font-family: Helvetica, Arial, sans-serif;
+}
+ .popup1 .close {
+	 position: absolute;
+	 width: 20px;
+	 height: 20px;
+	 top: 20px;
+	 right: 20px;
+	 opacity: 0.8;
+	 transition: all 200ms;
+	 font-size: 24px;
+	 font-weight: bold;
+	 text-decoration: none;
+	 color: #666;
+}
+ .popup1 .close:hover {
+	 opacity: 1;
+}
+ .popup1 .content {
+	 max-height: 400px;
+	 overflow: auto;
+}
+ .popup1 p {
+	 margin: 0 0 1em;
+}
+ .popup1 p:last-child {
+	 margin: 0;
+}
+ 
+.hamo{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #F39731;
+}
+.formpopup1{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  
+}
+.w3-button{
+  margin-right: 10px;
+  padding: 5px 10px 5px 10px;
+}
+
+.formbutton{
+  padding-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;  
+}
+input{
+  
+  display: block;
+  border: none;
+  border-bottom: solid 1px;
+  border-color: black;
+  box-shadow: none;
+    outline: none;
+    background-position: 0 0;
+  
+}
+
+.input-file { 
+	display: inline-block;
+}
+	
+.input-file [type="file"] { 
+	position: absolute; 
+	width: 1px; 
+	height: 1px; 
+	padding: 0; 
+	margin: -1px; 
+	overflow: hidden; 
+	clip: rect(0, 0, 0, 0); 
+	border: 0 none; 
+}
+
+.input-file [type="button"] { 
+	position: absolute; 
+	width: 1px; 
+	height: 1px; 
+	padding: 0; 
+	margin: -1px; 
+	overflow: hidden; 
+	clip: rect(0, 0, 0, 0); 
+	border: 0 none; 
+}
+
+.input-file .file-label { 
+	display: inline-block; 
+	min-width: 53px; 
+	height: 27px; 
+	line-height: 24px; 
+	padding: 0 10px; 
+	border-radius: 2px; 
+	font-size: 13px; 
+	background-color: #333; 
+	color: #fff; 
+	text-align: center; 
+}
+.input-file .file-name { 
+	width: 250px; 
+	background: #f5f5f5; 
+	height: 27px; 
+	line-height: 26px; 
+	text-indent: 5px; 
+	border: 1px solid #bbb; 
+}
+/* 접근성 탭 포커스 스타일 */
+.file-focus { 
+	outline: 1px dotted #d2310e; 
+	}
+
+
+ .popup2 {
+	 top: 50%;
+	 left: 50%;
+	 transform: translate(-50%, -50%);
+	 width: 70%;
+	 margin: 50px auto;
+	 padding: 0px;
+	 background: white;
+	 border: 1px solid #666;
+	 width: 550px;
+	 box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+	 position: fixed;
+	 height: 480px;
+	 border-radius: 20px;
+     
+}
+
+.mailBtn{
+	
+	width: 100px;
+	height: 35px;
+	font-size: 15px;
+	float: right;
+	margin-right: 20px;
+	border-radius: 15px;
+	outline: none;	
+}
+	
+.mail-title{
+	
+	width: 60%;
+	height: 35px;
+	margin-left: 30px;
+}
+
+.title-label{
+	margin-top:40px;
+	margin-left: 30px;
+}
+
+.content-label{
+	margin-top:20px;
+	margin-left: 30px;
+}

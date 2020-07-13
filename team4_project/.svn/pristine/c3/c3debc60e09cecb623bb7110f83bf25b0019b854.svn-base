@@ -1,0 +1,309 @@
+package com.dlms.dao.board;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import com.dlms.dto.QnaVO;
+import com.dlms.request.SearchCriteria;
+
+public interface QnaBoardDAO {
+	
+	/**
+	 * 
+	 * @기능설명		:	질문 조회
+	 * @작성자		:	박진영
+	 * @작성날짜      :	2020. 6. 3.
+	 * @마지막수정자	:	박진영
+	 * @마지막수정일	:	2020. 6. 3.오후 4:19:59
+	 * @param 		:	cri
+	 * @return		:	List<QnaVO>
+	 * @throws 		:	SQLException
+	 *
+	 */
+	public List<QnaVO> selectQnAList(SearchCriteria cri) throws SQLException;
+
+	/**
+	 * 
+	 * @기능설명		:	질의 문답조회시 페이징 처리를 위한 보조장치
+	 * @작성자		:	박진영
+	 * @작성날짜      :	2020. 6. 3.
+	 * @마지막수정자	:	박진영
+	 * @마지막수정일	:	2020. 6. 3.오후 4:20:44
+	 * @param 		:	cri
+	 * @return		:	int
+	 * @throws 		:	SQLException
+	 *
+	 */
+	public int selectSearchQnAListCount(SearchCriteria cri) throws SQLException;
+
+	/**
+	 * 
+	 * @기능설명		:	질문 조회
+	 * @작성자		:	박진영
+	 * @작성날짜      :	2020. 6. 3.
+	 * @마지막수정자	:	박진영
+	 * @마지막수정일	:	2020. 6. 3.오후 4:42:00
+	 * @return		:	List<QnaVO>
+	 * @throws 		:	SQLException
+	 *
+	 */
+	public List<QnaVO> selectQnaList()throws SQLException;
+	
+	/**
+	 * 
+	 * @기능설명		:	클릭한 질의 문답 상세조회
+	 * @작성자		:	박진영
+	 * @작성날짜      :	2020. 6. 3.
+	 * @마지막수정자	:	박진영
+	 * @마지막수정일	:	2020. 6. 3.오후 4:42:32
+	 * @param 		:	qna_no
+	 * @return		:	QnaVO
+	 * @throws 		:	SQLException
+	 *
+	 */
+	public QnaVO selectQnaByQna_no(int qna_no)throws SQLException;
+
+	/**
+	 * 
+	 * @기능설명		:	질의 문답 작성
+	 * @작성자		:	박진영
+	 * @작성날짜      :	2020. 6. 3.
+	 * @마지막수정자	:	박진영
+	 * @마지막수정일	:	2020. 6. 3.오후 4:43:13
+	 * @param 		:	qna
+	 * @throws 		:	SQLException
+	 *
+	 */
+	public void insertQnA(QnaVO qna) throws SQLException;
+
+	/**
+	 * 
+	 * @기능설명		:	질의 문답 수정
+	 * @작성자		:	박진영
+	 * @작성날짜      :	2020. 6. 3.
+	 * @마지막수정자	:	박진영
+	 * @마지막수정일	:	2020. 6. 3.오후 4:43:33
+	 * @param 		:	qna
+	 * @throws 		:	SQLException
+	 *
+	 */
+	public void updateQnA(QnaVO qna) throws SQLException;
+
+	/**
+	 * 
+	 * @기능설명		:	질의 문답 삭제
+	 * @작성자		:	박진영
+	 * @작성날짜      :	2020. 6. 3.
+	 * @마지막수정자	:	박진영
+	 * @마지막수정일	:	2020. 6. 3.오후 4:43:53
+	 * @param 		:	qna_no
+	 * @throws 		:	SQLException
+	 *
+	 */
+	public void deleteQnA(int qna_no) throws SQLException;
+
+	/**
+	 * 
+	 * @기능설명		:	질문에 대한 답글 등록
+	 * @작성자		:	박진영
+	 * @작성날짜      :	2020. 6. 3.
+	 * @마지막수정자	:	박진영
+	 * @마지막수정일	:	2020. 6. 3.오후 4:44:16
+	 * @param 		:	qna
+	 * @throws 		:	SQLException
+	 *
+	 */
+	public void insertAndUpdateAnswer(QnaVO qna) throws SQLException;
+
+	/**
+	 * 
+	 * @기능설명		:	답글 삭제
+	 * @작성자		:	박진영
+	 * @작성날짜      :	2020. 6. 3.
+	 * @마지막수정자	:	박진영
+	 * @마지막수정일	:	2020. 6. 3.오후 4:44:48
+	 * @param 		:	qna_no
+	 * @throws 		:	SQLException
+	 *
+	 */
+	public void deleteAnswer(int qna_no) throws SQLException;
+
+	/**
+	 * 
+	 * @기능설명		:	질의 문답 상세조회시 조회수가 1씩 증가
+	 * @작성자		:	박진영
+	 * @작성날짜      :	2020. 6. 3.
+	 * @마지막수정자	:	박진영
+	 * @마지막수정일	:	2020. 6. 3.오후 4:45:08
+	 * @param 		:	qna_no
+	 * @throws 		:	SQLException
+	 *
+	 */
+	public void increaseQnAviewCnt(int qna_no) throws SQLException;
+
+	/**
+	 * 
+	 * @기능설명		:	질문 작성시 게시글 번호가 1씩 증가
+	 * @작성자		:	박진영
+	 * @작성날짜      :	2020. 6. 3.
+	 * @마지막수정자	:	박진영
+	 * @마지막수정일	:	2020. 6. 3.오후 4:45:44
+	 * @return		:	int
+	 * @throws 		:	SQLException
+	 *
+	 */
+	public int selectQnaSeqNext() throws SQLException;
+	
+	/**
+	 * 
+	 * @기능설명		:	답글이 등록된 리스트
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 10.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 10.오후 5:54:01
+	 * @see			:	
+	 * @param cri
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	public List<QnaVO> registQnAList(SearchCriteria cri) throws SQLException;
+	
+	/**
+	 * 
+	 * @기능설명		:	답글이 등록된 리스트 카운트
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 10.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 10.오후 5:54:05
+	 * @see			:	
+	 * @param cri
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	public int searchRegistQnAList(SearchCriteria cri) throws SQLException;
+	
+	/**
+	 * 
+	 * @기능설명		:	답글이 등록된 리스트
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 10.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 10.오후 5:54:01
+	 * @see			:	
+	 * @param cri
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	public List<QnaVO> noRegistQnAList(SearchCriteria cri) throws SQLException;
+	
+	/**
+	 * 
+	 * @기능설명		:	답글이 등록된 리스트 카운트
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 10.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 10.오후 5:54:05
+	 * @see			:	
+	 * @param cri
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	public int searchNoRegistQnAList(SearchCriteria cri) throws SQLException;
+	
+	/**
+	 * 
+	 * @기능설명		:	교수가 지정된 리스트
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 25.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 25.오후 2:24:22
+	 * @see			:	
+	 * @param cri
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	public List<QnaVO> selectToProfessorQnAList (Map<String,Object> dataMap) throws SQLException;
+	
+	/**
+	 * 
+	 * @기능설명		:	교수가 지정된 리스트 카운트
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 25.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 25.오후 2:52:27
+	 * @see			:	
+	 * @param cri
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	public int selectToProfessorQnAListCount(Map<String,Object> dataMap) throws SQLException;
+	
+	/**
+	 * 
+	 * @기능설명		:	교수가 지정된 답글 완료 리스트
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 25.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 25.오후 3:52:02
+	 * @see			:	
+	 * @param cri
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	public List<QnaVO> registFromProfessorQnAList (Map<String,Object> dataMap) throws SQLException;
+	
+	/**
+	 * 
+	 * @기능설명		:	교수가 지정된 답글 완료 리스트 카운트
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 25.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 25.오후 3:52:58
+	 * @see			:	
+	 * @param cri
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	public int searchRegistFromProfessorQnAList (Map<String,Object> dataMap) throws SQLException;
+	
+	/**
+	 * 
+	 * @기능설명		: 	교수가 지정된 미답글 리스트
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 25.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 25.오후 4:01:22
+	 * @see			:	
+	 * @param cri
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	public List<QnaVO> noRegistFromProfessorQnAList (Map<String,Object> dataMap) throws SQLException;
+	
+	/**
+	 * 
+	 * @기능설명		:	교수가 지정된 미답글 리스트 카운트
+	 * @작성자		:	민태홍
+	 * @작성날짜      	:	2020. 6. 25.
+	 * @마지막수정자	:	민태홍
+	 * @마지막수정일	:	2020. 6. 25.오후 4:02:18
+	 * @see			:	
+	 * @param cri
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	public int searchNoRegistFromProfessorQnAList (Map<String,Object> dataMap) throws SQLException;
+	
+	public List<QnaVO> myQnaList(String member_id)throws SQLException;
+}

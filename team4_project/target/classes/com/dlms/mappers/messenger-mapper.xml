@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="messenger-mapper">
+	
+	<!--
+	기능구분	: 검색기능
+	기능설명	: searchType이 w일 시 작성자로  검색 c일 시 내용으로 검색
+	-->
+	<sql id="search">
+		<if test="searchType == 't'.toString()">
+			and messenger_title like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'r'.toString()">
+			and messenger_receiver like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'c'.toString()">
+			and messenger_content like '%'||#{keyword}||'%'			
+		</if>
+	</sql>
+	
+	<!--
+	기능구분	: 발신함 검색 리스트
+	기능설명	: 발신함 리스트를 불러온다
+	파라미터	: cri
+	리턴타입	: messenger
+	-->
+	<select id="selectSearchMessengerList" parameterType="hashmap" resultType="messenger">
+		select  *
+		from
+		messenger
+		where messenger_writer is not null and messenger_status = 1
+		and messenger_writer =#{id}	
+		<include refid="search" />
+		order by messenger_senddate desc
+	</select>
+	 
+	<!--
+	기능구분	: 발신함 리스트 카운트
+	기능설명	: 발신함 리스트를 불러온 시 페이지 넘버를 가져오기 위한 장치
+	파라미터	: X
+	리턴타입	: int
+	-->
+	<select id="selectSearchMessengerListCount"  parameterType="hashmap" resultType="int">
+		select
+		count(*)
+		from
+		messenger
+		where messenger_writer is not null and messenger_status = 1
+		and messenger_writer =#{id}		
+		<include refid="search" />
+		order by messenger_senddate desc
+	</select>
+	
+	<!--
+	기능구분	: 발신함 상세
+	기능설명	: 발신함 상세를 불러온다
+	파라미터	: int
+	리턴타입	: messenger
+	-->
+	<select id="selectMessengerDetail"  parameterType="int" resultType="messenger">
+		select  *
+		from
+		messenger
+		where messenger_writer is not null and messenger_status = 1	and messenger_no=#{messenger_no}  	
+		order by messenger_senddate desc
+	</select>
+	
+	
+	
+	<!--
+	기능구분	: 발신함 휴지통 검색 리스트 
+	기능설명	: 발신함 휴지통 리스트를 출력한다.
+	파라미터	: cri
+	리턴타입	: messenger
+	-->
+	<select id="selectSearchMessengerRecycleList" parameterType="cri" resultType="messenger">
+		select  *
+		from
+		messenger
+		where messenger_writer is not null and messenger_status = 0
+		and messenger_writer=#{id}	  	
+		<include refid="search" />
+		order by messenger_senddate desc
+	</select>
+	 
+	<!--
+	기능구분	: 발신함 휴지통 리스트 카운트
+	기능설명	: 발신함 휴지통 리스트를 불러온 시 페이지 넘버를 가져오기 위한 장치
+	파라미터	: X
+	리턴타입	: int
+	-->
+	<select id="selectSearchMessengerRecycleListCount" resultType="int">
+		select
+		count(*)
+		from
+		messenger
+		where messenger_writer is not null and messenger_status = 0
+		and messenger_writer =#{id}		  	
+		<include refid="search" />
+		order by messenger_senddate desc
+	</select>
+
+	<!--
+	기능구분	: 발신함 휴지통 상세
+	기능설명	: 발신함 휴지통 상세를 출력한다.
+	파라미터	: int
+	리턴타입	: messenger
+	-->
+	<select id="selectMessengerRecycleDetail" parameterType="int" resultType="messenger">
+		select  *
+		from
+		messenger
+		where messenger_writer is not null and messenger_status = 0	and messenger_no=#{messenger_no}	  	
+		order by messenger_senddate desc
+	</select>
+	
+	
+	<!--
+	기능구분	: 메세지 발신
+	기능설명	: 메시지를 보내고 발신함에 저장한다.
+	파라미터	: messenger
+	리턴타입	: X
+	-->
+	<update id="sendMessage" parameterType="messenger">
+		insert 
+		into 
+		messenger(messenger_no, messenger_writer, messenger_content,messenger_receiver, messenger_title)
+		values
+		(#{messenger_no},#{messenger_writer},#{messenger_content},#{messenger_receiver},#{messenger_title})
+		
+	</update>	
+	
+	<!--
+	기능구분	: 메세지 수신
+	기능설명	: 메시지를 보내고 수신함에 저장한다.
+	파라미터	: messenger
+	리턴타입	: X
+	-->
+	<update id="receiveMessage" parameterType="messenger">
+	insert 
+		into 
+		receiver(receiver_no, receiver_id, receiver_content,receiver_sender,receiver_title)
+		values
+		(#{receiver_no},#{messenger_receiver},#{messenger_content},#{messenger_writer},#{messenger_title})
+	</update>
+	
+	<!--
+	기능구분	: 발신함 메세지 휴지통 이동
+	기능설명	: 발신함 메시지를 휴지통에 저장한다.
+	파라미터	: int
+	리턴타입	: X
+	-->
+	<update id="goRecycle" parameterType="int">
+		update messenger
+		set
+		messenger_status=0
+		where messenger_no=#{messenger_no}
+		
+	</update>
+	
+	<!--
+	기능구분	: 발신함 메세지 완전 삭제
+	기능설명	: 발신함 메시지를 완적 삭제 한다.
+	파라미터	: int
+	리턴타입	: X
+	-->
+	<update id="deleteMessage" parameterType="int">
+		delete
+		messenger
+		where messenger_no=#{messenger_no}
+	</update>
+	
+	<!--
+	기능구분	: 메세지 복구
+	기능설명	: 휴지통에 있는 메세지를 복구한다..
+	파라미터	: int
+	리턴타입	: X
+	-->
+	<update id="restore" parameterType="int">
+		update messenger
+		set
+		messenger_status=1
+		where messenger_no=#{messenger_no}
+	</update>
+	
+	<!--
+	기능구분	: 발신 번호 생성
+	기능설명	: 발신 번호를 생성한다.
+	파라미터	: X
+	리턴타입	: int
+	-->	
+	<select id="selectMessenger_SeqNext" resultType="int">
+		select MESSAGENER_SEQ.nextval as messenger_no from dual
+	</select>
+	
+	<!-- 
+	기능구분 : 쪽지 오픈
+	기능설멸 : 쪽지를 오픈한다.
+	파리미터 : int
+	리턴타입 : x
+	 -->
+	<update id="openEnvelope" parameterType="int">
+		update messenger
+		set
+		messenger_check = 'y'
+		where messenger_no=#{messenger_no}
+	</update>
+	
+	<!-- 
+	기능구분 : 파일 체크
+	기능설멸 : 파일 여부 체크
+	파리미터 : int
+	리턴타입 : x
+	 -->
+	<update id="fileCheck" parameterType="int">
+		update messenger
+		set
+		messenger_filecheck = 'y'
+		where messenger_no=#{messenger_no}
+	</update>
+</mapper>

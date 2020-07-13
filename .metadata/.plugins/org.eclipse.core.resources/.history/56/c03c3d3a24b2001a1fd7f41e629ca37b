@@ -1,0 +1,13 @@
+package com.dlms.service.lecture;
+
+import java.sql.SQLException;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.dlms.dto.Lecture_attendVO;
+import com.dlms.dto.StudentVO;
+
+public interface EvernoteSubscribeService {
+	 public Map<String, Object> service(HttpServletRequest request, Mapper mapper);
+}

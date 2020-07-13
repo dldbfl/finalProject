@@ -1,0 +1,41 @@
+package com.dlms.dao.entrerprise_introduce;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import com.dlms.dto.Enterprise_introduceVO;
+
+public interface Entrerprise_introduceDAO {
+
+	/**
+	 * 
+	 * @기능설명		:	기업소개 조회
+	 * @작성자		:	이누리
+	 * @작성날짜    	:	2020. 6. 5.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 5.오후 2:06:00
+	 * @see			:	-
+	 * @return
+	 * @throws SQLException
+	 *
+	 */
+	Enterprise_introduceVO selectEnterprise_introduce() throws SQLException;	
+		
+	/**
+	 * 
+	 * @기능설명		:	기업소개 수정
+	 * @작성자		:	이누리
+	 * @작성날짜    	:	2020. 6. 5.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 5.오후 2:06:14
+	 * @see			:	-
+	 * @param enterprise_introduce
+	 * @throws SQLException
+	 *
+	 */
+	void updateEnterprise_introduce(Enterprise_introduceVO enterprise_introduce)throws SQLException;
+	
+
+
+
+}

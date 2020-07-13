@@ -1,0 +1,155 @@
+package com.dlms.service.professor;
+
+import java.io.File;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.dlms.dao.member.MemberDAO;
+import com.dlms.dao.professor.ProfessorDAO;
+import com.dlms.dto.MemberVO;
+import com.dlms.dto.ProfessorVO;
+import com.dlms.dto.Professor_careerVO;
+
+
+public class ProfessorServiceImpl implements ProfessorService{
+
+	
+	@Autowired
+	private ProfessorDAO professorDAO;
+	public void setProfessorDAO(ProfessorDAO professorDAO) {
+		this.professorDAO = professorDAO;
+	}
+	
+	@Autowired
+	private MemberDAO memberDAO;
+	public void setMemberDAO(MemberDAO memberDAO) {
+		this.memberDAO = memberDAO;
+	}
+	
+	@Resource(name="member_Professor_CareerPath")
+	private String career_attachPath;
+	
+	@Resource(name="member_Profile_Professor_PicturePath")
+	private String profile_path;
+	
+	@Override
+	public Map<String, Object> getProfessorDetail(String member_id) throws SQLException {
+		Map<String, Object> dataMap = new HashMap<String,Object>();
+		ProfessorVO professor = professorDAO.detailProfessor(member_id);
+		List<Professor_careerVO> careerList = professorDAO.detailProfessorCareer(member_id);
+		for(int i=0; i < careerList.size(); i++) {
+			String type = careerList.get(i).getProfessor_career();
+			type = type.substring(type.lastIndexOf("."));
+			careerList.get(i).setType(type);
+			careerList.get(i).setPath(career_attachPath);
+		}
+		
+		dataMap.put("path", profile_path+File.separator);
+		dataMap.put("professor", professor);
+		dataMap.put("career", careerList);
+		return dataMap;
+	}
+
+	@Override
+	public Map<String, Object> modifyProfessorDetail(MemberVO member, ProfessorVO professor, List<Professor_careerVO> career, MultipartFile picture,
+			                          List<MultipartFile> careerFile,HttpSession session) throws SQLException {
+		
+		Map<String, Object> dataMap = new HashMap<String,Object>();
+		List<Professor_careerVO> careerList = professorDAO.detailProfessorCareer(member.getMember_id());
+		
+		for(int i = 0; i<careerList.size(); i++) {
+			if(!careerList.get(i).getProfessor_career().equals(career.get(i).getProfessor_career())){
+				String delete = careerList.get(i).getProfessor_career();
+				File file = new File(career_attachPath+File.separator+delete);
+				file.delete();
+
+			}
+		}
+
+		try {
+			
+		if (!(picture.isEmpty())) {
+			member = pictureChange(picture,member);
+			}
+		
+		if (!careerFile.isEmpty() && !careerFile.get(0).getOriginalFilename().equals("") && careerFile !=null) {
+			career = careerChange(careerFile,career);
+		}
+		
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+		
+		professorDAO.updateMember(member);
+		professorDAO.updateProfessor(professor);
+		try {
+		if (!career.isEmpty() || career != null) {
+			for (int i = 0; i < career.size(); i++) {
+					
+					professorDAO.updateProfessorCareer(career.get(i));
+			}
+		}
+		}catch (NullPointerException e) {}
+		
+		professor = professorDAO.detailProfessor(member.getMember_id());
+		careerList = professorDAO.detailProfessorCareer(member.getMember_id());
+		member = (MemberVO)session.getAttribute("loginUser");
+		for(int i=0; i < careerList.size(); i++) {
+			String type = careerList.get(i).getProfessor_career();
+			type = type.substring(type.lastIndexOf("."));
+			careerList.get(i).setType(type);
+			careerList.get(i).setPath(career_attachPath);
+		}
+		dataMap.put("path", profile_path+File.separator);
+		dataMap.put("member", member);
+		dataMap.put("professor", professor);
+		dataMap.put("career", careerList);
+		return dataMap;
+	}
+
+	private MemberVO pictureChange(MultipartFile picture, MemberVO member) throws Exception {
+
+			String fileName = UUID.randomUUID().toString().replace("-", "");
+			String originalName = picture.getOriginalFilename();
+			fileName = fileName +"$$"+ originalName;
+			File saveFile = new File(profile_path + File.separator + member.getMember_id()+File.separator+ fileName);
+			
+			if (!saveFile.exists()) {
+				saveFile.mkdirs();
+			}
+			
+			picture.transferTo(saveFile);
+			member.setMember_picture(fileName);
+			
+			return member;
+	}
+
+	private List<Professor_careerVO> careerChange(List<MultipartFile> careerFile, List<Professor_careerVO> careerList) throws Exception {
+
+			for (int i = 0; i < careerFile.size(); i++) {
+				String fileName = UUID.randomUUID().toString().replace("-", "");
+				String originalName = careerFile.get(i).getOriginalFilename();
+				fileName = fileName +"$$"+ originalName;
+				File saveFile = new File(career_attachPath + File.separator + fileName);
+
+				if (!saveFile.exists()) {
+					saveFile.mkdirs();
+				}
+
+				careerFile.get(i).transferTo(saveFile);
+				careerList.get(i).setProfessor_career(fileName);
+			}
+			return careerList;
+	}
+
+}

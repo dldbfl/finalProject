@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="founded_img-mapper">
+	
+	<!--
+	기능구분	: 창업후기 이미지 등록 
+	기능설명	: 창업후기 게시판 게시글  조회
+	파라미터	: 
+	리턴타입	: foundedImgVO
+	-->	
+	<select id="selectImgByfunded" resultType="foundedImg">
+		select * 
+		from founded_review_img 
+		where founded_review_no = #{founded_review_no}
+	</select>	
+	
+	<!--
+	기능구분	: 창업후기 이미지
+	기능설명	: 창업후기 게시판 게시글 이미지 조회
+	파라미터	: founded_review_no(창업후기 게시글번호)
+	리턴타입	: foundedImgVO
+	-->
+	<select id="selectFoundedReviewImgByReviewNo" parameterType="int" resultType="foundedImg">
+		select *
+		from founded_review_img
+		where founded_review_no=#{founded_review_no}
+	</select>
+	
+	<!--
+	기능구분	: 창업후기 이미지 등록
+	기능설명	: 창업후기 게시글 이미지 등록
+	파라미터	: 
+	리턴타입	: 
+	-->
+	<update id="insertImg" parameterType="foundedImg">
+		insert into 
+		founded_review_img (founded_review_img_no, founded_review_img_name, founded_review_no)
+		values (founded_review_img_seq.nextval, #{founded_review_img_name}, #{founded_review_no})
+	</update>
+	
+	<!--
+	기능구분	: 창업후기 이미지 삭제
+	기능설명	: 창업후기 게시글 이미지만 삭제
+	파라미터	: 
+	리턴타입	: 
+	-->
+	<update id="deleteImg">
+		delete from founded_review_img where founded_review_img_no = #{founded_review_img_no}
+	</update>
+	<!--
+	기능구분	: 창업후기 이미지 삭제
+	기능설명	: 창업후기 게시글 이미지,게시글 동시에 삭제
+	파라미터	: 
+	리턴타입	: 
+	-->
+	<update id="deleteAllImg">
+		delete 
+		from founded_review_img 
+		where founded_review_no = #{founded_review_no}
+	</update>
+	
+	<select id="selectImgByfoundedImg" parameterType="int" resultType="foundedImg">
+		select *
+		from founded_review_img
+		where founded_review_img_no = #{founded_review_img_no}
+	</select>
+</mapper>

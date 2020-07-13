@@ -1,0 +1,151 @@
+package com.dlms.controller.lecture;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.dlms.dto.Lecture_dataVO;
+import com.dlms.dto.MemberVO;
+import com.dlms.request.StudentListRequest;
+import com.dlms.service.lecture.LectureService;
+import com.dlms.service.member.MemberService;
+import com.dlms.service.EvernoteSubscribeService;
+
+/**
+ * 
+ * @사용목적		:	나의 강의실 	
+ * @작성자		    :	이누리
+ * @작성날짜     	:	2020. 6. 17.
+ * @마지막수정자	:	이누리
+ * @마지막수정일	:	2020. 6. 17.오후 9:10:08
+ * @see			    :	-
+ *
+ */
+@Controller
+@RequestMapping("/*")
+public class LectureDataController {
+
+	@Autowired
+	private LectureService lectureService;
+	public void setLectureService(LectureService lectureService) {
+		this.lectureService = lectureService;
+	}
+	
+	@Autowired
+	private MemberService memberService;
+	public void setmemberService(MemberService memberService) {
+		this.memberService = memberService;
+	}
+
+	/**
+	 * 
+	 * @기능설명		:	나의 강의실 강의 리스트
+	 * @작성자		    :	이누리
+	 * @작성날짜    	:	2020. 6. 17.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 17.오후 9:11:24
+	 * @see			    :	-
+	 * @param mnv
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping(value="/lecture/video", method=RequestMethod.GET)
+	public ModelAndView lectureList(ModelAndView mnv, HttpSession session)throws Exception{
+		
+		String url="/commons/login.page";
+		MemberVO member = (MemberVO)session.getAttribute("loginUser");
+			
+		if(member != null) {
+			
+			if(memberService.getStudent_member_id(member.getMember_id()).get(0).getLecture_no() != 0) {
+				
+				url="lecture/video.page";
+				System.out.println(member.getMember_name()+" 친구의 강의실이야...");
+				
+				StudentListRequest studentReq = memberService.getStudent_member_id(member.getMember_id()).get(0);
+				System.out.println("거기서 꺼낸건 이런거야...studentReq : "+studentReq);
+				System.out.println(studentReq.toString());
+				
+				List<Lecture_dataVO> lectureDataList =lectureService.getLectureDataList(studentReq.getLecture_no());
+				System.out.println("그 친구의 강의는 이런거야...");
+				System.out.println("lectureDataList : "+lectureDataList);
+				
+				mnv.addObject("lectureDataList",lectureDataList);
+			}
+			else {
+				System.out.println("이 친구는 학생이 아냐");
+			}
+			
+		}
+		mnv.setViewName(url);
+		return mnv;
+		
+	}
+	
+	/**
+	 * 
+	 * @기능설명		:	나의 강의실 동영상 보기
+	 * @작성자		    :	이누리  
+	 * @작성날짜    	:	2020. 6. 17.
+	 * @마지막수정자	:	이누리
+	 * @마지막수정일	:	2020. 6. 18.오후 7:57:50
+	 * @see			    :	-
+	 * @param mnv
+	 * @param lecture_data_no
+	 * @return
+	 * @throws Exception
+	 *
+	 */
+	@RequestMapping(value="/lecture/video/view", method=RequestMethod.GET)
+	public ModelAndView lectureVideo(ModelAndView mnv,int lecture_data_no,int lecture_lastview_time)throws Exception{
+		String url="lecture/view";
+		Lecture_dataVO lectureVideo = lectureService.getLectureDataVideo(lecture_data_no);
+		if(lecture_lastview_time != 0) {
+			lectureVideo.setLecture_lastview_time(lecture_lastview_time);
+		}
+		mnv.addObject("lectureVideo",lectureVideo);
+		mnv.setViewName(url);
+		return mnv;
+		
+	}
+	
+	
+	@RequestMapping(value="/lecture/video/view", method=RequestMethod.POST)
+	public ModelAndView lectureVideoUpdate(ModelAndView mnv, int lecture_lastview_time, int lecture_data_no)throws Exception{
+		String url="lecture/timeSet";
+		Lecture_dataVO lecture_data = new Lecture_dataVO();
+		
+		System.out.println("lecture_data_no : "+lecture_data_no);
+		System.out.println("lecture_lastview_time : "+lecture_lastview_time);
+		
+		lecture_data.setLecture_data_no(lecture_data_no);
+		lecture_data.setLecture_lastview_time(lecture_lastview_time);
+		
+		lectureService.updateLastviewTime(lecture_data);		
+		
+		mnv.setViewName(url);
+		
+		return mnv;
+		
+	}
+	
+	 @RequestMapping(value="/evernote_request")
+	    public String evernote_request(HttpServletRequest request) {
+	        EvernoteSubscribeService evernoteSubscribeService = new EvernoteSubscribeService();
+	        evernoteSubscribeService.service(request, mapper);
+	        return "main";
+	    }
+
+
+}

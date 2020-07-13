@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="member-mapper">
+
+	<!--
+		기능구분	: 조회
+		기능설명	: 자격증 구분 고유 번호 생성
+		파라미터	: -
+		리턴타입	: int
+	-->
+	<select id="selectRegistStudentSeqNext" resultType="int">
+		select student_certificate_seq.nextval as student_certificate_no from dual
+	</select>
+	<!--
+		기능구분	: 조회
+		기능설명	: 경력 구분 고유 번호 생성
+		파라미터	: -
+		리턴타입	: int
+	-->
+	<select id="selectRegistProfessorSeqNext" resultType="int">
+		select professor_career_seq.nextval as professor_career_no from dual
+	</select>
+	
+	<!--
+		기능구분	: 조회
+		기능설명	: 이메일 인증번호 순번 생성
+		파라미터	: -
+		리턴타입	: int
+	-->
+	<select id="selectEmail_No" resultType="int">
+		select email_certification_seq.nextval as email_no from dual
+	</select>
+	<!--
+		기능구분	: 등록
+		기능설명	: 이메일 인증 발생시 해당 번호, 문자, 이메일주소 등록하기
+		파라미터	: Email_certificationVO
+		리턴타입	: -
+	-->
+	<update id="insertEmailSendText" parameterType="email_certification">
+		insert into email_certification
+		(email_no, email_checktext, email_address)
+		 values(#{email_no}, #{email_checktext}, #{email_address})
+	</update>
+	<!--
+		기능구분	: 수정
+		기능설명	: 이메일 인증 여부 업데이트
+		파라미터	: Email_certificationVO
+		리턴타입	: -
+	-->
+	<update id="updateEmailCheck" parameterType="email_certification">
+		update email_certification set
+		email_check = #{email_check}
+		where email_address =#{email_address}
+		and email_checktext =#{email_checktext}
+	</update>
+
+	<!--
+		기능구분	: 조회
+		기능설명	: 수강생과 교수의 정보 필수 정보 가져오기
+		파라미터	: -
+		리턴타입	: MemberVO
+	-->
+	<select id="selectMemberList" resultType="member">
+		select *
+		from member
+	</select>
+	<!--
+		기능구분	: 조회
+		기능설명	: 특정 회원의 필수 정보를 가져오기
+		파라미터	: id
+		리턴타입	: MemberVO
+	-->
+	<select id= "selectMemberById" resultType="member" parameterType="str">
+		select *
+		from member
+		where member_id=#{member_id}
+	</select>
+	<!--
+		기능구분	: 등록
+		기능설명	: 회원가입 할 떄 사용 하는 등록문(공통입력사항)		
+		파라미터	: MemberVO
+		리턴타입	: -
+	-->
+	<update id="insertMember" parameterType="member"> 
+		insert into member
+			  (member_id, member_pwd, member_name, member_post,member_address1, member_address2, member_email, member_phone, member_gender, member_birth, member_authority, member_status, member_pwdcheck, member_picture, member_infoOpen, member_eventReception)
+		values(#{member_id}, #{member_pwd}, #{member_name}, #{member_post},#{member_address1}, #{member_address2}, #{member_email}, #{member_phone}, #{member_gender}, #{member_birth}, #{member_authority}, #{member_status}, #{member_pwdcheck}, #{member_picture}, #{member_infoOpen}, #{member_eventReception})
+	</update>
+	<!--
+		기능구분	: 등록
+		기능설명	: 회원가입 할 떄 사용 하는 등록문(수강생 필수 입력사항)		
+		파라미터	: StudentVO
+		리턴타입	: -
+	-->
+	<update id="insertStudent" parameterType="student">
+		insert into student
+		(student_id, student_hope_business, student_experience, student_business_purpose,
+		 student_remark)
+		 values(#{student_id}, #{student_hope_business}, #{student_experience},
+		 	    #{student_business_purpose}, #{student_remark})
+	</update>
+	<!--
+		기능구분	: 등록
+		기능설명	: 회원가입 할 떄 사용 하는 등록문(수강생 선택 입력사항-자격증입력)		
+		파라미터	: Student_certificateVO
+		리턴타입	: -
+	-->
+	<update id="insertStudentCertificate" parameterType="student_certifcicate">
+		insert into student_certificate
+		(student_certificate_no, student_id, student_certificate_name,	student_certificate_division,
+		 student_certificate_date, student_certificate_agency)
+		values(#{student_certificate_no},#{student_id},#{student_certificate_name},#{student_certificate_division}, #{student_certificate_date},
+			   #{student_certificate_agency})
+	</update>
+	
+	
+	
+	<!--
+		기능구분	: 등록
+		기능설명	: 회원가입 할 떄 사용 하는 등록문(교수의 필수 입력사항)
+		파라미터	: ProfessorVO
+		리턴타입	: -
+	-->
+	<update id="insertProfessor" parameterType="com.dlms.dto.ProfessorVO">
+		insert into professor
+		(professor_id, professor_hope_subject,professor_remark, professor_career_education)
+		values(#{professor_id}, #{professor_hope_subject},#{professor_remark},#{professor_career_education})
+	</update>
+	<!--
+		기능구분	: 등록
+		기능설명	: 회원가입 할 떄 사용 하는 등록문(교수의 선택사항-경력)
+		파라미터	: Professor_careerVO
+		리턴타입	: -
+	-->
+	<update id="insertProfessorCareer" parameterType="com.dlms.dto.Professor_careerVO">
+		insert into professor_career
+				(professor_career_no,    professor_id,    professor_career_company_name,    professor_career_mainjob,    professor_career_position,    professor_career,    professor_career_startdate,    professor_career_lastdate)
+		values(#{professor_career_no}, #{professor_id}, #{professor_career_company_name}, #{professor_career_mainjob}, #{professor_career_position}, #{professor_career}, #{professor_career_startdate}, #{professor_career_lastdate} )
+	</update>
+	<!--
+		기능구분	: 수정
+		기능설명	: 회원정보 수정할 때 사용(공통 필수 사항)
+		파라미터	: MemberVO
+		리턴타입	: -
+	-->
+	<update id="updateMember" parameterType="member">
+		update member set
+		member_pwd =#{member_pwd},
+		member_post =#{member_post},
+		member_address1 =#{member_address1},
+		member_address2 =#{member_address2},
+		member_email =#{member_email},
+		member_phone =#{member_phone},
+		member_birth =#{member_birth},
+		member_picture =#{member_picture},
+		member_infoOpen =#{member_infoOpen}
+		where member_id=#{member_id}
+	</update>
+	
+	<!--
+		기능구분	: 탈퇴
+		기능설명	: 회원 탈퇴 할때 사용
+		파라미터	: MemberVO
+		리턴타입	: -
+	-->
+	<update id="memberOut" parameterType="member">
+		update member set
+		member_status =#{member_status},
+		member_memberOutReason =#{member_memberOutReason}
+		where member_id=#{member_id}
+	</update>
+	<!--
+		기능구분	: 수정
+		기능설명	: 회원정보 수정할 때 사용(수강생 필수 사항)
+		파라미터	: StudentVO
+		리턴타입	: -
+	-->
+	<update id="updateStudent" parameterType="student">
+		update student set
+		student_hope_business =#{student_hope_business},
+		student_experience =#{student_experience},
+		student_business_purpose =#{student_business_purpose},
+		student_remark =#{student_remark}
+		where student_id =#{student_id}
+	</update>
+		<!--
+		기능구분	: 수정
+		기능설명	: 회원정보 수정할 때 사용(수강생 선택 사항)
+		파라미터	: Student_certificateVO
+		리턴타입	: -
+	-->
+	<update id="updateStudentCertificate" parameterType="student_certifcicate">
+		update student_certificate set
+		student_certificate_name =#{student_certificate_name},
+		student_certificate_division =#{student_certificate_division},
+		student_certificate_date =#{student_certificate_date},
+		student_certificate_agency =#{student_certificate_agency}
+		where student_certificate_no=#{student_certificate_no}
+	</update>
+	<!--
+		기능구분	: 수정
+		기능설명	: 회원정보 수정할 때 사용(교수 필수 사항)
+		파라미터	: ProfessorVO
+		리턴타입	: -
+	-->
+	<update id="updateProfessor" parameterType="com.dlms.dto.ProfessorVO">
+		update professor set
+		professor_hope_subject =#{professor_hope_subject},
+		professor_subject =#{professor_subject},
+		professor_remark =#{professor_remark},
+		professor_career_education =#{professor_career_education}
+		where professor_id =#{professor_id}
+	</update>
+	<!--
+		기능구분	: 수정
+		기능설명	: 회원정보 수정할 때 사용(교수 선택 사항)
+		파라미터	: Professor_careerVO
+		리턴타입	: -
+	-->
+	<update id="updateProfessor_career" parameterType="com.dlms.dto.Professor_careerVO">
+		update professor_career set
+		professor_career_company_name =#{professor_career_company_name},
+		professor_career_mainjob =#{professor_career_mainjob},
+		professor_career_position =#{professor_career_position},
+		professor_career =#{professor_career},
+		professor_career_startdate =#{professor_career_startdate},
+		professor_career_lastdate =#{professor_career_lastdate}
+		where professor_carrer_no =#{professor_carrer_no};
+	</update>
+	<!--
+		기능구분	: 수정
+		기능설명	: 회원정보 수정할 때 사용(회원별 가입 상태 또는 재직 상태 변경)
+		파라미터	: MemberVO
+		리턴타입	: -
+	-->
+	<update id="statusUpdateMember" parameterType="member">
+		update member set 
+		member_status = #{member_status}
+		where member_id = #{member_id}
+	</update>
+	
+	
+	
+	<!--
+		기능구분	: 조회
+		기능설명	: 교수의 전체 정보 가져오기
+		파라미터	: -
+		리턴타입	: professorReq
+	-->
+	<select id="selectProfessorList" resultType="professorReq">
+		select *
+		from member, professor
+		where member_id = professor_id
+	</select>
+	
+	<!--
+		기능구분	: 조회
+		기능설명	: 수강생의 전체 정보 가져오기
+		파라미터	: -
+		리턴타입	: studentReq
+	-->
+	<select id="selectStudentList" resultType="studentReq">
+		select *
+		from member m, student s, pay p		
+		where m.member_id = s.student_id
+        and s.student_id = p.student_id
+	</select>
+	
+	<!-- 
+		기능구분	: 조회
+		기능설명	: 현재 출석일 수 
+		파라미터	: str
+		리턴타입	: int
+	 -->
+	<select id="selectStudent_lecture_attend_daycount" resultType="int" parameterType="str">
+		select count(lecture_attend_status)
+		from lecture_attend 
+        where lecture_attend_status = '출석'
+      	and student_id=#{student_id}	
+	</select>
+	
+	<!-- 
+		기능구분	: 조회
+		기능설명	: 총 출석일 수
+		파라미터	: str
+		리턴타입	: int
+	 -->
+	<select id="selectStudent_lecture_attend_alldaycount" resultType="int" parameterType="str">
+		select count(lecture_attend_status)
+		from lecture_attend 	
+		where student_id=#{student_id}
+	</select>
+	
+	
+	
+	<!--
+	기능구분	: 검색
+	기능설명	: 검색 구분
+	파라미터	: -
+	리턴타입	: -
+	-->	
+	<sql id="search">
+		<if test="searchType == 'c'.toString()">
+			and class_name like '%'||#{keyword}||'%'			
+		</if>
+		<if test="searchType == 'n'.toString()">
+			and member_name like '%'||#{keyword}||'%'			
+		</if>
+	</sql>
+	
+	<!--
+		기능구분	: 검색후 리스트
+		기능설명	: 수강생 검색 리스트
+		파라미터	: student		
+	-->			
+	<select id="selectSearchStudentAll" resultType="studentReq">
+		
+		select 
+		*
+		from member m, student s, pay p
+		
+		where member_id is not null 
+        and m.member_id = s.student_id
+        and s.student_id = p.student_id			  	
+		<include refid="search" />
+		order by member_id desc
+	</select>
+	<!--
+      기능구분   : 조회_student_id
+      기능설명   : 특정 수강생의 전체 정보를 가져오기
+      파라미터   : student_id
+      리턴타입   : studentReq
+   -->
+   <select id= "selectStudentAllById" resultType="studentReq" parameterType="str">
+      select *
+      from member m, student s, pay p		
+      where m.member_id = s.student_id
+      and s.student_id = p.student_id
+      and s.student_id=#{str}
+      order by pay_no desc
+   </select>
+   
+   <!--
+      기능구분   : 조회_member_id
+      기능설명   : 특정 수강생의 전체 정보를 가져오기
+      파라미터   : member_id
+      리턴타입   : studentReq
+   -->
+   <select id= "selectStudentAllById_member_id" resultType="studentReq" parameterType="str">
+      select *
+      from member m, student s, pay p		
+      where m.member_id = s.student_id
+      and s.student_id = p.student_id
+      and m.member_id=#{str}
+      order by pay_no desc
+   </select>
+   
+   
+   <!--
+      기능구분   : 조회
+      기능설명   : 특정 교수의 전체 정보를 가져오기
+      파라미터   : id
+      리턴타입   : professorReq
+   -->
+   <select id= "selectProfessorAllById" resultType="professorReq" parameterType="str">
+      select *
+      from member, professor
+      where professor_id = member_id
+      and professor_id=#{str}
+   </select>
+   <!--
+      기능구분   : 조회
+      기능설명   : 이름과 이메일을 가지고 일치하는 정보를 가져온다.
+      파라미터   : member(member_name, member_email) 
+      리턴타입   : MemberVO
+   -->
+   <select id="selectMemberByNameAndEmail" resultType="member" parameterType="member">
+   	select * 
+   	from member
+   	where member_name = #{member_name}
+   	and member_email=#{member_email}
+   </select>
+	<!--
+      기능구분   : 조회
+      기능설명   : 이름과 휴대폰번호를 가지고 일치하는 정보를 가져온다.
+      파라미터   : member(member_name, member_phone) 
+      리턴타입   : MemberVO
+   -->
+   <select id="selectMemberByNameAndPhone" resultType="member" parameterType="member">
+   	select * 
+   	from member
+   	where member_name = #{member_name}
+   	and member_phone=#{member_phone}
+   </select>
+   	<!--
+      기능구분   : 수정
+      기능설명   : 아이디를 기준으로 패스워드 변경
+      파라미터   : member(member_id, member_pwd) 
+      리턴타입   : -
+   -->
+   <update id="updateMemberPwdByIdAndPwd" parameterType="member">
+	   	update member set
+	   	member_pwd = #{member_pwd}
+	   	where member_id = #{member_id}
+   </update>
+   <!--
+      기능구분   : 수정
+      기능설명   : 아이디를 기준으로 해당 비밀번호 틀릴시 비밀번호카운트 추가
+      파라미터   : id(회원아이디)
+   -->
+   <update id="updateLoginPwdWrongCount" parameterType="str">
+   		update member set
+   		member_pwdcheck= member_pwdcheck+1
+   		where member_id= #{member_id}
+   </update>
+   <!--
+      기능구분   : 수정
+      기능설명   : 아이디를 기준으로 비밀번호 컬럼 초기화 
+      파라미터   : id(회원아이디)
+      리턴타입   : -
+   -->
+   <update id="updatePwdCheckReset" parameterType="str">
+   		update member set
+   		member_pwdcheck= 0
+   		where member_id= #{id}
+   </update>
+   <!--
+      기능구분   : 조화
+      기능설명   : 회원가입시 이메일 인증 작업 해당 이메일 , 이메일인증문자 대조 해서 가져오기 
+      파라미터   : 이메일주소, 이메일인증문자
+      리턴타입   : email_certification
+   -->
+   <select id="selectEmailTextCheck" parameterType="email_certification" resultType="email_certification">
+   		select *
+   		from email_certification
+   		where email_address =#{email_address}
+   		and email_checktext =#{email_checktext}
+   </select>
+   
+   <select id="certificateBymember_id" parameterType="str" resultType="certificate">
+	    select * 
+		from student_certificate
+		where student_id = #{member_id}
+   </select>
+   
+   <update id="deleteStudent_certificate" parameterType="int">
+		delete
+		from student_certificate
+		where student_certificate_no=#{student_certificate_no}
+   </update>
+   
+	<select id="studentInfoByMemberId" parameterType="str" resultType="student">
+		select *
+		from student
+		where student_id=#{member_id}
+	</select>
+	<update id="remarkStudent" parameterType="student">
+		update student set
+		student_remark =#{student_remark}
+		where student_id =#{student_id}
+	</update>
+	
+	<update id="updateStudentAuthority" parameterType="str">
+		update member set
+		member_authority = 'STUDENT'
+		where member_id = #{id}
+	</update>
+	
+	<select id="selectMemberByProfessor" resultType="member">
+		select *
+		from member
+		where member_authority ='PROFESSOR'
+	</select>
+	
+	<update id="updateUserAuthority" parameterType="str">
+		update member set
+		member_authority = 'USER'
+		where member_id = #{id}
+	</update>
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>	
+	
+	<typeAliases>
+		<typeAlias type="java.lang.String" alias="str"/>
+		<typeAlias type="java.lang.Integer" alias="int"/>		
+		<typeAlias type="com.dlms.dto.DocumentVO" alias="document"/>
+		<typeAlias type="com.dlms.dto.Document_dataVO" alias="document_data"/>
+		<typeAlias type="com.dlms.dto.LectureVO" alias="lecture"/>
+		<typeAlias type="com.dlms.dto.Lecture_reviewVO" alias="lecture_review"/>
+		<typeAlias type="com.dlms.dto.Lecture_review_imgVO" alias="lecture_review_img"/>
+		<typeAlias type="com.dlms.dto.MessengerVO" alias="messenger"/>
+		<typeAlias type="com.dlms.dto.Message_attachVO" alias="messenger_attach"/>
+		<typeAlias type="com.dlms.dto.QnaVO" alias="qna"/>
+		<typeAlias type="com.dlms.dto.ReceiverVO" alias="receiver"/>
+		<typeAlias type="com.dlms.dto.StudentVO" alias="student"/>
+		<typeAlias type="com.dlms.dto.Student_certificateVO" alias="certificate"/>
+		<typeAlias type="com.dlms.dto.FreeBoardVO" alias="freeboard"/>
+		<typeAlias type="com.dlms.dto.FreeBoard_ReplyVO" alias="reply"/>
+		<typeAlias type="com.dlms.dto.ConsultVO" alias="consult"/>
+		<typeAlias type="com.dlms.dto.Lecture_dataVO" alias="lecture_data"/>
+		<typeAlias type="com.dlms.request.SearchCriteria" alias="cri"/>
+		<typeAlias type="com.dlms.dto.NoticeVO" alias="notice"/>		
+		<typeAlias type="com.dlms.dto.ProposalVO" alias="proposal"/>
+		<typeAlias type="com.dlms.dto.Founded_reviewVO" alias="founded"/>
+		<typeAlias type="com.dlms.dto.Enterprise_introduceVO" alias="enterprise_introduce"/>
+		<typeAlias type="com.dlms.dto.Manager_boardVO" alias="manager_board"/>
+		<typeAlias type="com.dlms.dto.PopupVO" alias="popup"/>
+		<typeAlias type="com.dlms.dto.Founded_reviewVO" alias="foundedReview"/>
+		<typeAlias type="com.dlms.dto.Founded_review_imgVO" alias="foundedImg"/>
+		<typeAlias type="com.dlms.dto.StudentAllVO" alias="studentAll"/>
+		<typeAlias type="com.dlms.dto.ProfessorAllVO" alias="professorAll"/>
+		<typeAlias type="com.dlms.dto.DraftVO" alias="draft"/>
+		<typeAlias type="com.dlms.dto.Draft_AttachVO" alias="draft_attach"/>
+		<typeAlias type="com.dlms.dto.Notice_dataVO" alias="notice_attach"/>
+		<typeAlias type="com.dlms.dto.Student_certificateVO" alias="student_certifcicate"/>
+		<typeAlias type="com.dlms.dto.MemberVO" alias="member"/>
+		<typeAlias type="com.dlms.dto.Lecture_attendVO" alias="lecture_attend"/>
+				
+	</typeAliases>
+	
+	
+</configuration>
+
+
+
+
+
+
+

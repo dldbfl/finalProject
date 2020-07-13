@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="notice_attach-mapper">
+
+	<select id="selectAttachByNotice_data_no" resultType="notice_attach" parameterType="int">
+		select *
+		from notice_data
+		where notice_data_no=#{notice_data_no}
+	</select>
+
+	<select id="selectAttachByNotice_no" resultType="notice_attach" parameterType="int">
+		select * 
+		from notice_data
+		where notice_no=#{notice_no}
+	</select>
+	
+	<update id="insertAttach">
+		insert into
+		notice_data (notice_data_no, notice_no, notice_filename, notice_fileuploadpath, notice_filetype, uuid)
+		values (notice_data_seq.nextval, #{notice_no}, #{notice_filename}, #{notice_fileuploadpath}, #{notice_filetype}, #{uuid})
+	</update>
+	
+	<update id="deleteAttach" parameterType="int">
+		delete 
+		from notice_data
+		where notice_data_no=#{notice_data_no}
+	</update>
+	
+	<update id="deleteAllAttach" parameterType="int">
+		delete 
+		from notice_data
+		where notice_no=#{notice_no}
+	</update>
+
+
+
+</mapper>
