@@ -26,7 +26,7 @@
 		<log4jdbc.remix-version>0.2.7</log4jdbc.remix-version>
 		<jasperreports-version>6.5.0</jasperreports-version>
 		<aspoerctJweaver-version>1.9.2</aspoerctJweaver-version>
-		<apache.poi-version>3.17</apache.poi-version>
+		<apache.poi-version>4.1.1</apache.poi-version>
 		<cool.sms-version>2.2</cool.sms-version>
 		
 		<org.aspectj-version>1.6.10</org.aspectj-version>
